@@ -1,3 +1,4 @@
+import { Reveal } from '@/components/fullpage/Reveal'
 import { Section } from '@/components/fullpage/Section'
 
 const STACK_ITEMS = [
@@ -10,14 +11,17 @@ const STACK_ITEMS = [
 export function StackSection() {
   return (
     <Section id="stack" className="bg-indigo-950 text-white">
-      <h2 className="mb-8 text-3xl font-semibold tracking-tight sm:text-5xl">技术栈</h2>
+      <Reveal index={0}>
+        <h2 className="mb-8 text-3xl font-semibold tracking-tight sm:text-5xl">技术栈</h2>
+      </Reveal>
       <ul className="grid w-full max-w-2xl gap-3 sm:grid-cols-2">
-        {STACK_ITEMS.map((item) => (
-          <li
-            key={item}
-            className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm sm:text-base"
-          >
-            {item}
+        {STACK_ITEMS.map((item, index) => (
+          <li key={item}>
+            <Reveal index={index + 1}>
+              <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm sm:text-base">
+                {item}
+              </div>
+            </Reveal>
           </li>
         ))}
       </ul>
