@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-brand: #01acc6;
+  --color-accent: #fff830;
+  --color-ink: #021c21;
+  --color-deep: #03343c;
+  --color-panel: #044a56;
+}
+
 html,
 body,
 #root {
@@ -24,8 +32,8 @@ body {
     BlinkMacSystemFont,
     'Segoe UI',
     sans-serif;
-  color: #0f172a;
-  background: #020617;
+  color: #f4fbfc;
+  background: #021c21;
   -webkit-font-smoothing: antialiased;
 }
 

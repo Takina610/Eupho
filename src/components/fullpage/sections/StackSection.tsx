@@ -10,7 +10,7 @@ const STACK_ITEMS = [
 
 export function StackSection() {
   return (
-    <Section id="stack" className="bg-indigo-950 text-white">
+    <Section id="stack" className="bg-deep text-white">
       <Reveal index={0}>
         <h2 className="mb-8 text-3xl font-semibold tracking-tight sm:text-5xl">技术栈</h2>
       </Reveal>
@@ -18,7 +18,7 @@ export function StackSection() {
         {STACK_ITEMS.map((item, index) => (
           <li key={item}>
             <Reveal index={index + 1}>
-              <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm sm:text-base">
+              <div className="rounded-2xl border border-brand/35 bg-brand/10 px-5 py-4 text-sm sm:text-base">
                 {item}
               </div>
             </Reveal>
