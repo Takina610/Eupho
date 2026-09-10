@@ -37,6 +37,20 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.safe-pad {
+  padding-top: max(1.25rem, env(safe-area-inset-top, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+}
+
+@media (min-width: 640px) {
+  .safe-pad {
+    padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+  }
+}
+
 .reveal {
   transform: translateX(var(--enter-offset, -33vw));
   opacity: 0;
