@@ -11,7 +11,7 @@ export function Section({ id, children, className = '' }: SectionProps) {
     <section
       id={id}
       data-fullpage-section
-      className={`flex h-dvh w-full flex-col items-center justify-center overflow-hidden px-6 ${className}`.trim()}
+      className={`flex h-full w-full flex-col items-center justify-center overflow-hidden px-6 ${className}`.trim()}
     >
       {children}
     </section>

@@ -1,8 +1,8 @@
-import { useLenis } from 'lenis/react'
 import { Section } from '@/components/fullpage/Section'
+import { useFullpageGoTo } from '@/components/fullpage/FullpagePagerContext'
 
 export function CtaSection() {
-  const lenis = useLenis()
+  const goTo = useFullpageGoTo()
 
   return (
     <Section id="cta" className="bg-fuchsia-950 text-white">
@@ -12,17 +12,7 @@ export function CtaSection() {
       </p>
       <button
         type="button"
-        onClick={() => {
-          const hero = document.getElementById('hero')
-          if (!hero) {
-            return
-          }
-          if (lenis) {
-            lenis.scrollTo(hero, { offset: 0 })
-          } else {
-            hero.scrollIntoView({ behavior: 'smooth' })
-          }
-        }}
+        onClick={() => goTo(0)}
         className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-fuchsia-950 transition hover:bg-fuchsia-100"
       >
         回到顶部

@@ -1,5 +1,4 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { LenisProvider } from '@/components/lenis/LenisProvider'
 import '@/styles/app.css'
 
 export const Route = createRootRoute({
@@ -7,9 +6,5 @@ export const Route = createRootRoute({
 })
 
 function RootLayout() {
-  return (
-    <LenisProvider>
-      <Outlet />
-    </LenisProvider>
-  )
+  return <Outlet />
 }
