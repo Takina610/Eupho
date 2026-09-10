@@ -1,0 +1,58 @@
+# AGENTS.md
+
+本仓库给 Agent / 协作者的开发约定。后续改动须遵守本文与 [git-commit.md](git-commit.md)。
+
+## 1. 目录规范
+
+根目录只放工程入口与约定（`index.html`、`vite.config.ts`、`AGENTS.md`、`git-commit.md` 等）。业务代码进 `src/`，看文件夹即可分辨职责：
+
+```text
+src/
+  assets/          # 静态资源：favicon、图片、字体
+  styles/          # 全局 CSS（Tailwind、Lenis 等）
+  routes/          # 页面：TanStack 文件路由，只做组装，不堆长逻辑
+  components/      # UI，按功能分子目录
+    fullpage/      # 全屏滚动相关
+      sections/    # 每一屏独立文件
+    lenis/         # Lenis 根 Provider
+  hooks/           # 可复用 React hooks
+  lib/             # 无 UI 纯函数
+  constants/       # 文案、区块 id 等常量
+```
+
+- 页面路由文件只负责组装与接线。
+- 新增功能优先落在对应文件夹，不要在根目录或无关目录散落文件。
+- `src/routeTree.gen.ts` 由插件生成，勿手改。
+
+## 2. 文件长度与封装复用
+
+- 单文件过长（约超过 150～200 行，或已有两套独立职责）必须拆分。
+- 出现第二次相同结构（区块外壳、导航、工具函数等）必须抽成组件 / hook / `lib`，禁止复制粘贴。
+- 可复用逻辑放 `hooks/` 或 `lib/`；可复用 UI 放 `components/` 对应子目录。
+
+## 3. 开发前先查复用
+
+动手写新代码前：
+
+1. 搜索 `src/` 是否已有同类组件、hook、常量。
+2. 确认当前依赖（Lenis、TanStack Router、Tailwind 等）是否已能覆盖需求。
+3. 能复用就复用，不重复造轮子。
+
+## 4. 浏览器验收（改 UI 必做）
+
+凡改到 UI、布局、路由、滚动、favicon 等可视化行为：
+
+- 必须启动开发服务器并**真实打开浏览器**操作验收。
+- 禁止只靠读代码或单张截图就宣布完成。
+- 至少覆盖：主路径、相关路由/状态面、空态或边界（若涉及）。
+- 未跑通验收路径不算完成。
+
+## 5. 提交与推送
+
+修改完成且浏览器验收通过后：
+
+1. 运行 `git status` / `git diff`，确认未带入密钥、日志或无关文件。
+2. **一并暂存用户已有改动**（例如 `git-commit.md`、`src/assets` 中的资源）与本次实现，不要只提交 Agent 新写的文件。
+3. 严格按 [git-commit.md](git-commit.md) 的 Conventional Commits 写说明；文档与功能尽量分开提交。
+4. 提交后推送到已跟踪的 `origin`；禁止对 `main` / `master` 使用 `push --force`。
+5. 不修改 git config；不跳过 hook。
