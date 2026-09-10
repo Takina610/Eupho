@@ -4,27 +4,18 @@ import { HOME_SECTIONS } from '@/constants/homeSections'
 import { FullpageFooter } from '@/components/fullpage/FullpageFooter'
 import { FullpagePagerProvider } from '@/components/fullpage/FullpagePagerContext'
 import { FullpageScenes } from '@/components/fullpage/FullpageScenes'
-import { PageCounter } from '@/components/fullpage/PageCounter'
-import { ScrollHint } from '@/components/fullpage/ScrollHint'
-import { SeamParticles } from '@/components/fullpage/SeamParticles'
-import { StageGrid } from '@/components/fullpage/StageGrid'
-import { StageHeader } from '@/components/fullpage/StageHeader'
 import { useElementHeight } from '@/hooks/useElementHeight'
 import { useFullpagePager } from '@/hooks/useFullpagePager'
 import { EASE_OUT_QUAD_CSS } from '@/lib/easing'
-import { getSeamBounds, seamProgressToP } from '@/lib/seamWipe'
 
 export function Fullpage() {
   const rootRef = useRef<HTMLDivElement>(null)
   const footerRef = useRef<HTMLElement>(null)
   const footerHeight = useElementHeight(footerRef)
   const pager = useFullpagePager({ pageCount: HOME_SECTIONS.length, targetRef: rootRef })
-  const { forward } = getSeamBounds(pager.from, pager.to)
-  const p = seamProgressToP(pager.progress, forward)
-  const wiping = pager.from !== pager.to
 
   return (
-    <FullpagePagerProvider activeIndex={pager.activeIndex} goTo={pager.goTo}>
+    <FullpagePagerProvider goTo={pager.goTo}>
       <div ref={rootRef} className="h-dvh overflow-hidden">
         <div
           className="fullpage-shell"
@@ -53,11 +44,6 @@ export function Fullpage() {
               sections={HOME_SECTIONS}
               to={pager.to}
             />
-            <SeamParticles active={wiping && !pager.reducedMotion} p={p} />
-            <StageGrid />
-            <ScrollHint isLast={pager.activeIndex === HOME_SECTIONS.length - 1} />
-            <PageCounter direction={pager.direction} index={pager.activeIndex} />
-            <StageHeader />
           </div>
           <FullpageFooter ref={footerRef} />
         </div>
