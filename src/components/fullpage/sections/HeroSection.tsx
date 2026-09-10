@@ -14,7 +14,7 @@ export function HeroSection() {
         顺滑全屏滚动体验
       </h1>
       <p className="mt-5 max-w-xl text-center text-base text-slate-300 sm:text-lg">
-        Vite + React。滚轮一次切一屏，键盘方向键也可跳转。
+        Vite + React。滚轮一次切一屏，页面左右滑入。
       </p>
     </Section>
   )

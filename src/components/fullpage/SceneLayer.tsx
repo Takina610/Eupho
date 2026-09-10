@@ -35,7 +35,7 @@ export function SceneLayer({
 
   const visible = isActive || isLeaving
   const style: CSSProperties = {
-    transform: `translateY(${translate})`,
+    transform: `translateX(${translate})`,
     transition:
       visible && settled ? `transform ${transitionMs}ms cubic-bezier(0.77, 0, 0.18, 1)` : 'none',
     zIndex,

@@ -15,7 +15,7 @@ export function CtaSection() {
         onClick={() => goTo(0)}
         className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-fuchsia-950 transition hover:bg-fuchsia-100"
       >
-        回到顶部
+        回到首页
       </button>
     </Section>
   )

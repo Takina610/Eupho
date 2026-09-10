@@ -19,7 +19,7 @@ export function useFullpagePager({ pageCount }: UseFullpagePagerOptions) {
 
   const activeIndexRef = useRef(activeIndex)
   const isAnimatingRef = useRef(isAnimating)
-  const touchStartY = useRef<number | null>(null)
+  const touchStart = useRef<{ x: number; y: number } | null>(null)
 
   activeIndexRef.current = activeIndex
   isAnimatingRef.current = isAnimating
@@ -89,11 +89,14 @@ export function useFullpagePager({ pageCount }: UseFullpagePagerOptions) {
   useEffect(() => {
     const onWheel = (event: WheelEvent) => {
       event.preventDefault()
-      if (isAnimatingRef.current || Math.abs(event.deltaY) < WHEEL_THRESHOLD) {
+      const absX = Math.abs(event.deltaX)
+      const absY = Math.abs(event.deltaY)
+      const delta = absX > absY ? event.deltaX : event.deltaY
+      if (isAnimatingRef.current || Math.abs(delta) < WHEEL_THRESHOLD) {
         return
       }
 
-      goTo(activeIndexRef.current + (event.deltaY > 0 ? 1 : -1))
+      goTo(activeIndexRef.current + (delta > 0 ? 1 : -1))
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -103,11 +106,13 @@ export function useFullpagePager({ pageCount }: UseFullpagePagerOptions) {
       }
 
       switch (event.key) {
+        case 'ArrowRight':
         case 'ArrowDown':
         case 'PageDown':
           event.preventDefault()
           goTo(activeIndexRef.current + 1)
           break
+        case 'ArrowLeft':
         case 'ArrowUp':
         case 'PageUp':
           event.preventDefault()
@@ -127,22 +132,25 @@ export function useFullpagePager({ pageCount }: UseFullpagePagerOptions) {
     }
 
     const onTouchStart = (event: TouchEvent) => {
-      touchStartY.current = event.touches[0]?.clientY ?? null
+      const touch = event.touches[0]
+      touchStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null
     }
 
     const onTouchEnd = (event: TouchEvent) => {
-      if (touchStartY.current == null) {
+      if (touchStart.current == null) {
         return
       }
 
-      const endY = event.changedTouches[0]?.clientY
-      if (endY == null) {
-        touchStartY.current = null
+      const end = event.changedTouches[0]
+      if (!end) {
+        touchStart.current = null
         return
       }
 
-      const delta = touchStartY.current - endY
-      touchStartY.current = null
+      const deltaX = touchStart.current.x - end.clientX
+      const deltaY = touchStart.current.y - end.clientY
+      touchStart.current = null
+      const delta = Math.abs(deltaX) >= Math.abs(deltaY) ? deltaX : deltaY
       if (Math.abs(delta) < SWIPE_THRESHOLD) {
         return
       }
