@@ -1,183 +1,140 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
+import { FOOTER_MS, WIPE_MS } from '@/constants/fullpageMotion'
+import { useFullpageHash, getIndexFromHash, pushSectionHash, type GoToOptions } from '@/hooks/useFullpageHash'
+import { useFullpageInput } from '@/hooks/useFullpageInput'
+import { useSeamTransition } from '@/hooks/useSeamTransition'
+import { resolveFullpageIntent } from '@/lib/fullpageStep'
 import { prefersReducedMotion, subscribePrefersReducedMotion } from '@/lib/motion'
 
-const TRANSITION_MS = 700
-const WHEEL_THRESHOLD = 24
-const SWIPE_THRESHOLD = 48
-
-type UseFullpagePagerOptions = {
+export function useFullpagePager({
+  pageCount,
+  targetRef,
+}: {
   pageCount: number
-}
-
-export function useFullpagePager({ pageCount }: UseFullpagePagerOptions) {
+  targetRef: RefObject<HTMLElement | null>
+}) {
   const [reducedMotion, setReducedMotion] = useState(false)
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [leavingIndex, setLeavingIndex] = useState<number | null>(null)
+  const [activeIndex, setActiveIndex] = useState(getIndexFromHash)
+  const [from, setFrom] = useState(activeIndex)
+  const [to, setTo] = useState(activeIndex)
   const [direction, setDirection] = useState<1 | -1>(1)
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [settled, setSettled] = useState(true)
+  const [footerRevealed, setFooterRevealed] = useState(false)
+  const [footerLock, setFooterLock] = useState(false)
 
   const activeIndexRef = useRef(activeIndex)
-  const isAnimatingRef = useRef(isAnimating)
-  const touchStart = useRef<{ x: number; y: number } | null>(null)
+  const footerRevealedRef = useRef(footerRevealed)
+  const lockedRef = useRef(false)
+  const toRef = useRef(to)
+  const reducedMotionRef = useRef(reducedMotion)
 
   activeIndexRef.current = activeIndex
-  isAnimatingRef.current = isAnimating
+  footerRevealedRef.current = footerRevealed
+  toRef.current = to
+  reducedMotionRef.current = reducedMotion
+  lockedRef.current = from !== to || footerLock
 
   useEffect(() => subscribePrefersReducedMotion(setReducedMotion), [])
 
+  const { progress, rawT } = useSeamTransition({
+    from,
+    to,
+    durationMs: WIPE_MS,
+    reducedMotion,
+    onComplete: () => setFrom(toRef.current),
+  })
+
   const goTo = useCallback(
-    (nextIndex: number) => {
-      if (isAnimatingRef.current) {
+    (nextIndex: number, options?: GoToOptions) => {
+      if (lockedRef.current && !options?.interrupt) {
         return
       }
 
       const current = activeIndexRef.current
       const clamped = Math.min(Math.max(nextIndex, 0), pageCount - 1)
+      if (footerRevealedRef.current) {
+        setFooterRevealed(false)
+        if (clamped === current) {
+          setFooterLock(true)
+          return
+        }
+        setFooterLock(false)
+      }
+
       if (clamped === current) {
         return
       }
 
-      if (reducedMotion || prefersReducedMotion()) {
-        setActiveIndex(clamped)
-        setLeavingIndex(null)
-        setIsAnimating(false)
-        setSettled(true)
+      lockedRef.current = true
+      setDirection(clamped > current ? 1 : -1)
+      setActiveIndex(clamped)
+      activeIndexRef.current = clamped
+      if (!options?.fromHash) {
+        pushSectionHash(clamped)
+      }
+
+      if (reducedMotionRef.current || prefersReducedMotion()) {
+        setFrom(clamped)
+        setTo(clamped)
         return
       }
 
-      const nextDirection: 1 | -1 = clamped > current ? 1 : -1
-      setDirection(nextDirection)
-      setLeavingIndex(current)
-      setActiveIndex(clamped)
-      setSettled(false)
-      setIsAnimating(true)
+      setFrom(current)
+      setTo(clamped)
     },
-    [pageCount, reducedMotion],
+    [pageCount],
+  )
+
+  const step = useCallback(
+    (delta: 1 | -1) => {
+      if (lockedRef.current) {
+        return
+      }
+
+      const intent = resolveFullpageIntent({
+        current: activeIndexRef.current,
+        lastIndex: pageCount - 1,
+        delta,
+        footerRevealed: footerRevealedRef.current,
+      })
+
+      if (intent.type === 'footer') {
+        lockedRef.current = true
+        setFooterRevealed(intent.revealed)
+        setFooterLock(true)
+        return
+      }
+
+      if (intent.type === 'page') {
+        goTo(intent.index)
+      }
+    },
+    [goTo, pageCount],
   )
 
   useEffect(() => {
-    if (settled || !isAnimating) {
+    if (!footerLock) {
       return
     }
 
-    let inner = 0
-    const outer = requestAnimationFrame(() => {
-      inner = requestAnimationFrame(() => setSettled(true))
-    })
-    return () => {
-      cancelAnimationFrame(outer)
-      cancelAnimationFrame(inner)
-    }
-  }, [isAnimating, settled])
-
-  useEffect(() => {
-    if (!isAnimating) {
-      return
-    }
-
-    const delay = reducedMotion ? 0 : TRANSITION_MS
-    const timer = window.setTimeout(() => {
-      setIsAnimating(false)
-      setLeavingIndex(null)
-      setSettled(true)
-    }, delay)
-
+    const delay = reducedMotion ? 0 : FOOTER_MS
+    const timer = window.setTimeout(() => setFooterLock(false), delay)
     return () => window.clearTimeout(timer)
-  }, [isAnimating, activeIndex, reducedMotion])
+  }, [footerLock, footerRevealed, reducedMotion])
 
-  useEffect(() => {
-    const onWheel = (event: WheelEvent) => {
-      event.preventDefault()
-      const absX = Math.abs(event.deltaX)
-      const absY = Math.abs(event.deltaY)
-      const delta = absX > absY ? event.deltaX : event.deltaY
-      if (isAnimatingRef.current || Math.abs(delta) < WHEEL_THRESHOLD) {
-        return
-      }
-
-      goTo(activeIndexRef.current + (delta > 0 ? 1 : -1))
-    }
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null
-      if (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) {
-        return
-      }
-
-      switch (event.key) {
-        case 'ArrowRight':
-        case 'ArrowDown':
-        case 'PageDown':
-          event.preventDefault()
-          goTo(activeIndexRef.current + 1)
-          break
-        case 'ArrowLeft':
-        case 'ArrowUp':
-        case 'PageUp':
-          event.preventDefault()
-          goTo(activeIndexRef.current - 1)
-          break
-        case 'Home':
-          event.preventDefault()
-          goTo(0)
-          break
-        case 'End':
-          event.preventDefault()
-          goTo(pageCount - 1)
-          break
-        default:
-          break
-      }
-    }
-
-    const onTouchStart = (event: TouchEvent) => {
-      const touch = event.touches[0]
-      touchStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null
-    }
-
-    const onTouchEnd = (event: TouchEvent) => {
-      if (touchStart.current == null) {
-        return
-      }
-
-      const end = event.changedTouches[0]
-      if (!end) {
-        touchStart.current = null
-        return
-      }
-
-      const deltaX = touchStart.current.x - end.clientX
-      const deltaY = touchStart.current.y - end.clientY
-      touchStart.current = null
-      const delta = Math.abs(deltaX) >= Math.abs(deltaY) ? deltaX : deltaY
-      if (Math.abs(delta) < SWIPE_THRESHOLD) {
-        return
-      }
-
-      goTo(activeIndexRef.current + (delta > 0 ? 1 : -1))
-    }
-
-    window.addEventListener('wheel', onWheel, { passive: false })
-    window.addEventListener('keydown', onKeyDown)
-    window.addEventListener('touchstart', onTouchStart, { passive: true })
-    window.addEventListener('touchend', onTouchEnd, { passive: true })
-
-    return () => {
-      window.removeEventListener('wheel', onWheel)
-      window.removeEventListener('keydown', onKeyDown)
-      window.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('touchend', onTouchEnd)
-    }
-  }, [goTo, pageCount])
+  useFullpageInput({ lockedRef, onStep: step, onGoTo: goTo, pageCount, targetRef })
+  useFullpageHash(goTo)
 
   return {
     activeIndex,
     direction,
+    footerRevealed,
+    from,
     goTo,
-    isAnimating,
-    leavingIndex,
-    settled,
-    transitionMs: reducedMotion ? 0 : TRANSITION_MS,
+    isAnimating: from !== to || footerLock,
+    footerLock,
+    progress,
+    rawT,
+    reducedMotion,
+    to,
   }
 }

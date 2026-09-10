@@ -2,49 +2,40 @@ import type { CSSProperties, ReactNode } from 'react'
 
 type SceneLayerProps = {
   children: ReactNode
-  direction: 1 | -1
-  isActive: boolean
-  isLeaving: boolean
-  settled: boolean
-  transitionMs: number
+  isLower: boolean
+  isUpper: boolean
+  isIdleActive: boolean
+  isAriaCurrent: boolean
+  clipPath?: string
+  opacity?: number
   zIndex: number
-}
-
-function offset(direction: 1 | -1, toward: 'in' | 'out') {
-  const sign = toward === 'in' ? direction : -direction
-  return `${sign * 100}%`
+  animating: boolean
 }
 
 export function SceneLayer({
   children,
-  direction,
-  isActive,
-  isLeaving,
-  settled,
-  transitionMs,
+  isLower,
+  isUpper,
+  isIdleActive,
+  isAriaCurrent,
+  clipPath,
+  opacity,
   zIndex,
+  animating,
 }: SceneLayerProps) {
-  let translate = '0%'
-  if (isActive) {
-    translate = !settled ? offset(direction, 'in') : '0%'
-  } else if (isLeaving) {
-    translate = settled ? offset(direction, 'out') : '0%'
-  } else {
-    translate = '100%'
-  }
-
-  const visible = isActive || isLeaving
+  const visible = isIdleActive || isLower || isUpper
   const style: CSSProperties = {
-    transform: `translateX(${translate})`,
-    transition:
-      visible && settled ? `transform ${transitionMs}ms cubic-bezier(0.77, 0, 0.18, 1)` : 'none',
     zIndex,
+    opacity: isIdleActive ? 1 : opacity,
+    clipPath: isIdleActive ? 'none' : clipPath,
+    willChange: animating && visible ? 'clip-path, opacity' : undefined,
   }
 
   return (
     <div
-      aria-hidden={!isActive}
-      className={`absolute inset-0 ${isActive ? '' : 'pointer-events-none'} ${visible ? '' : 'invisible'}`.trim()}
+      aria-hidden={!isAriaCurrent}
+      className={`absolute inset-0 ${isIdleActive ? '' : 'pointer-events-none'} ${visible ? '' : 'invisible'}`.trim()}
+      data-active={visible ? 'true' : 'false'}
       style={style}
     >
       {children}
