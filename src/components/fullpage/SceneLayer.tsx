@@ -9,7 +9,6 @@ type SceneLayerProps = {
   clipPath?: string
   opacity?: number
   zIndex: number
-  animating: boolean
 }
 
 export function SceneLayer({
@@ -21,20 +20,19 @@ export function SceneLayer({
   clipPath,
   opacity,
   zIndex,
-  animating,
 }: SceneLayerProps) {
   const visible = isIdleActive || isLower || isUpper
   const style: CSSProperties = {
     zIndex,
-    opacity: isIdleActive ? 1 : opacity,
-    clipPath: isIdleActive ? 'none' : clipPath,
-    willChange: animating && visible ? 'clip-path, opacity' : undefined,
+    opacity: isIdleActive ? 1 : (opacity ?? 1),
+    clipPath: isIdleActive ? 'inset(0 0% 0 0)' : (clipPath ?? 'inset(0 100% 0 0)'),
+    willChange: 'clip-path, opacity',
   }
 
   return (
     <div
       aria-hidden={!isAriaCurrent}
-      className={`absolute inset-0 ${isIdleActive ? '' : 'pointer-events-none'} ${visible ? '' : 'invisible'}`.trim()}
+      className={`absolute inset-0 ${isIdleActive ? '' : 'pointer-events-none'}`.trim()}
       data-active={visible ? 'true' : 'false'}
       style={style}
     >

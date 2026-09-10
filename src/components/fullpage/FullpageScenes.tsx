@@ -16,8 +16,6 @@ type FullpageScenesProps = {
 }
 
 export function FullpageScenes({ sections, from, to, progress, rawT }: FullpageScenesProps) {
-  const animating = from !== to
-
   return (
     <>
       {sections.map(({ id, Component }, index) => {
@@ -26,7 +24,6 @@ export function FullpageScenes({ sections, from, to, progress, rawT }: FullpageS
         return (
           <SceneLayer
             key={id}
-            animating={animating}
             clipPath={style?.clipPath}
             isIdleActive={role.isIdleActive}
             isAriaCurrent={index === to}

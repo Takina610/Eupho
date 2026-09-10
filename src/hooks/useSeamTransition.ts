@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { easeInOutQuad } from '@/lib/easing'
 
 type UseSeamTransitionOptions = {
@@ -17,20 +17,23 @@ export function useSeamTransition({
   onComplete,
 }: UseSeamTransitionOptions) {
   const [rawT, setRawT] = useState(1)
-  const [isAnimating, setIsAnimating] = useState(false)
   const onCompleteRef = useRef(onComplete)
+  const rawTPairRef = useRef(`${from}:${to}`)
   onCompleteRef.current = onComplete
 
-  useEffect(() => {
+  const pair = `${from}:${to}`
+  const displayRawT = from === to || reducedMotion ? 1 : rawTPairRef.current !== pair ? 0 : rawT
+
+  useLayoutEffect(() => {
+    rawTPairRef.current = pair
+
     if (from === to) {
       setRawT(1)
-      setIsAnimating(false)
       return
     }
 
     if (reducedMotion) {
       setRawT(1)
-      setIsAnimating(false)
       onCompleteRef.current()
       return
     }
@@ -39,7 +42,6 @@ export function useSeamTransition({
     let watchdog = 0
     let cancelled = false
     setRawT(0)
-    setIsAnimating(true)
     const start = performance.now()
 
     const finish = () => {
@@ -50,7 +52,6 @@ export function useSeamTransition({
       cancelAnimationFrame(raf)
       window.clearTimeout(watchdog)
       setRawT(1)
-      setIsAnimating(false)
       onCompleteRef.current()
     }
 
@@ -76,11 +77,11 @@ export function useSeamTransition({
       cancelAnimationFrame(raf)
       window.clearTimeout(watchdog)
     }
-  }, [from, to, durationMs, reducedMotion])
+  }, [from, to, durationMs, reducedMotion, pair])
 
   return {
-    progress: easeInOutQuad(rawT),
-    rawT,
-    isAnimating,
+    progress: easeInOutQuad(displayRawT),
+    rawT: displayRawT,
+    isAnimating: from !== to && !reducedMotion,
   }
 }
