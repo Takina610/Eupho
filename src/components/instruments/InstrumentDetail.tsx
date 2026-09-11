@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { INSTRUMENTS, type Instrument } from '@/constants/instruments'
 
 type InstrumentDetailProps = {
@@ -10,6 +12,16 @@ type InstrumentDetailProps = {
   onOpenList: () => void
 }
 
+/**
+ * Copy-block stages: 'reveal' is the masked slide-in when the detail opens;
+ * 'exit'/'enter' is the staggered swap played when the instrument changes.
+ */
+type CopyStage = 'reveal' | 'enter' | 'exit'
+
+// Outgoing copy must be gone before the swapped-in copy mounts.
+// Keep in sync with .inst-swap-out's delays + duration in instruments.css.
+const EXIT_TOTAL_MS = 620
+
 function Chevron({ direction }: { direction: 'left' | 'right' }) {
   return (
     <svg viewBox="0 0 8 14" className="h-4 w-2.5" fill="none" aria-hidden>
@@ -19,6 +31,59 @@ function Chevron({ direction }: { direction: 'left' | 'right' }) {
         strokeWidth="1.6"
       />
     </svg>
+  )
+}
+
+function RevealCopy({ instrument }: { instrument: Instrument }) {
+  return (
+    <>
+      <div className="inst-reveal-mask">
+        <span className="inst-reveal-item text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          {instrument.name}
+        </span>
+      </div>
+      <div className="inst-reveal-mask mt-2">
+        <span
+          className="inst-reveal-item text-base font-semibold uppercase tracking-[0.22em] text-brand sm:text-lg"
+          style={{ animationDelay: '90ms' }}
+        >
+          {instrument.nameEn}
+        </span>
+      </div>
+      <div className="inst-rule my-4 max-sm:my-3" />
+      <p className="max-w-xl overflow-hidden text-sm leading-relaxed text-white/75 sm:text-base">
+        <span className="inst-reveal-item from-above" style={{ animationDelay: '180ms' }}>
+          {instrument.intro}
+        </span>
+      </p>
+    </>
+  )
+}
+
+function SwapCopy({ instrument, exiting }: { instrument: Instrument; exiting: boolean }) {
+  const delays = exiting ? ['0ms', '80ms', '160ms'] : ['0ms', '90ms', '180ms']
+  const item = exiting ? 'inst-swap-item inst-swap-out' : 'inst-swap-item inst-swap-in'
+  return (
+    <>
+      <div
+        className={`${item} text-4xl font-bold tracking-tight text-white sm:text-5xl`}
+        style={{ animationDelay: delays[0] }}
+      >
+        {instrument.name}
+      </div>
+      <div
+        className={`${item} mt-2 text-base font-semibold uppercase tracking-[0.22em] text-brand sm:text-lg`}
+        style={{ animationDelay: delays[1] }}
+      >
+        {instrument.nameEn}
+      </div>
+      <div className={`${item} inst-rule my-4 max-sm:my-3`} style={{ animationDelay: delays[1] }} />
+      <p className="max-w-xl text-sm leading-relaxed text-white/75 sm:text-base">
+        <span className={`${item} block`} style={{ animationDelay: delays[2] }}>
+          {instrument.intro}
+        </span>
+      </p>
+    </>
   )
 }
 
@@ -36,6 +101,35 @@ export function InstrumentDetail({
   onOpenList,
 }: InstrumentDetailProps) {
   const total = INSTRUMENTS.length
+  const [shownId, setShownId] = useState(instrument.id)
+  const [stage, setStage] = useState<CopyStage>('reveal')
+
+  // Prop-driven state adjustments (React's "adjust state during render" pattern):
+  // (re)opening arms the masked reveal; a switch while open arms the exit stage.
+  const [prevOpen, setPrevOpen] = useState(open)
+  if (prevOpen !== open) {
+    setPrevOpen(open)
+    setStage('reveal')
+    setShownId(instrument.id)
+  } else if (open && instrument.id !== shownId && stage !== 'exit') {
+    setStage('exit')
+  }
+
+  // The exit stage only mounts the new copy once its animation has run out.
+  useEffect(() => {
+    if (!open || stage !== 'exit' || instrument.id === shownId) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const timer = window.setTimeout(
+      () => {
+        setShownId(instrument.id)
+        setStage('enter')
+      },
+      reduced ? 0 : EXIT_TOTAL_MS,
+    )
+    return () => window.clearTimeout(timer)
+  }, [instrument.id, open, shownId, stage])
+
+  const shown = INSTRUMENTS.find((item) => item.id === shownId) ?? instrument
 
   return (
     <div
@@ -51,30 +145,16 @@ export function InstrumentDetail({
         className="absolute inset-x-0 bottom-0 h-[46vh] bg-gradient-to-t from-ink/90 via-ink/50 to-transparent sm:hidden"
       />
 
-      {/* keyed remount replays the slide-in animations on open and on instrument switch */}
+      {/* keyed remount replays the copy animations on open and on instrument switch */}
       <div
-        key={open ? instrument.id : 'closed'}
+        key={open ? `${stage}:${shownId}` : 'closed'}
         className="absolute max-sm:inset-x-6 max-sm:bottom-[13vh] sm:right-[6vw] sm:top-1/2 sm:w-[min(38rem,40vw)] sm:-translate-y-1/2"
       >
-        <div className="inst-reveal-mask">
-          <span className="inst-reveal-item text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            {instrument.name}
-          </span>
-        </div>
-        <div className="inst-reveal-mask mt-2">
-          <span
-            className="inst-reveal-item text-base font-semibold uppercase tracking-[0.22em] text-brand sm:text-lg"
-            style={{ animationDelay: '90ms' }}
-          >
-            {instrument.nameEn}
-          </span>
-        </div>
-        <div className="inst-rule my-4 max-sm:my-3" />
-        <p className="max-w-xl overflow-hidden text-sm leading-relaxed text-white/75 sm:text-base">
-          <span className="inst-reveal-item from-above" style={{ animationDelay: '180ms' }}>
-            {instrument.intro}
-          </span>
-        </p>
+        {stage === 'reveal' ? (
+          <RevealCopy instrument={shown} />
+        ) : (
+          <SwapCopy instrument={shown} exiting={stage === 'exit'} />
+        )}
       </div>
 
       <button

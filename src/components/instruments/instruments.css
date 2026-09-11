@@ -124,6 +124,65 @@
     transform 0.8s ease;
 }
 
+/*
+ * Desktop list rows: opening the detail cascades every row out to the left
+ * (top to bottom, --i is the row order); closing cascades them back in from
+ * the left via the global .reveal transition with a snappier rhythm.
+ */
+.inst-list {
+  --enter-ms: 550ms;
+  --enter-stagger: 30ms;
+}
+
+.inst-list[data-hidden] {
+  visibility: hidden;
+  transition: visibility 0s linear 0.95s;
+}
+
+.inst-list[data-hidden] .reveal {
+  transform: translateX(-3.5rem);
+  opacity: 0;
+  transition:
+    transform 0.45s cubic-bezier(0.6, 0.04, 0.98, 0.34) calc(var(--i, 0) * 22ms),
+    opacity 0.45s cubic-bezier(0.6, 0.04, 0.98, 0.34) calc(var(--i, 0) * 22ms);
+}
+
+/* Detail copy swap: the outgoing copy fades left, the new copy fades in from
+   the right; delays are set per element from InstrumentDetail. */
+.inst-swap-item {
+  opacity: 0;
+}
+
+.inst-swap-item.inst-swap-in {
+  animation: inst-swap-in 0.62s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+.inst-swap-item.inst-swap-out {
+  animation: inst-swap-out 0.45s cubic-bezier(0.6, 0.04, 0.98, 0.34) both;
+}
+
+@keyframes inst-swap-in {
+  from {
+    opacity: 0;
+    transform: translateX(2.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes inst-swap-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-2.75rem);
+  }
+}
+
 /* Hover artifact: the instrument artwork chasing the pointer below the UI layers. */
 .inst-artifact {
   position: fixed;
@@ -142,4 +201,18 @@
 .inst-artifact[data-show='true'] {
   opacity: 1;
   visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inst-list[data-hidden] .reveal {
+    transition: none;
+  }
+
+  .inst-reveal-item,
+  .inst-reveal-item.from-above,
+  .inst-swap-item {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
 }

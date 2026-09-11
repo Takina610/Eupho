@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react'
 import { Fragment } from 'react'
 
 import { Reveal } from '@/components/fullpage/Reveal'
@@ -88,17 +87,17 @@ export function InstrumentList({
 
   return (
     <>
+      {/* Desktop: opening the detail cascades the rows out to the left (see
+          .inst-list rules in instruments.css); closing cascades them back in. */}
       <nav
         aria-label="乐器列表"
-        className={`inst-panel inst-list absolute left-[clamp(1.5rem,8vw,9rem)] top-1/2 z-10 hidden w-[min(58vw,44rem)] -translate-y-1/2 sm:block ${
-          visible ? 'visible opacity-100' : 'invisible -translate-x-6 opacity-0'
-        }`}
+        data-hidden={visible ? undefined : true}
+        className="inst-panel inst-list absolute left-[clamp(1.5rem,8vw,9rem)] top-1/2 z-10 hidden w-[min(58vw,44rem)] -translate-y-1/2 sm:block"
         onMouseEnter={() => onListHoverChange(true)}
         onMouseLeave={() => {
           onListHoverChange(false)
           onPreviewEnd()
         }}
-        style={{ '--enter-stagger': '45ms' } as CSSProperties}
       >
         {groups.map(({ group, items }) => (
           <div key={group.id}>
