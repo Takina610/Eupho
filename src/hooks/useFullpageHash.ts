@@ -3,6 +3,7 @@ import { HOME_SECTIONS, type HomeSectionId } from '@/constants/homeSections'
 
 const SECTION_ID_ALIASES: Record<string, HomeSectionId> = {
   hero: 'index',
+  showcase: 'instruments',
 }
 
 export type GoToOptions = {

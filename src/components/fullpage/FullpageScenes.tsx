@@ -1,10 +1,11 @@
 import type { ComponentType } from 'react'
 import { SceneLayer } from '@/components/fullpage/SceneLayer'
+import type { SectionActiveProps } from '@/constants/homeSections'
 import { getSeamLayerRole, getSeamLayerStyle } from '@/lib/seamWipe'
 
 type SceneConfig = {
   id: string
-  Component: ComponentType
+  Component: ComponentType<SectionActiveProps>
 }
 
 type FullpageScenesProps = {
@@ -32,7 +33,7 @@ export function FullpageScenes({ sections, from, to, progress, rawT }: FullpageS
             opacity={style?.opacity}
             zIndex={role.isUpper ? 1 : 0}
           >
-            <Component />
+            <Component active={index === to} />
           </SceneLayer>
         )
       })}

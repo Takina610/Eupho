@@ -1,0 +1,145 @@
+/* Instruments section: decoration layers, AK-world-style list rows and detail reveals. */
+
+.inst-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 9rem 9rem;
+  background-position: center;
+  mask-image: radial-gradient(85% 85% at 50% 50%, #000 30%, transparent 100%);
+}
+
+.inst-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(58% 52% at 63% 46%, rgba(1, 172, 198, 0.16), transparent 72%);
+}
+
+.inst-watermark {
+  position: absolute;
+  left: clamp(1.25rem, 6vw, 6rem);
+  bottom: 0;
+  transform: translateY(52%);
+  font-weight: 900;
+  font-size: clamp(4rem, 9vw, 7rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.045);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+[data-active='true'] .inst-watermark {
+  opacity: 1;
+}
+
+/* Ghost pretext: the oversized translucent EN word that fades in at the row's right. */
+.inst-ghost {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 50%;
+  transform: translateY(50%);
+  font-weight: 900;
+  font-size: clamp(2.2rem, 5.5vh, 4rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(1, 172, 198, 0.28);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (any-hover: hover) {
+  .inst-row:hover .inst-ghost {
+    opacity: 1;
+  }
+  .inst-row:hover .inst-row-main {
+    transform: translateX(1.5rem);
+    color: #fff;
+  }
+}
+
+.inst-row-main {
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+/* Detail reveal: masked slide-in like the reference site's title/subtitle/desc. */
+.inst-reveal-mask {
+  overflow: hidden;
+}
+
+.inst-reveal-item {
+  display: block;
+  transform: translateY(110%);
+  animation: inst-slide-up 0.6s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+.inst-reveal-item.from-above {
+  transform: translateY(-110%);
+  animation-name: inst-slide-down;
+}
+
+@keyframes inst-slide-up {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes inst-slide-down {
+  from {
+    transform: translateY(-110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.inst-rule {
+  height: 1px;
+  width: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.6) 0.3rem,
+    transparent 0.3rem,
+    transparent 0.55rem
+  );
+  transition: width 0.6s ease 0.2s;
+}
+
+.inst-detail[data-open='true'] .inst-rule {
+  width: 100%;
+}
+
+.inst-panel {
+  transition:
+    opacity 0.6s ease,
+    visibility 0.6s ease,
+    transform 0.6s ease;
+}
+
+/* Short viewports: tighten the 18-row list so it never overflows the screen. */
+@media (max-height: 819px) {
+  .inst-list .inst-row {
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+  }
+  .inst-list .inst-group-header {
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+}
