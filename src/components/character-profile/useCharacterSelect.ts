@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { CHARACTERS } from '@/constants/characters'
 import {
@@ -9,8 +9,6 @@ import {
   playCharacterSwitch,
 } from '@/components/character-profile/characterSwitch'
 import { prefersReducedMotion } from '@/lib/motion'
-
-export const VISIBLE_THUMBS = 4
 
 export function useCharacterSelect() {
   const [index, setIndex] = useState(0)
@@ -64,15 +62,10 @@ export function useCharacterSelect() {
   }, [goTo])
 
   const step = useCallback((delta: 1 | -1) => {
+    const next = ((targetRef.current + delta) % count + count) % count
     goTo(targetRef.current + delta)
-  }, [goTo])
-
-  const windowStart = useMemo(() => {
-    if (count <= VISIBLE_THUMBS) {
-      return 0
-    }
-    return Math.min(Math.max(0, index - 1), count - VISIBLE_THUMBS)
-  }, [count, index])
+    return next
+  }, [count, goTo])
 
   useEffect(() => {
     for (const offset of [-1, 1, 2]) {
@@ -125,5 +118,5 @@ export function useCharacterSelect() {
     }
   }, [])
 
-  return { character, count, index, select, stageRef, step, uniqueBackdrop, windowStart }
+  return { character, count, index, select, stageRef, step, uniqueBackdrop }
 }

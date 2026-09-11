@@ -24,7 +24,7 @@ export function useFullpageInput({
 }: UseFullpageInputOptions) {
   const onStepRef = useRef(onStep)
   const onGoToRef = useRef(onGoTo)
-  const touchStart = useRef<{ x: number; y: number } | null>(null)
+  const touchStart = useRef<{ ignore: boolean; x: number; y: number } | null>(null)
   onStepRef.current = onStep
   onGoToRef.current = onGoTo
 
@@ -88,13 +88,31 @@ export function useFullpageInput({
 
     const onTouchStart = (event: TouchEvent) => {
       const touch = event.touches[0]
-      touchStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null
+      touchStart.current = touch
+        ? { ignore: isFullpageIgnored(event.target), x: touch.clientX, y: touch.clientY }
+        : null
     }
 
     const onTouchMove = (event: TouchEvent) => {
-      if (touchStart.current) {
-        event.preventDefault()
+      const start = touchStart.current
+      if (!start) {
+        return
       }
+
+      if (start.ignore) {
+        const touch = event.touches[0]
+        if (!touch) {
+          return
+        }
+        const dx = touch.clientX - start.x
+        const dy = touch.clientY - start.y
+        if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) {
+          event.preventDefault()
+        }
+        return
+      }
+
+      event.preventDefault()
     }
 
     const onTouchEnd = (event: TouchEvent) => {
@@ -111,6 +129,10 @@ export function useFullpageInput({
 
       const deltaX = start.x - end.clientX
       const deltaY = start.y - end.clientY
+      if (start.ignore && Math.abs(deltaX) >= Math.abs(deltaY)) {
+        return
+      }
+
       const delta = Math.abs(deltaX) >= Math.abs(deltaY) ? deltaX : deltaY
       if (Math.abs(delta) < SWIPE_THRESHOLD) {
         return
