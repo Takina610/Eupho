@@ -16,7 +16,7 @@ export function Fullpage() {
 
   return (
     <FullpagePagerProvider goTo={pager.goTo} setOverlayLock={pager.setOverlayLock}>
-      <div ref={rootRef} className="h-dvh overflow-hidden">
+      <div ref={rootRef} className="h-dvh overflow-clip">
         <div
           className="fullpage-shell"
           style={{
@@ -28,7 +28,7 @@ export function Fullpage() {
           }}
         >
           <div
-            className="relative h-dvh overflow-hidden touch-none"
+            className="relative h-dvh overflow-clip touch-none"
             style={
               {
                 '--enter-offset': ENTER_OFFSET,

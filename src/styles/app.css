@@ -8,11 +8,13 @@
   --color-panel: #044a56;
 }
 
+/* clip (not hidden): the root must not be a scrollable box, otherwise focus
+   scrolling can shift the whole fullpage layout and expose the footer. */
 html,
 body,
 #root {
   height: 100%;
-  overflow: hidden;
+  overflow: clip;
   scrollbar-width: none;
 }
 
