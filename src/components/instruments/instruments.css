@@ -126,25 +126,25 @@
 
 /*
  * Desktop list rows: opening the detail cascades every row out to the left
- * (top to bottom, --i is the row order); closing cascades them back in from
- * the left via the global .reveal transition with a snappier rhythm.
+ * one by one (top to bottom, --i is the row order); closing cascades them
+ * back in from the left via the global .reveal transition, same rhythm.
  */
 .inst-list {
-  --enter-ms: 550ms;
-  --enter-stagger: 30ms;
+  --enter-ms: 500ms;
+  --enter-stagger: 60ms;
 }
 
 .inst-list[data-hidden] {
   visibility: hidden;
-  transition: visibility 0s linear 0.95s;
+  transition: visibility 0s linear 1.8s;
 }
 
 .inst-list[data-hidden] .reveal {
-  transform: translateX(-3.5rem);
+  transform: translateX(-7rem);
   opacity: 0;
   transition:
-    transform 0.45s cubic-bezier(0.6, 0.04, 0.98, 0.34) calc(var(--i, 0) * 22ms),
-    opacity 0.45s cubic-bezier(0.6, 0.04, 0.98, 0.34) calc(var(--i, 0) * 22ms);
+    transform 0.4s cubic-bezier(0.6, 0.04, 0.98, 0.34) calc(var(--i, 0) * 65ms),
+    opacity 0.4s cubic-bezier(0.6, 0.04, 0.98, 0.34) calc(var(--i, 0) * 65ms);
 }
 
 /* Detail copy swap: the outgoing copy fades left, the new copy fades in from
@@ -158,7 +158,7 @@
 }
 
 .inst-swap-item.inst-swap-out {
-  animation: inst-swap-out 0.45s cubic-bezier(0.6, 0.04, 0.98, 0.34) both;
+  animation: inst-swap-out 0.4s cubic-bezier(0.33, 1, 0.68, 1) both;
 }
 
 @keyframes inst-swap-in {
