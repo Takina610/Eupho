@@ -6,7 +6,9 @@ import { PNG } from 'pngjs'
 const dir = fileURLToPath(new URL('../src/assets/instruments/', import.meta.url))
 const files = fs.readdirSync(dir).filter((f) => f.endsWith('.png')).sort()
 
-/** Near-white enclosed regions at or above this size are matte leftovers, not highlights. */
+/** Near-white enclosed regions at or above this size are matte leftovers, not highlights.
+ * NOTE: drumheads (timpani/snare/bass drum) are part of the instrument — drums are
+ * intentionally NOT in this list; only tin-plate matte between tubes/keys is removed. */
 const WHITE_COMPONENT_MIN_SIZE = {
   '01-euphonium.png': 40,
   '02-tuba.png': 40,
@@ -16,9 +18,6 @@ const WHITE_COMPONENT_MIN_SIZE = {
   '07-alto-sax.png': 40,
   '08-tenor-sax.png': 40,
   '09-bari-sax.png': 40,
-  '14-timpani.png': 40,
-  '15-snare.png': 40,
-  '16-bass-drum.png': 40,
   '17-glockenspiel.png': 300,
 }
 const DESPECKLE_MIN_SIZE = 16

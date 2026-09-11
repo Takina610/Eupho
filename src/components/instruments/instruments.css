@@ -37,8 +37,7 @@
 .inst-ghost {
   position: absolute;
   right: 0.75rem;
-  bottom: 50%;
-  transform: translateY(50%);
+  bottom: 0.2vh;
   font-weight: 900;
   font-size: clamp(2.6rem, 7vh, 5rem);
   letter-spacing: -0.02em;
@@ -143,16 +142,4 @@
 .inst-artifact[data-show='true'] {
   opacity: 1;
   visibility: visible;
-}
-
-/* Short viewports: tighten the 18-row list so it never overflows the screen. */
-@media (max-height: 919px) {
-  .inst-list .inst-row {
-    padding-top: 0.1rem;
-    padding-bottom: 0.1rem;
-  }
-  .inst-list .inst-group-header {
-    margin-top: 0.5rem;
-    margin-bottom: 0.25rem;
-  }
 }

@@ -33,23 +33,23 @@ function InstrumentRow({ instrument, selected, compact = false, onSelect, onPrev
       onMouseEnter={onPreview}
       onFocus={onPreview}
       aria-current={selected || undefined}
-      className={`inst-row group relative flex w-full items-baseline gap-3 border-b border-white/50 text-left ${
-        compact ? 'py-1.5' : 'py-[0.3rem]'
+      className={`inst-row group relative block w-full border-b border-white/50 text-left ${
+        compact ? 'py-1.5' : 'h-[3.95vh]'
       }`}
     >
       <span
-        className={`inst-row-main relative font-bold ${compact ? 'text-sm' : 'text-[clamp(1.1rem,2.5vh,1.45rem)] leading-tight'} ${
+        className={`inst-row-main relative font-bold ${compact ? 'flex items-baseline gap-3 text-sm' : 'absolute bottom-[0.55vh] left-0 flex w-full items-baseline gap-3 text-[clamp(1.2rem,2.4vh,1.65rem)] leading-none'} ${
           selected ? 'text-white' : 'text-white/55'
         }`}
       >
         {instrument.name}
-      </span>
-      <span
-        className={`inst-row-main relative font-semibold uppercase tracking-[0.12em] ${
-          compact ? 'text-[0.58rem]' : 'text-[clamp(0.72rem,1.5vh,0.95rem)]'
-        } ${selected ? 'text-white/80' : 'text-white/35'}`}
-      >
-        {instrument.nameEn}
+        <span
+          className={`inst-row-main relative font-semibold uppercase tracking-[0.12em] ${
+            compact ? 'text-[0.58rem]' : 'text-[clamp(0.78rem,1.55vh,1.05rem)]'
+          } ${selected ? 'text-white/80' : 'text-white/35'}`}
+        >
+          {instrument.nameEn}
+        </span>
       </span>
       {!compact && (
         <span className="inst-ghost hidden lg:block" aria-hidden>
@@ -63,10 +63,10 @@ function InstrumentRow({ instrument, selected, compact = false, onSelect, onPrev
 function GroupHeader({ name, nameEn, compact = false }: { name: string; nameEn: string; compact?: boolean }) {
   return (
     <div
-      className={`inst-group-header flex items-baseline gap-2 ${compact ? 'mb-0.5 mt-3' : 'mb-1 mt-4'}`}
+      className={`inst-group-header flex items-baseline gap-2 ${compact ? 'mb-0.5 mt-3' : 'mb-[0.5vh] mt-[1.3vh]'}`}
     >
-      <span className={`font-bold ${compact ? 'text-xs' : 'text-[clamp(1rem,2.2vh,1.3rem)]'} text-white/75`}>{name}</span>
-      <span className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-brand/90">
+      <span className={`font-bold ${compact ? 'text-xs' : 'text-[clamp(1.05rem,2.3vh,1.4rem)]'} text-white/75`}>{name}</span>
+      <span className="text-[0.75rem] font-semibold uppercase tracking-[0.32em] text-brand/90">
         {nameEn}
       </span>
     </div>
@@ -90,7 +90,7 @@ export function InstrumentList({
     <>
       <nav
         aria-label="乐器列表"
-        className={`inst-panel inst-list absolute left-[clamp(1.5rem,8vw,9rem)] top-1/2 z-10 hidden w-[min(56vw,42rem)] -translate-y-1/2 sm:block ${
+        className={`inst-panel inst-list absolute left-[clamp(1.5rem,8vw,9rem)] top-1/2 z-10 hidden w-[min(58vw,44rem)] -translate-y-1/2 sm:block ${
           visible ? 'visible opacity-100' : 'invisible -translate-x-6 opacity-0'
         }`}
         onMouseEnter={() => onListHoverChange(true)}

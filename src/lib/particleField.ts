@@ -11,7 +11,10 @@ const SCATTER_JITTER = 100
 /** AK "SPREAD" mode: particles flee the pointer, then ease back into the shape. */
 const REPEL_STRENGTH = -100
 /** Frames a particle waits before its alpha starts easing in — the shape refines in waves. */
-const REVEAL_SPREAD = 170
+const REVEAL_SPREAD = 200
+/** Within this distance of the target the approach eases into a slow final settle. */
+const SETTLE_DISTANCE = 90
+const SETTLE_FACTOR = 0.22
 /** Curved approach: perpendicular sinusoid while a particle is still far from its target. */
 const WOBBLE_AMPLITUDE = 16
 const WOBBLE_RANGE = 320
@@ -42,6 +45,7 @@ export class ParticleField {
   private speeds: Float32Array
   private reveals: Float32Array
   private phases: Float32Array
+  private sEffCache: Float32Array
   private targets: Float32Array | null = null
   private targetCount = 0
   private transform: ParticleTransform = { scale: 1, x: 0, y: 0 }
@@ -55,7 +59,7 @@ export class ParticleField {
   private flySpeeds: Float32Array
   private flyLives: Float32Array
 
-  constructor({ count, flyCount = 0, view, sizeRange = [1.5, 2.8], speedRange = [30, 60] }: FieldOptions) {
+  constructor({ count, flyCount = 0, view, sizeRange = [1.5, 2.8], speedRange = [40, 80] }: FieldOptions) {
     this.count = count
     this.total = count + flyCount
     this.flyCount = flyCount
@@ -66,6 +70,7 @@ export class ParticleField {
     this.speeds = new Float32Array(count)
     this.reveals = new Float32Array(count)
     this.phases = new Float32Array(count)
+    this.sEffCache = new Float32Array(count)
     this.flySpeeds = new Float32Array(flyCount)
     this.flyLives = new Float32Array(flyCount)
 
@@ -183,6 +188,10 @@ export class ParticleField {
           Math.min(dist / WOBBLE_RANGE, 1)
         tx += (-dy / dist) * wob
         ty += (dx / dist) * wob
+        // The final settle crawls: drop most of the speed once close to the target.
+        this.sEffCache[i] = s * (SETTLE_FACTOR + (1 - SETTLE_FACTOR) * Math.min(dist / SETTLE_DISTANCE, 1))
+      } else {
+        this.sEffCache[i] = s
       }
 
       // Staggered reveal: alpha only starts easing in once this particle's turn arrives.
@@ -191,8 +200,9 @@ export class ParticleField {
         ta = 0
       }
 
-      positions[px] += (tx - positions[px]) * s
-      positions[px + 1] += (ty - positions[px + 1]) * s
+      const se = this.sEffCache[i]
+      positions[px] += (tx - positions[px]) * se
+      positions[px + 1] += (ty - positions[px + 1]) * se
       alphas[i] += (ta - alphas[i]) * s
 
       if (pointer.active) {
