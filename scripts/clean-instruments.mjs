@@ -6,19 +6,23 @@ import { PNG } from 'pngjs'
 const dir = fileURLToPath(new URL('../src/assets/instruments/', import.meta.url))
 const files = fs.readdirSync(dir).filter((f) => f.endsWith('.png')).sort()
 
-/** Near-white enclosed regions at or above this size are matte leftovers, not highlights.
- * NOTE: drumheads (timpani/snare/bass drum) are part of the instrument — drums are
- * intentionally NOT in this list; only tin-plate matte between tubes/keys is removed. */
-const WHITE_COMPONENT_MIN_SIZE = {
-  '01-euphonium.png': 40,
-  '02-tuba.png': 40,
-  '04-trumpet.png': 300,
-  '05-trombone.png': 40,
-  '06-horn.png': 40,
-  '07-alto-sax.png': 40,
-  '08-tenor-sax.png': 40,
-  '09-bari-sax.png': 40,
-  '17-glockenspiel.png': 300,
+/** White-region removal rules.
+ *  min: remove matte components at or above this size (tubing/keying matte).
+ *  max: drums — the head is part of the instrument; only strip components BELOW this size.
+ *  keepLargest: keep only the biggest white component (the head), strip everything else. */
+const WHITE_COMPONENT_RULES = {
+  '01-euphonium.png': { min: 40 },
+  '02-tuba.png': { min: 40 },
+  '04-trumpet.png': { min: 300 },
+  '05-trombone.png': { min: 40 },
+  '06-horn.png': { min: 40 },
+  '07-alto-sax.png': { min: 40 },
+  '08-tenor-sax.png': { min: 40 },
+  '09-bari-sax.png': { min: 40 },
+  '14-timpani.png': { max: 400 },
+  '15-snare.png': { max: 250 },
+  '16-bass-drum.png': { keepLargest: true },
+  '17-glockenspiel.png': { min: 300 },
 }
 const DESPECKLE_MIN_SIZE = 16
 /** Matte white is slightly off-white here: low saturation and a high minimum channel. */
@@ -73,16 +77,23 @@ for (const file of files) {
   }
 
   let removedWhite = 0
-  // 1) matte-white enclosed regions in configured images, and any border-touching white elsewhere
+  // 1) matte-white removal per-file rule, plus any border-touching white elsewhere
   const whiteComps = components(nearWhite, w, h)
-  const minSize = WHITE_COMPONENT_MIN_SIZE[file]
-  for (const comp of whiteComps) {
+  const rule = WHITE_COMPONENT_RULES[file]
+  const keepIdx = rule?.keepLargest
+    ? whiteComps.reduce((best, c, idx) => (c.length > whiteComps[best].length ? idx : best), 0)
+    : -1
+  whiteComps.forEach((comp, idx) => {
     const touchesBorder = comp.some((p) => {
       const x = p % w
       const y = (p / w) | 0
       return x === 0 || y === 0 || x === w - 1 || y === h - 1
     })
-    const bogus = (minSize != null && comp.length >= minSize) || (touchesBorder && comp.length >= 6)
+    let bogus = false
+    if (rule?.keepLargest) bogus = idx !== keepIdx && comp.length >= 6
+    else if (rule?.max != null) bogus = comp.length < rule.max
+    else if (rule?.min != null) bogus = comp.length >= rule.min
+    else bogus = touchesBorder && comp.length >= 6
     if (bogus) {
       for (const p of comp) {
         const i = p * 4
@@ -108,7 +119,7 @@ for (const file of files) {
         }
       }
     }
-  }
+  })
 
   // 2) despeckle: drop tiny isolated opaque islands
   let specks = 0

@@ -2,12 +2,14 @@ import { useCallback, useRef, useState } from 'react'
 
 /**
  * A particle shape sampled from a source image: normalized coordinates centered on the
- * artwork, y pointing up, height mapped to 1 (so width spans [-aspect/2, aspect/2]).
+ * artwork's opaque bounding box, y pointing up, height mapped to 1. `spanX` is the
+ * horizontal extent of that box (for fitting long instruments into narrow viewports).
  * Layout: [x, y, alpha] per point.
  */
 export type ShapeModel = {
   points: Float32Array
   aspect: number
+  spanX: number
 }
 
 const MAX_POINTS = 7000
@@ -42,21 +44,34 @@ async function sampleImage(src: string): Promise<ShapeModel> {
   const { data } = context.getImageData(0, 0, width, height)
 
   const collected: number[] = []
-  for (let y = 0; y < height; y += SAMPLE_STEP) {
-    for (let x = 0; x < width; x += SAMPLE_STEP) {
+  let minNX = Infinity
+  let maxNX = -Infinity
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
       const alpha = data[(y * width + x) * 4 + 3]
       if (alpha < ALPHA_THRESHOLD) continue
-      // height-normalized, centered, y up
-      collected.push((x + SAMPLE_STEP / 2 - width / 2) / height)
+      // height-normalized, y up
+      const nx = (x + SAMPLE_STEP / 2 - width / 2) / height
+      if (nx < minNX) minNX = nx
+      if (nx > maxNX) maxNX = nx
+      collected.push(nx)
       collected.push((height / 2 - y - SAMPLE_STEP / 2) / height)
       collected.push(alpha / 255)
     }
   }
+  if (!Number.isFinite(minNX)) {
+    return { points: new Float32Array(0), aspect: width / height, spanX: 0 }
+  }
 
   const all = Float32Array.from(collected)
+  const spanX = maxNX - minNX
+  // recenter on the opaque bounding box so long instruments stay centered when scaled
+  const centerX = (minNX + maxNX) / 2
+  for (let i = 0; i < all.length; i += 3) all[i] -= centerX
+
   const tripletCount = Math.floor(all.length / 3)
   if (tripletCount === 0) {
-    return { points: new Float32Array(0), aspect: width / height }
+    return { points: new Float32Array(0), aspect: width / height, spanX }
   }
 
   if (tripletCount > MAX_POINTS) {
@@ -69,11 +84,11 @@ async function sampleImage(src: string): Promise<ShapeModel> {
       keep[i * 3 + 2] = all[src + 2]
     }
     shuffleTriplets(keep, MAX_POINTS)
-    return { points: keep, aspect: width / height }
+    return { points: keep, aspect: width / height, spanX }
   }
 
   shuffleTriplets(all, tripletCount)
-  return { points: all.subarray(0, tripletCount * 3), aspect: width / height }
+  return { points: all.subarray(0, tripletCount * 3), aspect: width / height, spanX }
 }
 
 /**

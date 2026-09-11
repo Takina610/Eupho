@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { usePointerTracker } from '@/hooks/usePointerTracker'
 import type { ShapeModel } from '@/hooks/useInstrumentModel'
@@ -37,6 +37,14 @@ export function ParticleStage({
 
   const pointer = usePointerTracker(canvasRef, active)
 
+  // Long instruments must fit narrow viewports: cap the scale so the cloud's opaque
+  // width never exceeds ~86% of the screen.
+  const fittedTransform = useMemo<ParticleTransform>(() => {
+    if (!shape || shape.spanX <= 0.05) return transform
+    const maxScale = (width * 0.86) / shape.spanX
+    return maxScale >= transform.scale ? transform : { ...transform, scale: maxScale }
+  }, [shape, transform, width])
+
   // One-time init: create the GL renderer and the field sized to the first viewport.
   useEffect(() => {
     const canvas = canvasRef.current
@@ -68,13 +76,13 @@ export function ParticleStage({
   }, [width, height])
 
   useEffect(() => {
-    fieldRef.current?.setTransform(transform)
-  }, [transform])
+    fieldRef.current?.setTransform(fittedTransform)
+  }, [fittedTransform])
 
   // New shape (or re-entering the section) → fresh targets, AK appear()-style.
   useEffect(() => {
-    fieldRef.current?.setShape(shape, transform)
-  }, [shape, transform, active])
+    fieldRef.current?.setShape(shape, fittedTransform)
+  }, [shape, fittedTransform, active])
 
   useEffect(() => {
     const field = fieldRef.current
@@ -116,8 +124,8 @@ export function ParticleStage({
           className="max-h-[52vh] opacity-70"
           style={{
             position: 'absolute',
-            left: `calc(50% + ${transform.x}px)`,
-            top: `calc(50% - ${transform.y}px)`,
+            left: `calc(50% + ${fittedTransform.x}px)`,
+            top: `calc(50% - ${fittedTransform.y}px)`,
             transform: 'translate(-50%, -50%)',
           }}
         />

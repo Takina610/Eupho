@@ -86,18 +86,18 @@ export function InstrumentsSection({ active = false }: { active?: boolean }) {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [detailOpen, step, markInteracted])
 
-  // Particle cloud placement, mirroring the reference: right of centre in the list,
-  // sliding left behind the copy in the detail view; phones keep it on top.
+  // Particle cloud placement: tucked close to the copy on both sides of the screen —
+  // beside the list in list mode, sliding behind the copy in the detail view.
   const transform = useMemo<ParticleTransform>(() => {
     const scale = isNarrow
-      ? Math.min(420, Math.max(240, height * 0.48))
-      : Math.min(800, Math.max(380, height * 0.72))
+      ? Math.min(480, Math.max(280, height * 0.55))
+      : Math.min(860, Math.max(400, height * 0.76))
     if (isNarrow) {
       return { scale, x: 0, y: height * (detailOpen ? 0.15 : 0.18) }
     }
     return detailOpen
-      ? { scale: scale * 0.85, x: -width * 0.16, y: height * 0.04 }
-      : { scale, x: width * 0.17, y: height * 0.02 }
+      ? { scale: scale * 0.9, x: -width * 0.1, y: height * 0.04 }
+      : { scale, x: width * 0.1, y: height * 0.02 }
   }, [detailOpen, height, isNarrow, width])
 
   const openInstrument = useCallback(
