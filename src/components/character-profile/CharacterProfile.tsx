@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, type CSSProperties, type KeyboardEvent } from 'react'
+import { useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { CHARACTERS } from '@/constants/characters'
 import { fitWatermark } from '@/components/character-profile/characterSwitch'
 import { useCharacterSelect, VISIBLE_THUMBS } from '@/components/character-profile/useCharacterSelect'
@@ -20,9 +20,28 @@ function Chevron() {
   )
 }
 
+function ThumbMark() {
+  return (
+    <svg className="cp__thumb-mark" viewBox="0 0 32 32" aria-hidden>
+      <defs>
+        <linearGradient id="cp-fold-face" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#e7fcff" />
+          <stop offset="38%" stopColor="#4ec8dc" />
+          <stop offset="100%" stopColor="#01acc6" />
+        </linearGradient>
+      </defs>
+      <polygon className="cp__thumb-mark-under" points="0,0 32,32 25.5,32 0,6.5" />
+      <polygon points="0,0 32,0 32,32" fill="url(#cp-fold-face)" />
+      <polyline points="1,1 31,1 31,31" fill="none" stroke="#f7feff" strokeWidth="1.35" />
+    </svg>
+  )
+}
+
 export function CharacterProfile() {
   const { character, count, index, select, stageRef, step, uniqueBackdrop, windowStart } = useCharacterSelect()
   const watermarkRef = useRef<HTMLParagraphElement>(null)
+  const [flashId, setFlashId] = useState<string | null>(null)
+  const [flashGen, setFlashGen] = useState(0)
   const watermark = watermarkOf(character.nameEn)
   const fallbackClass = uniqueBackdrop ? '' : ' cp--fallback'
 
@@ -46,16 +65,29 @@ export function CharacterProfile() {
     return () => observer.disconnect()
   }, [stageRef, watermark])
 
+  const pingFlash = (id: string) => {
+    setFlashId(id)
+    setFlashGen((n) => n + 1)
+  }
+
   const onThumbsKey = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
       event.preventDefault()
       event.stopPropagation()
+      const next = CHARACTERS[(index + 1) % count]
+      if (next) {
+        pingFlash(next.id)
+      }
       step(1)
       return
     }
     if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
       event.preventDefault()
       event.stopPropagation()
+      const prev = CHARACTERS[(index - 1 + count) % count]
+      if (prev) {
+        pingFlash(prev.id)
+      }
       step(-1)
     }
   }
@@ -103,6 +135,7 @@ export function CharacterProfile() {
             <div className="cp__thumbs-track">
               {CHARACTERS.map((item, itemIndex) => {
                 const active = itemIndex === index
+                const flashing = item.id === flashId
                 return (
                   <button
                     key={item.id}
@@ -110,9 +143,29 @@ export function CharacterProfile() {
                     className={`cp__thumb${active ? ' is-active' : ''}`}
                     aria-current={active ? true : undefined}
                     aria-label={item.name}
-                    onClick={() => select(itemIndex)}
+                    style={
+                      {
+                        '--cp-focus-x': `${item.focus[0]}%`,
+                        '--cp-focus-y': `${item.focus[1]}%`,
+                        '--cp-focus-scale': String(item.focus[2]),
+                      } as CSSProperties
+                    }
+                    onClick={() => {
+                      pingFlash(item.id)
+                      select(itemIndex)
+                    }}
                   >
-                    <img src={item.image} alt="" draggable={false} />
+                    <span className="cp__thumb-mat" aria-hidden />
+                    <span className="cp__thumb-clip">
+                      <span className="cp__thumb-well">
+                        <span className="cp__thumb-figure">
+                          <img src={item.image} alt="" draggable={false} />
+                        </span>
+                        <span className="cp__thumb-name">{item.name}</span>
+                        {flashing ? <span key={flashGen} className="cp__thumb-flash" aria-hidden /> : null}
+                      </span>
+                    </span>
+                    {active ? <ThumbMark /> : null}
                   </button>
                 )
               })}

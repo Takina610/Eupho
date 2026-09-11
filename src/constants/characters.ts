@@ -36,6 +36,8 @@ export type Character = {
   grade: string
   cv: string
   synopsis: string
+  /** roster card: face point in the standing art (x%, y%) and figure width / well width */
+  focus: readonly [number, number, number]
 }
 
 function member(entry: Omit<Character, 'backdrop'> & { backdrop?: string }): Character {
@@ -45,6 +47,7 @@ function member(entry: Omit<Character, 'backdrop'> & { backdrop?: string }): Cha
 export const CHARACTERS: Character[] = [
   member({
     id: 'kumiko',
+    focus: [33, 10, 2.10],
     image: imageKumiko,
     backdrop: backdropKumiko,
     name: '黄前久美子',
@@ -56,6 +59,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'hazuki',
+    focus: [70, 13, 2.32],
     image: imageHazuki,
     backdrop: backdropHazuki,
     name: '加藤叶月',
@@ -67,6 +71,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'sapphire',
+    focus: [30, 24, 2.38],
     image: imageSapphire,
     backdrop: backdropSapphire,
     name: '川岛绿辉',
@@ -78,6 +83,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'reina',
+    focus: [44, 12, 2.32],
     image: imageReina,
     backdrop: backdropReina,
     name: '高坂丽奈',
@@ -89,6 +95,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'mayu',
+    focus: [52, 13, 2.25],
     image: imageMayu,
     name: '黑江真由',
     nameEn: 'Mayu Kuroe',
@@ -99,6 +106,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'syuichi',
+    focus: [68, 9, 2.22],
     image: imageSyuichi,
     name: '冢本秀一',
     nameEn: 'Shuichi Tsukamoto',
@@ -109,6 +117,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'tsubame',
+    focus: [58, 13, 2.80],
     image: imageTsubame,
     name: '釜屋燕',
     nameEn: 'Tsubame Kamaya',
@@ -119,6 +128,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'kanade',
+    focus: [71, 13, 2.00],
     image: imageKanade,
     name: '久石奏',
     nameEn: 'Kanade Hisaishi',
@@ -129,6 +139,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'mirei',
+    focus: [50, 11, 2.90],
     image: imageMirei,
     name: '铃木美玲',
     nameEn: 'Mirei Suzuki',
@@ -139,6 +150,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'satsuki',
+    focus: [50, 18, 2.22],
     image: imageSatsuki,
     name: '铃木五月',
     nameEn: 'Satsuki Suzuki',
@@ -149,6 +161,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'motomu',
+    focus: [38, 22, 2.28],
     image: imageMotomu,
     name: '月永求',
     nameEn: 'Motomu Tsukinaga',
@@ -159,6 +172,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'ririka',
+    focus: [33, 13, 2.35],
     image: imageRirika,
     name: '剑崎梨梨花',
     nameEn: 'Ririka Kenzaki',
@@ -169,6 +183,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'suzume',
+    focus: [62, 32, 2.48],
     image: imageSuzume,
     name: '釜屋雀',
     nameEn: 'Suzume Kamaya',
@@ -179,6 +194,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'yayoi',
+    focus: [28, 12, 2.52],
     image: imageYayoi,
     name: '上石弥生',
     nameEn: 'Yayoi Ageishi',
@@ -189,6 +205,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'kaho',
+    focus: [66, 12, 2.50],
     image: imageKaho,
     name: '针谷佳穗',
     nameEn: 'Kaho Hariya',
@@ -199,6 +216,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'sari',
+    focus: [59, 13, 2.60],
     image: imageSari,
     name: '义井沙里',
     nameEn: 'Sari Yoshii',
@@ -209,6 +227,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'asuka',
+    focus: [68, 12, 2.38],
     image: imageAsuka,
     name: '田中明日香',
     nameEn: 'Asuka Tanaka',
@@ -219,6 +238,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'haruka',
+    focus: [56, 12, 2.50],
     image: imageHaruka,
     name: '小笠原晴香',
     nameEn: 'Haruka Ogasawara',
@@ -229,6 +249,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'kaori',
+    focus: [44, 12, 2.40],
     image: imageKaori,
     name: '中世古香织',
     nameEn: 'Kaori Nakaseko',
@@ -239,6 +260,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'natsuki',
+    focus: [50, 12, 1.90],
     image: imageNatsuki,
     name: '中川夏纪',
     nameEn: 'Natsuki Nakagawa',
@@ -249,6 +271,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'yuko',
+    focus: [55, 12, 2.50],
     image: imageYuko,
     name: '吉川优子',
     nameEn: 'Yuko Yoshikawa',
@@ -259,6 +282,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'mizore',
+    focus: [57, 11, 2.40],
     image: imageMizore,
     name: '铠冢霙',
     nameEn: 'Mizore Yoroizuka',
@@ -269,6 +293,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'nozomi',
+    focus: [50, 11, 2.18],
     image: imageNozomi,
     name: '伞木希美',
     nameEn: 'Nozomi Kasaki',
