@@ -15,7 +15,7 @@ export function Fullpage() {
   const pager = useFullpagePager({ pageCount: HOME_SECTIONS.length, targetRef: rootRef })
 
   return (
-    <FullpagePagerProvider goTo={pager.goTo}>
+    <FullpagePagerProvider goTo={pager.goTo} setOverlayLock={pager.setOverlayLock}>
       <div ref={rootRef} className="h-dvh overflow-hidden">
         <div
           className="fullpage-shell"

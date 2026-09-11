@@ -23,17 +23,27 @@ export function useFullpagePager({
 
   const activeIndexRef = useRef(activeIndex)
   const footerRevealedRef = useRef(footerRevealed)
+  const footerLockRef = useRef(footerLock)
   const lockedRef = useRef(false)
+  const fromRef = useRef(from)
   const toRef = useRef(to)
   const reducedMotionRef = useRef(reducedMotion)
+  const overlayLockRef = useRef(false)
 
   activeIndexRef.current = activeIndex
   footerRevealedRef.current = footerRevealed
+  footerLockRef.current = footerLock
+  fromRef.current = from
   toRef.current = to
   reducedMotionRef.current = reducedMotion
-  lockedRef.current = from !== to || footerLock
+  lockedRef.current = from !== to || footerLock || overlayLockRef.current
 
   useEffect(() => subscribePrefersReducedMotion(setReducedMotion), [])
+
+  const setOverlayLock = useCallback((locked: boolean) => {
+    overlayLockRef.current = locked
+    lockedRef.current = fromRef.current !== toRef.current || footerLockRef.current || locked
+  }, [])
 
   const { progress, rawT } = useSeamTransition({
     from,
@@ -136,5 +146,6 @@ export function useFullpagePager({
     rawT,
     reducedMotion,
     to,
+    setOverlayLock,
   }
 }

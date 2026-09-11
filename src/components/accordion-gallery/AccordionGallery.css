@@ -34,16 +34,22 @@
   outline: none;
   transform-style: preserve-3d;
   transform-origin: center center;
-  background: #021c21;
-  box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.8);
   will-change: flex-grow, transform;
   -webkit-tap-highlight-color: transparent;
 }
 
 .ag-panel:focus-visible {
-  box-shadow:
-    0 0 0 2px var(--ag-accent),
-    0 10px 30px -18px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 0 2px var(--ag-accent);
+}
+
+.ag-panel__insert {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background: #021c21;
+  box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.8);
+  will-change: transform;
 }
 
 .ag-panel__frame {
@@ -124,6 +130,14 @@
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
 }
 
+.accordion-gallery.is-recessed {
+  pointer-events: none;
+}
+
+.accordion-gallery.is-recessed .ag-panel {
+  opacity: 0.38;
+}
+
 /* Keep in sync with STACK_QUERY in AccordionGallery.tsx */
 @media (max-width: 640px) {
   .accordion-gallery {
@@ -133,7 +147,6 @@
 
   .ag-panel {
     min-height: 44px;
-    transform: none !important;
   }
 
   .accordion-gallery .ag-panel__media {
@@ -150,6 +163,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ag-panel,
+  .ag-panel__insert,
   .ag-panel__media {
     will-change: auto;
   }

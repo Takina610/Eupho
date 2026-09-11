@@ -1,9 +1,12 @@
 import { useState, type CSSProperties, type MouseEvent } from 'react'
+import { useAccordionGalleryIntro } from '@/components/accordion-gallery/useAccordionGalleryIntro'
 import { useAccordionGalleryLayout } from '@/components/accordion-gallery/useAccordionGalleryLayout'
+import { useAccordionGalleryPointer } from '@/components/accordion-gallery/useAccordionGalleryPointer'
 import { useMatchMedia } from '@/hooks/useMatchMedia'
 import '@/components/accordion-gallery/AccordionGallery.css'
 
 const STACK_QUERY = '(max-width: 640px)'
+const FINE_HOVER_QUERY = '(hover: hover) and (pointer: fine)'
 
 export type AccordionGalleryItem = {
   image: string
@@ -34,6 +37,8 @@ type AccordionGalleryProps = {
   showLabels?: boolean
   grayscale?: boolean
   className?: string
+  recessed?: boolean
+  onOpenActive?: (index: number) => void
 }
 
 export function AccordionGallery({
@@ -56,11 +61,23 @@ export function AccordionGallery({
   showLabels = true,
   grayscale = true,
   className = '',
+  recessed = false,
+  onOpenActive,
 }: AccordionGalleryProps) {
   const stackOnNarrow = useMatchMedia(STACK_QUERY)
+  const fineHover = useMatchMedia(FINE_HOVER_QUERY)
+  const hoverExpand = trigger === 'hover' && fineHover && !stackOnNarrow
   const vertical = orientation === 'vertical' || stackOnNarrow
   const count = items.length
   const [active, setActive] = useState(() => Math.min(Math.max(defaultIndex, 0), Math.max(count - 1, 0)))
+  const { handleEnter, handlePointerDown, handleClick, handleFocus, handleKeyDown } = useAccordionGalleryPointer({
+    active,
+    setActive,
+    recessed,
+    hoverExpand,
+    duration,
+    onOpenActive,
+  })
   const { rootRef, panelRefs, mediaRefs, barRefs, textRefs } = useAccordionGalleryLayout({
     active,
     count,
@@ -75,26 +92,18 @@ export function AccordionGallery({
     stagger,
     gap,
   })
+  const { insertRefs } = useAccordionGalleryIntro({
+    rootRef,
+    vertical,
+    count,
+  })
 
   const heightStyle = typeof height === 'number' ? `${vertical ? Math.round(height * 1.6) : height}px` : height
-
-  const handleEnter = (index: number) => {
-    if (trigger === 'hover') {
-      setActive(index)
-    }
-  }
-
-  const handleClick = (index: number, event: MouseEvent<HTMLElement>) => {
-    if (index !== active) {
-      event.preventDefault()
-      setActive(index)
-    }
-  }
 
   return (
     <div
       ref={rootRef}
-      className={`accordion-gallery${vertical ? ' accordion-gallery--vertical' : ''}${className ? ` ${className}` : ''}`}
+      className={`accordion-gallery${vertical ? ' accordion-gallery--vertical' : ''}${recessed ? ' is-recessed' : ''}${className ? ` ${className}` : ''}`}
       style={
         {
           '--ag-accent': accentColor,
@@ -121,14 +130,23 @@ export function AccordionGallery({
             className={`ag-panel${isActive ? ' ag-panel--active' : ''}`}
             style={{ borderRadius: `${radius}px` }}
             href={item.link || undefined}
+            onPointerDown={() => handlePointerDown(index)}
             onClick={(event: MouseEvent<HTMLElement>) => handleClick(index, event)}
             onMouseEnter={() => handleEnter(index)}
-            onFocus={() => setActive(index)}
+            onFocus={(event) => handleFocus(index, event)}
+            onKeyDown={(event) => handleKeyDown(index, event)}
             role="listitem"
-            tabIndex={0}
+            tabIndex={recessed ? -1 : 0}
+            aria-haspopup="dialog"
             aria-current={isActive ? 'true' : undefined}
             aria-label={item.label}
           >
+            <span
+              className="ag-panel__insert"
+              ref={(el) => {
+                insertRefs.current[index] = el
+              }}
+            >
             <span className="ag-panel__frame">
               <span
                 className="ag-panel__media"
@@ -163,6 +181,7 @@ export function AccordionGallery({
                 </span>
               </span>
             ) : null}
+            </span>
           </Tag>
         )
       })}
