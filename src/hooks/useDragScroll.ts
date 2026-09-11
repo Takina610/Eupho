@@ -90,7 +90,6 @@ export function useDragScroll({
     let lastX = 0
     let velocity = 0
 
-    const grabbing = (on: boolean) => viewport.parentElement?.classList.toggle('is-dragging', on)
     const unbind = () => {
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerup', onUp)
@@ -124,7 +123,6 @@ export function useDragScroll({
           finish()
           return
         }
-        grabbing(true)
       }
       if (axis !== 'x') {
         return
@@ -140,7 +138,6 @@ export function useDragScroll({
     }
 
     const finish = () => {
-      grabbing(false)
       mode = null
       axis = null
       unbind()
@@ -190,7 +187,6 @@ export function useDragScroll({
       }
       tweenRef.current?.kill()
       mode = 'progress'
-      grabbing(true)
       bind()
       const { knobWidth, max, travel } = knobLayout(track, viewport, progress)
       paint(offsetFromProgressX(event.clientX, progress, knobWidth, travel, max))
@@ -220,7 +216,6 @@ export function useDragScroll({
       viewport.removeEventListener('pointerdown', onTrackDown)
       viewport.removeEventListener('click', onClickCapture, true)
       progress?.removeEventListener('pointerdown', onProgressDown)
-      grabbing(false)
     }
   }, [progressRef, trackRef, viewportRef])
 

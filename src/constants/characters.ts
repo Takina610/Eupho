@@ -21,10 +21,18 @@ import imageNatsuki from '@/assets/characters/20-natsuki.webp'
 import imageYuko from '@/assets/characters/21-yuko.webp'
 import imageMizore from '@/assets/characters/22-mizore.webp'
 import imageNozomi from '@/assets/characters/23-nozomi.webp'
+import backdropAsuka from '@/assets/characters/backend/asuka.png'
 import backdropHazuki from '@/assets/characters/backend/hazuki.png'
+import backdropKanade from '@/assets/characters/backend/kanade.png'
 import backdropKumiko from '@/assets/characters/backend/kumiko.png'
+import backdropMirei from '@/assets/characters/backend/mirei.png'
+import backdropMotomu from '@/assets/characters/backend/motomu.png'
+import backdropNatsuki from '@/assets/characters/backend/natsuki.png'
 import backdropReina from '@/assets/characters/backend/reina.png'
 import backdropSapphire from '@/assets/characters/backend/sapphire.png'
+import backdropSatsuki from '@/assets/characters/backend/satsuki.png'
+import backdropSyuichi from '@/assets/characters/backend/syuichi.png'
+import backdropYuko from '@/assets/characters/backend/yuko.png'
 
 export type Character = {
   id: string
@@ -108,6 +116,7 @@ export const CHARACTERS: Character[] = [
     id: 'syuichi',
     focus: [68, 9, 2.22],
     image: imageSyuichi,
+    backdrop: backdropSyuichi,
     name: '冢本秀一',
     nameEn: 'Shuichi Tsukamoto',
     part: '长号',
@@ -130,6 +139,7 @@ export const CHARACTERS: Character[] = [
     id: 'kanade',
     focus: [71, 13, 2.00],
     image: imageKanade,
+    backdrop: backdropKanade,
     name: '久石奏',
     nameEn: 'Kanade Hisaishi',
     part: '上低音号',
@@ -141,6 +151,7 @@ export const CHARACTERS: Character[] = [
     id: 'mirei',
     focus: [50, 11, 2.90],
     image: imageMirei,
+    backdrop: backdropMirei,
     name: '铃木美玲',
     nameEn: 'Mirei Suzuki',
     part: '大号',
@@ -152,6 +163,7 @@ export const CHARACTERS: Character[] = [
     id: 'satsuki',
     focus: [50, 18, 2.22],
     image: imageSatsuki,
+    backdrop: backdropSatsuki,
     name: '铃木五月',
     nameEn: 'Satsuki Suzuki',
     part: '大号',
@@ -163,6 +175,7 @@ export const CHARACTERS: Character[] = [
     id: 'motomu',
     focus: [38, 22, 2.28],
     image: imageMotomu,
+    backdrop: backdropMotomu,
     name: '月永求',
     nameEn: 'Motomu Tsukinaga',
     part: '低音提琴',
@@ -229,6 +242,7 @@ export const CHARACTERS: Character[] = [
     id: 'asuka',
     focus: [68, 12, 2.38],
     image: imageAsuka,
+    backdrop: backdropAsuka,
     name: '田中明日香',
     nameEn: 'Asuka Tanaka',
     part: '上低音号',
@@ -262,6 +276,7 @@ export const CHARACTERS: Character[] = [
     id: 'natsuki',
     focus: [50, 12, 1.90],
     image: imageNatsuki,
+    backdrop: backdropNatsuki,
     name: '中川夏纪',
     nameEn: 'Natsuki Nakagawa',
     part: '上低音号',
@@ -273,6 +288,7 @@ export const CHARACTERS: Character[] = [
     id: 'yuko',
     focus: [55, 12, 2.50],
     image: imageYuko,
+    backdrop: backdropYuko,
     name: '吉川优子',
     nameEn: 'Yuko Yoshikawa',
     part: '小号',
