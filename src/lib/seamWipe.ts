@@ -1,5 +1,3 @@
-import { easeOutQuad } from '@/lib/easing'
-
 export type SeamWipeInput = {
   from: number
   to: number
@@ -9,7 +7,6 @@ export type SeamWipeInput = {
 
 export type SeamLayerStyle = {
   clipPath: string
-  opacity: number
 }
 
 export function getSeamBounds(from: number, to: number) {
@@ -32,11 +29,6 @@ export function upperClipPath(p: number) {
   return `inset(0 0 0 ${p * 100}%)`
 }
 
-export function lowerLayerOpacity(rawT: number, forward: boolean) {
-  const faded = easeOutQuad(rawT)
-  return forward ? 1 - faded : faded
-}
-
 export function getSeamLayerRole(index: number, from: number, to: number) {
   const animating = from !== to
   const { lower, upper } = getSeamBounds(from, to)
@@ -48,7 +40,7 @@ export function getSeamLayerRole(index: number, from: number, to: number) {
 }
 
 export function getSeamLayerStyle(index: number, input: SeamWipeInput): SeamLayerStyle | null {
-  const { from, to, progress, rawT } = input
+  const { from, to, progress } = input
   if (from === to) {
     return null
   }
@@ -57,11 +49,11 @@ export function getSeamLayerStyle(index: number, input: SeamWipeInput): SeamLaye
   const p = seamProgressToP(progress, forward)
 
   if (index === lower) {
-    return { clipPath: lowerClipPath(p), opacity: lowerLayerOpacity(rawT, forward) }
+    return { clipPath: lowerClipPath(p) }
   }
 
   if (index === upper) {
-    return { clipPath: upperClipPath(p), opacity: 1 }
+    return { clipPath: upperClipPath(p) }
   }
 
   return null

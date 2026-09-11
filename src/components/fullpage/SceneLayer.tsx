@@ -7,7 +7,6 @@ type SceneLayerProps = {
   isIdleActive: boolean
   isAriaCurrent: boolean
   clipPath?: string
-  opacity?: number
   zIndex: number
 }
 
@@ -18,15 +17,13 @@ export function SceneLayer({
   isIdleActive,
   isAriaCurrent,
   clipPath,
-  opacity,
   zIndex,
 }: SceneLayerProps) {
   const visible = isIdleActive || isLower || isUpper
   const style: CSSProperties = {
     zIndex,
-    opacity: isIdleActive ? 1 : (opacity ?? 1),
     clipPath: isIdleActive ? 'inset(0 0% 0 0)' : (clipPath ?? 'inset(0 100% 0 0)'),
-    willChange: 'clip-path, opacity',
+    willChange: 'clip-path',
   }
 
   return (

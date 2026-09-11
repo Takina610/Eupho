@@ -30,7 +30,6 @@ export function FullpageScenes({ sections, from, to, progress, rawT }: FullpageS
             isAriaCurrent={index === to}
             isLower={role.isLower}
             isUpper={role.isUpper}
-            opacity={style?.opacity}
             zIndex={role.isUpper ? 1 : 0}
           >
             <Component active={index === to} />
