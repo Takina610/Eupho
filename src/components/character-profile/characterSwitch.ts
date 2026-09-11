@@ -1,15 +1,15 @@
 import { gsap } from 'gsap'
 import type { Character } from '@/constants/characters'
 
-export const MAIN_EXIT_X = '12vw'
-export const MAIN_ENTER_X = '-10vw'
-export const BACK_EXIT_X = '-14vw'
-export const BACK_ENTER_X = '12vw'
+export const MAIN_EXIT_X = '1.5rem'
+export const MAIN_ENTER_X = '-1.5rem'
+export const BACK_EXIT_X = '-1.5rem'
+export const BACK_ENTER_X = '1.5rem'
 
-const EXIT_DURATION = 0.5
-const ENTER_DURATION = 0.62
-const ENTER_EASE = 'power3.out'
-const EXIT_EASE = 'power2.out'
+const EXIT_DURATION = 0.3
+const ENTER_DURATION = 0.3
+const SWITCH_EASE = 'power3.out'
+const ENTER_AT = 0.35
 
 export function fitWatermark(el: HTMLElement | null, stage: HTMLElement | null) {
   if (!el || !stage) {
@@ -104,22 +104,22 @@ export function playCharacterSwitch({
 
   const tl = gsap.timeline({ onComplete })
   gsap.set(liveMain, { x: MAIN_ENTER_X, opacity: 0, force3D: true })
-  gsap.set(liveCopy, { x: 0, opacity: 0, force3D: true })
+  gsap.set(liveCopy, { x: MAIN_ENTER_X, opacity: 0, force3D: true })
   gsap.set(liveBack, { x: BACK_ENTER_X, opacity: 0, force3D: true })
 
   if (ghostMain.length) {
-    tl.to(ghostMain, { x: MAIN_EXIT_X, opacity: 0, duration: EXIT_DURATION, ease: EXIT_EASE, force3D: true }, 0)
+    tl.to(ghostMain, { x: MAIN_EXIT_X, opacity: 0, duration: EXIT_DURATION, ease: SWITCH_EASE, force3D: true }, 0)
   }
   if (ghostCopy.length) {
-    tl.to(ghostCopy, { x: 0, opacity: 0, duration: EXIT_DURATION, ease: EXIT_EASE, force3D: true }, 0)
+    tl.to(ghostCopy, { x: MAIN_EXIT_X, opacity: 0, duration: EXIT_DURATION, ease: SWITCH_EASE, force3D: true }, 0)
   }
   if (ghostBack.length) {
-    tl.to(ghostBack, { x: BACK_EXIT_X, opacity: 0, duration: EXIT_DURATION + 0.04, ease: EXIT_EASE, force3D: true }, 0)
+    tl.to(ghostBack, { x: BACK_EXIT_X, opacity: 0, duration: EXIT_DURATION, ease: SWITCH_EASE, force3D: true }, 0)
   }
 
-  tl.to(liveBack, { x: 0, opacity: 1, duration: ENTER_DURATION + 0.04, ease: ENTER_EASE, force3D: true, stagger: 0 }, 0.02)
-  tl.to(liveCopy, { x: 0, opacity: 1, duration: ENTER_DURATION, ease: ENTER_EASE, force3D: true }, 0.04)
-  tl.to(liveMain, { x: 0, opacity: 1, duration: ENTER_DURATION, ease: ENTER_EASE, force3D: true, stagger: 0.045 }, 0.06)
+  tl.to(liveBack, { x: 0, opacity: 1, duration: ENTER_DURATION, ease: SWITCH_EASE, force3D: true }, ENTER_AT)
+  tl.to(liveCopy, { x: 0, opacity: 1, duration: ENTER_DURATION, ease: SWITCH_EASE, force3D: true }, ENTER_AT)
+  tl.to(liveMain, { x: 0, opacity: 1, duration: ENTER_DURATION, ease: SWITCH_EASE, force3D: true }, ENTER_AT)
 
   return tl
 }
