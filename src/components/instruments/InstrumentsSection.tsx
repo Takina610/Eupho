@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Section } from '@/components/fullpage/Section'
-import { useFullpageOverlayLock } from '@/components/fullpage/FullpagePagerContext'
+import { IndexBackground } from '@/components/fullpage/IndexBackground'
 import { DEFAULT_INSTRUMENT_ID, INSTRUMENTS } from '@/constants/instruments'
 import { useInstrumentModels } from '@/hooks/useInstrumentModel'
 import { useViewportSize } from '@/hooks/useViewportSize'
@@ -19,7 +19,6 @@ const INITIAL_INDEX = Math.max(
 )
 
 export function InstrumentsSection({ active = false }: { active?: boolean }) {
-  const setOverlayLock = useFullpageOverlayLock()
   const { width, height } = useViewportSize()
   const isNarrow = width < 640
 
@@ -51,11 +50,6 @@ export function InstrumentsSection({ active = false }: { active?: boolean }) {
     interactedRef.current = true
   }, [])
 
-  useEffect(() => {
-    setOverlayLock(detailOpen)
-    return () => setOverlayLock(false)
-  }, [detailOpen, setOverlayLock])
-
   const { models, loadModel } = useInstrumentModels()
   const preview = INSTRUMENTS[previewIndex] ?? INSTRUMENTS[0]
   useEffect(() => {
@@ -71,30 +65,33 @@ export function InstrumentsSection({ active = false }: { active?: boolean }) {
     })
   }, [])
 
+  // Keyboard control for the detail view. This listener registers before the fullpage
+  // pager's (child effects run first), so handled keys are stopped here to keep the
+  // pager from also treating Left/Right as page turns — Up/Down/Escape stay free.
   useEffect(() => {
     if (!detailOpen) return
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault()
+        event.stopImmediatePropagation()
         setDetailOpen(false)
-      } else if (event.key === 'ArrowRight') {
+      } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
         event.preventDefault()
-        step(1)
-      } else if (event.key === 'ArrowLeft') {
-        event.preventDefault()
-        step(-1)
+        event.stopImmediatePropagation()
+        markInteracted()
+        step(event.key === 'ArrowRight' ? 1 : -1)
       }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [detailOpen, step])
+  }, [detailOpen, step, markInteracted])
 
   // Particle cloud placement, mirroring the reference: right of centre in the list,
   // sliding left behind the copy in the detail view; phones keep it on top.
   const transform = useMemo<ParticleTransform>(() => {
     const scale = isNarrow
-      ? Math.min(360, Math.max(200, height * 0.4))
-      : Math.min(680, Math.max(320, height * 0.6))
+      ? Math.min(420, Math.max(240, height * 0.48))
+      : Math.min(800, Math.max(380, height * 0.72))
     if (isNarrow) {
       return { scale, x: 0, y: height * (detailOpen ? 0.15 : 0.18) }
     }
@@ -124,6 +121,7 @@ export function InstrumentsSection({ active = false }: { active?: boolean }) {
   return (
     <Section id="instruments" className="bg-ink">
       <h2 className="sr-only">北宇治高校吹奏乐部 乐器</h2>
+      <IndexBackground />
       <ParticleStage
         active={active}
         shape={shape}
@@ -131,7 +129,6 @@ export function InstrumentsSection({ active = false }: { active?: boolean }) {
         fallbackSrc={preview.image}
         fallbackAlt={preview.name}
       />
-      <div className="inst-glow" aria-hidden />
       <div className="inst-grid" aria-hidden />
       <div className="inst-watermark" aria-hidden>
         INSTRUMENTS

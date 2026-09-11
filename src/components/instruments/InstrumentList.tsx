@@ -34,11 +34,11 @@ function InstrumentRow({ instrument, selected, compact = false, onSelect, onPrev
       onFocus={onPreview}
       aria-current={selected || undefined}
       className={`inst-row group relative flex w-full items-baseline gap-3 border-b border-white/50 text-left ${
-        compact ? 'py-1.5' : 'py-2'
+        compact ? 'py-1.5' : 'py-[0.3rem]'
       }`}
     >
       <span
-        className={`inst-row-main relative font-bold ${compact ? 'text-sm' : 'text-[1.05rem]'} ${
+        className={`inst-row-main relative font-bold ${compact ? 'text-sm' : 'text-[1.2rem] leading-snug'} ${
           selected ? 'text-white' : 'text-white/55'
         }`}
       >
@@ -46,7 +46,7 @@ function InstrumentRow({ instrument, selected, compact = false, onSelect, onPrev
       </span>
       <span
         className={`inst-row-main relative font-semibold uppercase tracking-[0.12em] ${
-          compact ? 'text-[0.58rem]' : 'text-[0.68rem]'
+          compact ? 'text-[0.58rem]' : 'text-[0.78rem]'
         } ${selected ? 'text-white/80' : 'text-white/35'}`}
       >
         {instrument.nameEn}
@@ -65,8 +65,8 @@ function GroupHeader({ name, nameEn, compact = false }: { name: string; nameEn: 
     <div
       className={`inst-group-header flex items-baseline gap-2 ${compact ? 'mb-0.5 mt-3' : 'mb-1 mt-4'}`}
     >
-      <span className={`font-bold ${compact ? 'text-xs' : 'text-sm'} text-white/75`}>{name}</span>
-      <span className="text-[0.58rem] font-semibold uppercase tracking-[0.32em] text-brand/90">
+      <span className={`font-bold ${compact ? 'text-xs' : 'text-base'} text-white/75`}>{name}</span>
+      <span className="text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-brand/90">
         {nameEn}
       </span>
     </div>
@@ -90,7 +90,7 @@ export function InstrumentList({
     <>
       <nav
         aria-label="乐器列表"
-        className={`inst-panel inst-list absolute left-[clamp(1.5rem,8vw,9rem)] top-1/2 z-10 hidden w-[min(44vw,30rem)] -translate-y-1/2 sm:block ${
+        className={`inst-panel inst-list absolute left-[clamp(1.5rem,8vw,9rem)] top-1/2 z-10 hidden w-[min(50vw,36rem)] -translate-y-1/2 sm:block ${
           visible ? 'visible opacity-100' : 'invisible -translate-x-6 opacity-0'
         }`}
         onMouseEnter={() => onListHoverChange(true)}

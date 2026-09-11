@@ -12,13 +12,6 @@
   mask-image: radial-gradient(85% 85% at 50% 50%, #000 30%, transparent 100%);
 }
 
-.inst-glow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(58% 52% at 63% 46%, rgba(1, 172, 198, 0.16), transparent 72%);
-}
-
 .inst-watermark {
   position: absolute;
   left: clamp(1.25rem, 6vw, 6rem);
@@ -47,13 +40,13 @@
   bottom: 50%;
   transform: translateY(50%);
   font-weight: 900;
-  font-size: clamp(2.2rem, 5.5vh, 4rem);
+  font-size: clamp(2.6rem, 7vh, 5rem);
   letter-spacing: -0.02em;
   line-height: 1;
   white-space: nowrap;
   color: rgba(1, 172, 198, 0.28);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.55s ease;
   pointer-events: none;
   user-select: none;
 }
@@ -70,8 +63,8 @@
 
 .inst-row-main {
   transition:
-    color 0.3s ease,
-    transform 0.3s ease;
+    color 0.55s ease,
+    transform 0.55s ease;
 }
 
 /* Detail reveal: masked slide-in like the reference site's title/subtitle/desc. */
@@ -82,7 +75,7 @@
 .inst-reveal-item {
   display: block;
   transform: translateY(110%);
-  animation: inst-slide-up 0.6s cubic-bezier(0.33, 1, 0.68, 1) both;
+  animation: inst-slide-up 0.85s cubic-bezier(0.33, 1, 0.68, 1) both;
 }
 
 .inst-reveal-item.from-above {
@@ -118,7 +111,7 @@
     transparent 0.3rem,
     transparent 0.55rem
   );
-  transition: width 0.6s ease 0.2s;
+  transition: width 0.8s ease 0.3s;
 }
 
 .inst-detail[data-open='true'] .inst-rule {
@@ -127,23 +120,23 @@
 
 .inst-panel {
   transition:
-    opacity 0.6s ease,
-    visibility 0.6s ease,
-    transform 0.6s ease;
+    opacity 0.8s ease,
+    visibility 0.8s ease,
+    transform 0.8s ease;
 }
 
-/* Hover artifact: the instrument artwork chasing the pointer above the list. */
+/* Hover artifact: the instrument artwork chasing the pointer below the UI layers. */
 .inst-artifact {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 15;
+  z-index: 0;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 0.4s ease,
-    visibility 0.4s ease;
+    opacity 0.6s ease,
+    visibility 0.6s ease;
   will-change: transform;
 }
 
@@ -153,7 +146,7 @@
 }
 
 /* Short viewports: tighten the 18-row list so it never overflows the screen. */
-@media (max-height: 819px) {
+@media (max-height: 919px) {
   .inst-list .inst-row {
     padding-top: 0.1rem;
     padding-bottom: 0.1rem;
