@@ -14,13 +14,14 @@ type InstrumentDetailProps = {
 
 /**
  * Copy-block stages: 'reveal' is the masked slide-in when the detail opens;
- * 'enter' is the staggered fade-in from the right played on instrument switches.
+ * 'exit'/'enter' is the sequential swap on instrument changes — the old copy
+ * fades out to the left first, then the new copy fades in from the right.
  */
-type CopyStage = 'reveal' | 'enter'
+type CopyStage = 'reveal' | 'exit' | 'enter'
 
-// How long the outgoing copy stays mounted (absolutely positioned on top)
-// while its exit animation runs. Keep in sync with .inst-swap-out in CSS.
-const LEAVING_MS = 620
+// The outgoing copy must be gone before the swapped-in copy mounts.
+// Keep in sync with .inst-swap-out's delays + duration in instruments.css.
+const EXIT_TOTAL_MS = 530
 
 function Chevron({ direction }: { direction: 'left' | 'right' }) {
   return (
@@ -103,33 +104,33 @@ export function InstrumentDetail({
   const total = INSTRUMENTS.length
   const [shownId, setShownId] = useState(instrument.id)
   const [stage, setStage] = useState<CopyStage>('reveal')
-  const [leavingId, setLeavingId] = useState<string | null>(null)
 
   // Prop-driven state adjustments (React's "adjust state during render" pattern):
-  // (re)opening arms the masked reveal; a switch while open starts the new copy
-  // immediately and keeps the old one mounted on top just long enough to exit.
+  // (re)opening arms the masked reveal; a switch while open arms the exit stage.
   const [prevOpen, setPrevOpen] = useState(open)
   if (prevOpen !== open) {
     setPrevOpen(open)
     setStage('reveal')
     setShownId(instrument.id)
-    setLeavingId(null)
-  } else if (open && instrument.id !== shownId) {
-    setLeavingId(shownId)
-    setShownId(instrument.id)
-    setStage('enter')
+  } else if (open && instrument.id !== shownId && stage !== 'exit') {
+    setStage('exit')
   }
 
-  // Drop the outgoing copy once its exit animation has run out.
+  // The exit stage only mounts the new copy once its animation has run out.
   useEffect(() => {
-    if (!leavingId) return
+    if (!open || stage !== 'exit' || instrument.id === shownId) return
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const timer = window.setTimeout(() => setLeavingId(null), reduced ? 0 : LEAVING_MS)
+    const timer = window.setTimeout(
+      () => {
+        setShownId(instrument.id)
+        setStage('enter')
+      },
+      reduced ? 0 : EXIT_TOTAL_MS,
+    )
     return () => window.clearTimeout(timer)
-  }, [leavingId])
+  }, [instrument.id, open, shownId, stage])
 
   const shown = INSTRUMENTS.find((item) => item.id === shownId) ?? instrument
-  const leaving = leavingId ? (INSTRUMENTS.find((item) => item.id === leavingId) ?? null) : null
 
   return (
     <div
@@ -145,8 +146,7 @@ export function InstrumentDetail({
         className="absolute inset-x-0 bottom-0 h-[46vh] bg-gradient-to-t from-ink/90 via-ink/50 to-transparent sm:hidden"
       />
 
-      {/* keyed remount replays the copy animations on open and on instrument switch;
-          the outgoing copy stays mounted on top while it fades out to the left */}
+      {/* keyed remount replays the copy animations on open and on instrument switch */}
       <div
         key={open ? `${stage}:${shownId}` : 'closed'}
         className="absolute max-sm:inset-x-6 max-sm:bottom-[13vh] sm:right-[6vw] sm:top-1/2 sm:w-[min(38rem,40vw)] sm:-translate-y-1/2"
@@ -154,12 +154,7 @@ export function InstrumentDetail({
         {stage === 'reveal' ? (
           <RevealCopy instrument={shown} />
         ) : (
-          <SwapCopy instrument={shown} exiting={false} />
-        )}
-        {leaving && (
-          <div aria-hidden className="pointer-events-none absolute inset-0">
-            <SwapCopy instrument={leaving} exiting />
-          </div>
+          <SwapCopy instrument={shown} exiting={stage === 'exit'} />
         )}
       </div>
 
