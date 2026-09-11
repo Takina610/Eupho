@@ -11,7 +11,7 @@ const SCATTER_JITTER = 100
 /** AK "SPREAD" mode: particles flee the pointer, then ease back into the shape. */
 const REPEL_STRENGTH = -100
 /** Frames a particle waits before its alpha starts easing in — the shape refines in waves. */
-const REVEAL_SPREAD = 130
+const REVEAL_SPREAD = 170
 /** Curved approach: perpendicular sinusoid while a particle is still far from its target. */
 const WOBBLE_AMPLITUDE = 16
 const WOBBLE_RANGE = 320
@@ -55,7 +55,7 @@ export class ParticleField {
   private flySpeeds: Float32Array
   private flyLives: Float32Array
 
-  constructor({ count, flyCount = 0, view, sizeRange = [1.5, 2.8], speedRange = [24, 44] }: FieldOptions) {
+  constructor({ count, flyCount = 0, view, sizeRange = [1.5, 2.8], speedRange = [30, 60] }: FieldOptions) {
     this.count = count
     this.total = count + flyCount
     this.flyCount = flyCount
@@ -178,7 +178,7 @@ export class ParticleField {
       const dist = Math.sqrt(dx * dx + dy * dy)
       if (dist > 1) {
         const wob =
-          Math.sin(this.tick * 0.03 + this.phases[i]) *
+          Math.sin(this.tick * 0.022 + this.phases[i]) *
           WOBBLE_AMPLITUDE *
           Math.min(dist / WOBBLE_RANGE, 1)
         tx += (-dy / dist) * wob

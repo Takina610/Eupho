@@ -75,7 +75,7 @@
 .inst-reveal-item {
   display: block;
   transform: translateY(110%);
-  animation: inst-slide-up 0.85s cubic-bezier(0.33, 1, 0.68, 1) both;
+  animation: inst-slide-up 0.95s cubic-bezier(0.33, 1, 0.68, 1) both;
 }
 
 .inst-reveal-item.from-above {

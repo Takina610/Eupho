@@ -5,7 +5,7 @@ import { createQuadRenderer, type QuadRenderer } from '@/lib/webglQuad'
 const CSS_WIDTH = 420
 const CSS_HEIGHT = 315
 /** Reference-site follow curve, slowed to a lazy chase; snaps inside 0.72px. */
-const FOLLOW_DIVISOR = 36
+const FOLLOW_DIVISOR = 44
 const MAX_STEP = 100
 const DEADZONE = 0.72
 const SPEED_FACTOR = 0.041666666666666664

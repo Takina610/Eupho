@@ -38,7 +38,7 @@ function InstrumentRow({ instrument, selected, compact = false, onSelect, onPrev
       }`}
     >
       <span
-        className={`inst-row-main relative font-bold ${compact ? 'text-sm' : 'text-[1.2rem] leading-snug'} ${
+        className={`inst-row-main relative font-bold ${compact ? 'text-sm' : 'text-[clamp(1.1rem,2.5vh,1.45rem)] leading-tight'} ${
           selected ? 'text-white' : 'text-white/55'
         }`}
       >
@@ -46,7 +46,7 @@ function InstrumentRow({ instrument, selected, compact = false, onSelect, onPrev
       </span>
       <span
         className={`inst-row-main relative font-semibold uppercase tracking-[0.12em] ${
-          compact ? 'text-[0.58rem]' : 'text-[0.78rem]'
+          compact ? 'text-[0.58rem]' : 'text-[clamp(0.72rem,1.5vh,0.95rem)]'
         } ${selected ? 'text-white/80' : 'text-white/35'}`}
       >
         {instrument.nameEn}
@@ -65,8 +65,8 @@ function GroupHeader({ name, nameEn, compact = false }: { name: string; nameEn: 
     <div
       className={`inst-group-header flex items-baseline gap-2 ${compact ? 'mb-0.5 mt-3' : 'mb-1 mt-4'}`}
     >
-      <span className={`font-bold ${compact ? 'text-xs' : 'text-base'} text-white/75`}>{name}</span>
-      <span className="text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-brand/90">
+      <span className={`font-bold ${compact ? 'text-xs' : 'text-[clamp(1rem,2.2vh,1.3rem)]'} text-white/75`}>{name}</span>
+      <span className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-brand/90">
         {nameEn}
       </span>
     </div>
@@ -90,7 +90,7 @@ export function InstrumentList({
     <>
       <nav
         aria-label="乐器列表"
-        className={`inst-panel inst-list absolute left-[clamp(1.5rem,8vw,9rem)] top-1/2 z-10 hidden w-[min(50vw,36rem)] -translate-y-1/2 sm:block ${
+        className={`inst-panel inst-list absolute left-[clamp(1.5rem,8vw,9rem)] top-1/2 z-10 hidden w-[min(56vw,42rem)] -translate-y-1/2 sm:block ${
           visible ? 'visible opacity-100' : 'invisible -translate-x-6 opacity-0'
         }`}
         onMouseEnter={() => onListHoverChange(true)}

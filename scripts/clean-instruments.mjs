@@ -8,11 +8,29 @@ const files = fs.readdirSync(dir).filter((f) => f.endsWith('.png')).sort()
 
 /** Near-white enclosed regions at or above this size are matte leftovers, not highlights. */
 const WHITE_COMPONENT_MIN_SIZE = {
+  '01-euphonium.png': 40,
+  '02-tuba.png': 40,
   '04-trumpet.png': 300,
+  '05-trombone.png': 40,
+  '06-horn.png': 40,
+  '07-alto-sax.png': 40,
+  '08-tenor-sax.png': 40,
+  '09-bari-sax.png': 40,
+  '14-timpani.png': 40,
+  '15-snare.png': 40,
+  '16-bass-drum.png': 40,
   '17-glockenspiel.png': 300,
 }
 const DESPECKLE_MIN_SIZE = 16
-const NEAR_WHITE = 235
+/** Matte white is slightly off-white here: low saturation and a high minimum channel. */
+const WHITE_MIN_CHANNEL = 195
+const WHITE_MAX_SPREAD = 48
+
+const isWhiteish = (r, g, b) => {
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+  return min >= WHITE_MIN_CHANNEL && max - min <= WHITE_MAX_SPREAD
+}
 
 function components(mask, width, height) {
   // 4-connected labeling over truthy mask cells; returns array of { pixels: number[] }
@@ -49,7 +67,7 @@ for (const file of files) {
     const i = p * 4
     if (data[i + 3] > 128) {
       opaque[p] = 1
-      if (data[i] >= NEAR_WHITE && data[i + 1] >= NEAR_WHITE && data[i + 2] >= NEAR_WHITE) {
+      if (isWhiteish(data[i], data[i + 1], data[i + 2])) {
         nearWhite[p] = 1
       }
     }
@@ -84,7 +102,7 @@ for (const file of files) {
         ]) {
           if (q < 0) continue
           const qi = q * 4
-          if (data[qi + 3] > 0 && data[qi] >= 225 && data[qi + 1] >= 225 && data[qi + 2] >= 225) {
+          if (data[qi + 3] > 0 && isWhiteish(data[qi], data[qi + 1], data[qi + 2])) {
             data[qi + 3] = 0
             opaque[q] = 0
           }
