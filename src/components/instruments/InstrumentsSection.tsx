@@ -8,6 +8,7 @@ import { useViewportSize } from '@/hooks/useViewportSize'
 import type { ParticleTransform } from '@/lib/particleField'
 
 import { InstrumentDetail } from './InstrumentDetail'
+import { HoverArtifact } from './HoverArtifact'
 import { InstrumentList } from './InstrumentList'
 import { ParticleStage } from './ParticleStage'
 import './instruments.css'
@@ -29,6 +30,12 @@ export function InstrumentsSection({ active = false }: { active?: boolean }) {
     () => typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)').matches,
   )
   const [listOpen, setListOpen] = useState(false)
+  // Desktop only: hovering a list row shows the chasing artwork near the pointer.
+  const canHover = useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(any-hover: hover)').matches,
+    [],
+  )
+  const [rowsHovered, setRowsHovered] = useState(false)
 
   // Follow viewport flips (e.g. an early resize before first paint settles) until the
   // user has interacted; afterwards their explicit list/detail choice sticks.
@@ -86,8 +93,8 @@ export function InstrumentsSection({ active = false }: { active?: boolean }) {
   // sliding left behind the copy in the detail view; phones keep it on top.
   const transform = useMemo<ParticleTransform>(() => {
     const scale = isNarrow
-      ? Math.min(300, Math.max(180, height * 0.34))
-      : Math.min(560, Math.max(240, height * 0.5))
+      ? Math.min(360, Math.max(200, height * 0.4))
+      : Math.min(680, Math.max(320, height * 0.6))
     if (isNarrow) {
       return { scale, x: 0, y: height * (detailOpen ? 0.15 : 0.18) }
     }
@@ -136,7 +143,12 @@ export function InstrumentsSection({ active = false }: { active?: boolean }) {
         onSelect={openInstrument}
         onPreview={setPreviewIndex}
         onPreviewEnd={() => setPreviewIndex(selectedIndex)}
+        onListHoverChange={setRowsHovered}
         onCloseMobile={() => setListOpen(false)}
+      />
+      <HoverArtifact
+        active={active && canHover && rowsHovered && !detailOpen}
+        image={preview.image}
       />
       <InstrumentDetail
         instrument={selected}

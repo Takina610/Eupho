@@ -12,6 +12,8 @@ type InstrumentListProps = {
   onSelect: (index: number) => void
   onPreview: (index: number) => void
   onPreviewEnd: () => void
+  /** Desktop pointer enters/leaves the list area (drives the chasing artwork). */
+  onListHoverChange: (hovering: boolean) => void
   onCloseMobile: () => void
 }
 
@@ -78,6 +80,7 @@ export function InstrumentList({
   onSelect,
   onPreview,
   onPreviewEnd,
+  onListHoverChange,
   onCloseMobile,
 }: InstrumentListProps) {
   const groups = groupInstruments()
@@ -90,7 +93,11 @@ export function InstrumentList({
         className={`inst-panel inst-list absolute left-[clamp(1.5rem,8vw,9rem)] top-1/2 z-10 hidden w-[min(44vw,30rem)] -translate-y-1/2 sm:block ${
           visible ? 'visible opacity-100' : 'invisible -translate-x-6 opacity-0'
         }`}
-        onMouseLeave={onPreviewEnd}
+        onMouseEnter={() => onListHoverChange(true)}
+        onMouseLeave={() => {
+          onListHoverChange(false)
+          onPreviewEnd()
+        }}
         style={{ '--enter-stagger': '45ms' } as CSSProperties}
       >
         {groups.map(({ group, items }) => (

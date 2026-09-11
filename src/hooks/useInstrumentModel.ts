@@ -10,9 +10,9 @@ export type ShapeModel = {
   aspect: number
 }
 
-const MAX_POINTS = 4500
+const MAX_POINTS = 7000
 const ALPHA_THRESHOLD = 100
-const SAMPLE_STEP = 2
+const SAMPLE_STEP = 1
 
 function shuffleTriplets(points: Float32Array, tripletCount: number) {
   for (let i = tripletCount - 1; i > 0; i -= 1) {

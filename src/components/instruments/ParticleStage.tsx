@@ -18,7 +18,7 @@ type ParticleStageProps = {
 /** Clamp round(area / density) into sane bounds so small screens get a lighter field. */
 function resolveCount(width: number, height: number) {
   const area = Math.max(width, 1) * Math.max(height, 1)
-  return Math.min(7000, Math.max(1600, Math.round(area / 220)))
+  return Math.min(9000, Math.max(2200, Math.round(area / 180)))
 }
 
 export function ParticleStage({
@@ -50,8 +50,9 @@ export function ParticleStage({
     const isSmall = window.innerWidth < 640
     fieldRef.current = new ParticleField({
       count: resolveCount(window.innerWidth, window.innerHeight),
+      flyCount: isSmall ? 14 : 26,
       view: { width: window.innerWidth, height: window.innerHeight },
-      sizeRange: isSmall ? [1.4, 2.4] : [1.8, 3.4],
+      sizeRange: isSmall ? [1.2, 2.2] : [1.5, 2.8],
     })
     return () => {
       cancelAnimationFrame(frameRef.current)
@@ -63,6 +64,7 @@ export function ParticleStage({
 
   useEffect(() => {
     rendererRef.current?.resize(width, height, Math.min(window.devicePixelRatio || 1, 2))
+    fieldRef.current?.setView({ width, height })
   }, [width, height])
 
   useEffect(() => {
@@ -87,10 +89,12 @@ export function ParticleStage({
         renderer.draw()
       } else {
         field.scatter()
+        field.setAmbient(false)
       }
       return
     }
 
+    field.setAmbient(true)
     const loop = () => {
       field.update(pointer.current)
       renderer.upload(field.positions, field.alphas, field.sizes)
