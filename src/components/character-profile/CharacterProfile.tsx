@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, type KeyboardEvent } from 'react'
+import { useLayoutEffect, useRef, type CSSProperties, type KeyboardEvent } from 'react'
 import { CHARACTERS } from '@/constants/characters'
 import { CharacterThumb } from '@/components/character-profile/CharacterThumb'
 import { fitWatermark } from '@/components/character-profile/characterSwitch'
@@ -77,7 +77,19 @@ export function CharacterProfile() {
     <div ref={stageRef} className={`cp${fallbackClass}`}>
       <div className="cp__stage" aria-hidden>
         <div className="cp__backdrop" data-cp-layer="back">
-          <img className="cp__backdrop-img" src={character.backdrop} alt="" draggable={false} />
+          <img
+            className="cp__backdrop-img"
+            src={character.backdrop}
+            alt=""
+            draggable={false}
+            style={
+              {
+                '--cp-back-x': `${character.back[0]}%`,
+                '--cp-back-y': `${character.back[1]}%`,
+                '--cp-back-scale': String(character.back[2]),
+              } as CSSProperties
+            }
+          />
         </div>
         <p ref={watermarkRef} className="cp__watermark" data-cp-layer="main">
           {watermark}
