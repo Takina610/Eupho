@@ -3,6 +3,10 @@ import { useEffect, useRef, type RefObject } from 'react'
 const WHEEL_THRESHOLD = 24
 const SWIPE_THRESHOLD = 48
 
+function isFullpageIgnored(target: EventTarget | null) {
+  return target instanceof Element && target.closest('[data-fullpage-ignore]') != null
+}
+
 type UseFullpageInputOptions = {
   lockedRef: RefObject<boolean>
   onStep: (delta: 1 | -1) => void
@@ -42,6 +46,10 @@ export function useFullpageInput({
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null
       if (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) {
+        return
+      }
+
+      if (isFullpageIgnored(target) && event.key.startsWith('Arrow')) {
         return
       }
 
