@@ -1,6 +1,5 @@
 import type { Ref } from 'react'
 
-import storyBgOnp from '@/assets/story-bg-onp.webp'
 import { SERIES_BANNERS } from '@/constants/seriesBanners'
 
 type FullpageFooterProps = {
@@ -13,18 +12,10 @@ export function FullpageFooter({ ref }: FullpageFooterProps) {
       ref={ref}
       className="relative flex min-h-[min(435px,70dvh)] items-center justify-center overflow-hidden bg-brand px-[max(0.5rem,env(safe-area-inset-left))] pr-[max(0.5rem,env(safe-area-inset-right))] pt-14 pb-[max(3rem,env(safe-area-inset-bottom))] sm:px-8 sm:pt-20 sm:pb-16"
     >
-      {/* 金色音符背景素材 */}
-      <img
-        aria-hidden
-        src={storyBgOnp}
-        alt=""
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-      />
-
-      {/* 官网同款巨型水印：靠右、从左上到右下倾斜 */}
+      {/* 官网同款巨型水印：靠右、从左上到右下倾斜；移动端整体压在双黄线以下 */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -inset-x-12 -inset-y-10 flex rotate-6 select-none flex-col justify-start pt-6 sm:justify-center sm:pt-0"
+        className="pointer-events-none absolute -inset-x-12 bottom-10 top-10 flex rotate-6 select-none flex-col justify-start pt-6 sm:bottom-[-2.5rem] sm:top-[-2.5rem] sm:justify-center sm:pt-0"
       >
         <p className="-mr-[6%] text-right text-[31vw] font-black leading-[0.9] tracking-tight text-white/15 sm:mr-0 sm:text-[clamp(5.5rem,16vw,15rem)]">
           Sound! Euphonium
