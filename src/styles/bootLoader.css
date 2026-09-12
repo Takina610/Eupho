@@ -2,8 +2,8 @@
  * 开屏加载层。由 index.html 以 <link> 引入（保证 JS 下载期间静态壳就有样式），
  * React 的 BootGate 挂载后复用同一套类名无缝接管。淡出时长与
  * constants/bootLoader.ts 的 BOOT_FADE_MS 保持一致。
- * 构图：#01acc6 满屏背景，站标居中偏上；底部五线谱上黄色进度条从左往右填充，
- * 低音谱号压在谱头并镂空穿过的谱线；谱线自上而下依次变短，做出递进层次。
+ * 构图参考 ak.hypergryph.com：#01acc6 满屏背景，站标居中偏下不浮动，
+ * 底部细进度条带方形端点，黄色填充从左往右，状态行与角标四周大留白。
  */
 
 /* 加载层存在期间，页面底色与加载层同色：React 接管、样式注入、淡出交接的
@@ -40,7 +40,7 @@ body:has(#root:empty) {
 .boot-brand {
   position: absolute;
   left: 50%;
-  top: 26%;
+  top: 32%;
   width: clamp(200px, 24vw, 320px);
   transform: translate(-50%, -50%);
 }
@@ -48,89 +48,72 @@ body:has(#root:empty) {
 .boot-logo {
   width: 100%;
   height: auto;
-  animation: boot-float 2.6s ease-in-out infinite;
 }
 
-/* ---- 底部 HUD：线谱进度条 + 状态行。整体内收，四周留出大留白 ---- */
+/* ---- 底部 HUD：细进度条 + 状态行。整体内收，四周大留白 ---- */
 
 .boot-hud {
   position: absolute;
-  left: 30vw;
-  right: 5vw;
-  bottom: 6vh;
+  left: 32vw;
+  right: 8vw;
+  bottom: 10vh;
 }
 
-.boot-staff {
+.boot-bar {
   position: relative;
-  /* 官网 staffNotation 几何：1px 谱线、5px 行距（11px 一档），
-     谱号 91×95 跨在谱线左端，脚部盖住前三条线 */
-  height: 50px;
-  --stagger-unit: 1px;
-  /* 谱号几何：谱线遮挡 mask 与谱号 <img> 共用这一组变量 */
-  --clef-x: 0px;
-  --clef-top: -70px;
-  --clef-h: 95px;
-  --clef-w: calc(var(--clef-h) * 0.958);
+  height: 8px;
 }
 
-.boot-staff-lines {
+.boot-bar-line {
   position: absolute;
-  inset: 0;
-  /* 普通块级流（官网同款）：flex column 会因容器高度不足把 1px 谱线 shrink 没了 */
-  display: block;
-  pointer-events: none;
-  /* 谱线从谱号背后穿出：全幅遮罩减去谱号剪影（官网即谱线被谱号盖住） */
-  -webkit-mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png');
-  -webkit-mask-position: 0 0, var(--clef-x) var(--clef-top);
-  -webkit-mask-size: 100% 100%, auto var(--clef-h);
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-composite: destination-out;
-  mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png');
-  mask-position: 0 0, var(--clef-x) var(--clef-top);
-  mask-size: 100% 100%, auto var(--clef-h);
-  mask-repeat: no-repeat;
-  mask-composite: subtract;
+  left: 9px;
+  right: 9px;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  background: rgba(255, 255, 255, 0.32);
 }
 
-/* 黄色谱线：右端对齐，起始端按 --start 阶梯错位（错位出现在开头） */
-.boot-line {
-  display: block;
-  position: relative;
-  height: 1px;
-  width: calc(100% - var(--start) * var(--stagger-unit));
-  margin: 5px 0;
-  margin-left: calc(var(--start) * var(--stagger-unit));
+.boot-bar-fillwrap {
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  top: 50%;
+  height: 6px;
+  transform: translateY(-50%);
   overflow: hidden;
-  background: #fff830;
 }
 
-/* 白色进度条：从所在谱线的起始端向右生长 */
-.boot-line-bar {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
+.boot-bar-fill {
+  display: block;
   width: 0;
-  background: #fff;
+  height: 100%;
+  background: #fff830;
   transition: width 260ms ease-out;
 }
 
-.boot-clef {
+.boot-bar-cap {
   position: absolute;
-  left: var(--clef-x);
-  top: var(--clef-top);
-  height: var(--clef-h);
-  width: auto;
-  /* 素材保持蓝色；青底上加白边光晕提轮廓（参考图里谱号带白边高光） */
-  filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff);
-  opacity: 0.95;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.boot-bar-cap--l {
+  left: 0;
+}
+
+.boot-bar-cap--r {
+  right: 0;
 }
 
 .boot-meta {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-top: 16px;
+  margin-top: 14px;
   color: #fff;
 }
 
@@ -187,8 +170,8 @@ body:has(#root:empty) {
 
 .boot-corner {
   position: absolute;
-  left: 5vw;
-  bottom: 6vh;
+  left: 8vw;
+  bottom: 10vh;
   margin: 0;
   font-size: clamp(18px, 1.6vw, 22px);
   font-weight: 700;
@@ -196,21 +179,11 @@ body:has(#root:empty) {
   color: #fff;
 }
 
-/* ---- 静态壳不知道真实进度，每条谱线里用一段白色光带示意「加载中」 ---- */
+/* ---- 静态壳不知道真实进度，用一段扫过的黄色光带示意「加载中」 ---- */
 
-.boot-line-bar--sweep {
-  width: 34%;
+.boot-bar-fill--sweep {
+  width: 30%;
   animation: boot-sweep 1.6s ease-in-out infinite;
-}
-
-@keyframes boot-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
 }
 
 @keyframes boot-sweep {
@@ -218,7 +191,7 @@ body:has(#root:empty) {
     transform: translateX(-110%);
   }
   to {
-    transform: translateX(330%);
+    transform: translateX(430%);
   }
 }
 
@@ -234,24 +207,14 @@ body:has(#root:empty) {
 
 @media (max-width: 640px) {
   .boot-brand {
-    top: 24%;
+    top: 30%;
     width: min(64vw, 240px);
   }
 
   .boot-hud {
-    left: 6vw;
-    right: 6vw;
-    bottom: max(6vh, calc(env(safe-area-inset-bottom, 0px) + 16px));
-  }
-
-  .boot-staff {
-    --stagger-unit: 0.75px;
-    --clef-h: 74px;
-    --clef-top: -49px;
-  }
-
-  .boot-line {
-    margin: 4px 0;
+    left: 8vw;
+    right: 8vw;
+    bottom: max(10vh, calc(env(safe-area-inset-bottom, 0px) + 20px));
   }
 
   .boot-meta {
@@ -275,13 +238,12 @@ body:has(#root:empty) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .boot-logo,
-  .boot-line-bar--sweep,
+  .boot-bar-fill--sweep,
   .boot-dots i {
     animation: none;
   }
 
-  .boot-line-bar--sweep {
+  .boot-bar-fill--sweep {
     width: 100%;
     opacity: 0.4;
   }
