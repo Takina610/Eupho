@@ -147,6 +147,31 @@
     opacity 0.4s cubic-bezier(0.6, 0.04, 0.98, 0.34) calc(var(--i, 0) * 65ms);
 }
 
+/* Leaving the section: same cascade-out as the detail exit, played while the
+   seam wipe carries the page away. */
+.inst-list[data-leaving] .reveal {
+  transform: translateX(-7rem);
+  opacity: 0;
+  transition:
+    transform 0.4s cubic-bezier(0.6, 0.04, 0.98, 0.34) calc(var(--i, 0) * 65ms),
+    opacity 0.4s cubic-bezier(0.6, 0.04, 0.98, 0.34) calc(var(--i, 0) * 65ms);
+}
+
+/* Mobile list overlay: rows cascade in from the left on open and back out on
+   close (the container itself keeps the .inst-panel fade). */
+.inst-overlay .inst-overlay-item {
+  transform: translateX(-2rem);
+  opacity: 0;
+  transition:
+    transform 0.35s cubic-bezier(0.33, 1, 0.68, 1) calc(var(--i, 0) * 25ms),
+    opacity 0.35s cubic-bezier(0.33, 1, 0.68, 1) calc(var(--i, 0) * 25ms);
+}
+
+.inst-overlay[data-open='true'] .inst-overlay-item {
+  transform: translateX(0);
+  opacity: 1;
+}
+
 /* Detail copy swap: the outgoing copy fades left, the new copy fades in from
    the right; delays are set per element from InstrumentDetail. */
 .inst-swap-item {
@@ -204,8 +229,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .inst-list[data-hidden] .reveal {
+  .inst-list[data-hidden] .reveal,
+  .inst-list[data-leaving] .reveal {
     transition: none;
+  }
+
+  .inst-overlay .inst-overlay-item {
+    transition: none;
+    transform: none;
+    opacity: 1;
   }
 
   .inst-reveal-item,

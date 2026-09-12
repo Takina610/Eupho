@@ -90,16 +90,28 @@ export function ParticleStage({
     if (!field || !renderer) return
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (!active || reduced) {
-      if (reduced) {
-        field.snap()
+    if (reduced) {
+      field.snap()
+      renderer.upload(field.positions, field.alphas, field.sizes)
+      renderer.draw()
+      return
+    }
+
+    // Leaving the section: let the scatter/fade play out for a beat, then stop rendering.
+    if (!active) {
+      field.scatter()
+      field.setAmbient(false)
+      const startedAt = performance.now()
+      const fade = () => {
+        field.update({ ...pointer.current, active: false })
         renderer.upload(field.positions, field.alphas, field.sizes)
         renderer.draw()
-      } else {
-        field.scatter()
-        field.setAmbient(false)
+        if (performance.now() - startedAt < 700) {
+          frameRef.current = requestAnimationFrame(fade)
+        }
       }
-      return
+      frameRef.current = requestAnimationFrame(fade)
+      return () => cancelAnimationFrame(frameRef.current)
     }
 
     field.setAmbient(true)

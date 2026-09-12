@@ -135,6 +135,7 @@ export function InstrumentsSection({ active = false }: { active?: boolean }) {
       </div>
       <InstrumentList
         visible={!detailOpen}
+        leaving={!active}
         mobileOpen={listOpen}
         selectedIndex={selectedIndex}
         onSelect={openInstrument}

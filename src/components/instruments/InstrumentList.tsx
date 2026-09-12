@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { Fragment } from 'react'
 
 import { Reveal } from '@/components/fullpage/Reveal'
@@ -6,6 +7,8 @@ import { groupInstruments, INSTRUMENTS, type Instrument } from '@/constants/inst
 type InstrumentListProps = {
   /** Desktop column fades out while the detail panel is open. */
   visible: boolean
+  /** Section is scrolling away: rows cascade out like the detail exit. */
+  leaving: boolean
   mobileOpen: boolean
   selectedIndex: number
   onSelect: (index: number) => void
@@ -62,7 +65,7 @@ function InstrumentRow({ instrument, selected, compact = false, onSelect, onPrev
 function GroupHeader({ name, nameEn, compact = false }: { name: string; nameEn: string; compact?: boolean }) {
   return (
     <div
-      className={`inst-group-header flex items-baseline gap-2 ${compact ? 'mb-0.5 mt-3' : 'mb-[0.5vh] mt-[1.3vh]'}`}
+      className={`inst-group-header flex select-none items-baseline gap-2 ${compact ? 'mb-0.5 mt-3' : 'mb-[0.5vh] mt-[1.3vh]'}`}
     >
       <span className={`font-bold ${compact ? 'text-xs' : 'text-[clamp(1.05rem,2.3vh,1.4rem)]'} text-white/75`}>{name}</span>
       <span className="text-[0.75rem] font-semibold uppercase tracking-[0.32em] text-brand/90">
@@ -74,6 +77,7 @@ function GroupHeader({ name, nameEn, compact = false }: { name: string; nameEn: 
 
 export function InstrumentList({
   visible,
+  leaving,
   mobileOpen,
   selectedIndex,
   onSelect,
@@ -84,6 +88,7 @@ export function InstrumentList({
 }: InstrumentListProps) {
   const groups = groupInstruments()
   let revealIndex = 0
+  let overlayIndex = 0
 
   return (
     <>
@@ -92,6 +97,7 @@ export function InstrumentList({
       <nav
         aria-label="乐器列表"
         data-hidden={visible ? undefined : true}
+        data-leaving={leaving && visible ? true : undefined}
         className="inst-panel inst-list absolute left-[clamp(1.5rem,8vw,9rem)] top-1/2 z-10 hidden w-[min(58vw,44rem)] -translate-y-1/2 sm:block"
         onMouseEnter={() => onListHoverChange(true)}
         onMouseLeave={() => {
@@ -121,11 +127,13 @@ export function InstrumentList({
         ))}
       </nav>
 
-      {/* Mobile: the list becomes a full overlay (detail-first layout below sm). */}
+      {/* Mobile: the list becomes a full overlay (detail-first layout below sm).
+          Rows cascade in from the left on open and back out on close. */}
       <div
         data-fullpage-ignore
         aria-hidden={!mobileOpen}
-        className={`inst-panel absolute inset-0 z-30 bg-ink/95 backdrop-blur-sm sm:hidden ${
+        data-open={mobileOpen || undefined}
+        className={`inst-panel inst-overlay absolute inset-0 z-30 bg-ink/95 backdrop-blur-sm sm:hidden ${
           mobileOpen ? 'visible opacity-100' : 'invisible opacity-0'
         }`}
       >
@@ -148,20 +156,28 @@ export function InstrumentList({
           <div className="grid flex-1 grid-cols-2 content-start gap-x-5 overflow-y-auto">
             {groups.map(({ group, items }) => (
               <Fragment key={group.id}>
-                <div className="col-span-2">
+                <div
+                  className="inst-overlay-item col-span-2"
+                  style={{ '--i': overlayIndex++ } as CSSProperties}
+                >
                   <GroupHeader name={group.name} nameEn={group.nameEn} compact />
                 </div>
                 {items.map((item) => {
                   const index = INSTRUMENTS.indexOf(item)
                   return (
-                    <InstrumentRow
+                    <div
                       key={item.id}
-                      instrument={item}
-                      compact
-                      selected={index === selectedIndex}
-                      onSelect={() => onSelect(index)}
-                      onPreview={() => onPreview(index)}
-                    />
+                      className="inst-overlay-item"
+                      style={{ '--i': overlayIndex++ } as CSSProperties}
+                    >
+                      <InstrumentRow
+                        instrument={item}
+                        compact
+                        selected={index === selectedIndex}
+                        onSelect={() => onSelect(index)}
+                        onPreview={() => onPreview(index)}
+                      />
+                    </div>
                   )
                 })}
               </Fragment>
