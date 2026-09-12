@@ -39,6 +39,8 @@ export type Character = {
   backdrop: string
   name: string
   nameEn: string
+  /** Visible silhouette edges of `image` as width fractions (alpha-scanned). */
+  pushEdge: [number, number]
   part: string
   grade: string
   cv: string
@@ -72,6 +74,7 @@ function member(
 export const CHARACTERS: Character[] = [
   member({
     id: 'kumiko',
+    pushEdge: [0, 1],
     focus: [33, 10, 2.10],
     back: [38, 10, 1],
     image: imageKumiko,
@@ -85,6 +88,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'hazuki',
+    pushEdge: [0, 1],
     focus: [70, 13, 2.32],
     back: [38, 10, 1],
     image: imageHazuki,
@@ -98,6 +102,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'sapphire',
+    pushEdge: [0.001, 1],
     focus: [30, 24, 2.38],
     back: [38, 10, 1],
     image: imageSapphire,
@@ -111,6 +116,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'reina',
+    pushEdge: [0, 1],
     focus: [44, 12, 2.32],
     back: [38, 10, 1],
     image: imageReina,
@@ -124,6 +130,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'mayu',
+    pushEdge: [0, 1],
     focus: [52, 13, 2.25],
     back: [42, 8, 1],
     image: imageMayu,
@@ -136,6 +143,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'syuichi',
+    pushEdge: [0.0018, 1],
     focus: [68, 9, 2.22],
     back: [38, 10, 1],
     image: imageSyuichi,
@@ -149,6 +157,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'tsubame',
+    pushEdge: [0, 1],
     focus: [58, 13, 2.80],
     back: [42, 8, 1],
     image: imageTsubame,
@@ -161,6 +170,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'kanade',
+    pushEdge: [0, 1],
     focus: [71, 13, 2.00],
     back: [38, 10, 1],
     image: imageKanade,
@@ -174,6 +184,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'mirei',
+    pushEdge: [0, 1],
     focus: [50, 11, 2.90],
     back: [38, 10, 1],
     image: imageMirei,
@@ -187,6 +198,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'satsuki',
+    pushEdge: [0, 1],
     focus: [50, 18, 2.22],
     back: [38, 10, 1],
     image: imageSatsuki,
@@ -200,6 +212,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'motomu',
+    pushEdge: [0, 1],
     focus: [38, 22, 2.28],
     back: [38, 10, 1],
     image: imageMotomu,
@@ -213,6 +226,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'ririka',
+    pushEdge: [0, 1],
     focus: [33, 13, 2.35],
     back: [42, 8, 1],
     image: imageRirika,
@@ -225,6 +239,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'suzume',
+    pushEdge: [0.0011, 1],
     focus: [62, 32, 2.48],
     back: [42, 8, 1],
     image: imageSuzume,
@@ -237,6 +252,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'yayoi',
+    pushEdge: [0.0013, 0.9987],
     focus: [28, 12, 2.52],
     back: [42, 8, 1],
     image: imageYayoi,
@@ -249,6 +265,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'kaho',
+    pushEdge: [0, 1],
     focus: [66, 12, 2.50],
     back: [42, 8, 1],
     image: imageKaho,
@@ -261,6 +278,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'sari',
+    pushEdge: [0, 1],
     focus: [59, 13, 2.60],
     back: [42, 8, 1],
     image: imageSari,
@@ -273,6 +291,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'asuka',
+    pushEdge: [0, 1],
     focus: [68, 12, 2.38],
     back: [42, 8, 1],
     image: imageAsuka,
@@ -285,6 +304,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'haruka',
+    pushEdge: [0, 1],
     focus: [56, 12, 2.50],
     back: [42, 8, 1],
     image: imageHaruka,
@@ -297,6 +317,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'kaori',
+    pushEdge: [0, 1],
     focus: [44, 12, 2.40],
     back: [42, 8, 1],
     image: imageKaori,
@@ -309,6 +330,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'natsuki',
+    pushEdge: [0, 1],
     focus: [50, 12, 1.90],
     back: [38, 10, 1],
     image: imageNatsuki,
@@ -322,6 +344,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'yuko',
+    pushEdge: [0, 0.9347],
     focus: [55, 12, 2.50],
     back: [38, 10, 1],
     image: imageYuko,
@@ -335,6 +358,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'mizore',
+    pushEdge: [0, 1],
     focus: [57, 11, 2.40],
     back: [42, 8, 1],
     image: imageMizore,
@@ -347,6 +371,7 @@ export const CHARACTERS: Character[] = [
   }),
   member({
     id: 'nozomi',
+    pushEdge: [0, 1],
     focus: [50, 11, 2.18],
     back: [42, 8, 1],
     image: imageNozomi,

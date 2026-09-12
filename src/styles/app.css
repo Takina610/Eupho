@@ -76,13 +76,17 @@ body {
    right edge for forward wipes, `--push-from` left edge for backward ones),
    and the clamp makes contact start exactly at the element's edge.
    `translate` composes with existing transforms; !important is required
-   because GSAP leaves inline `translate: none` on layers it tweens. */
+   because GSAP leaves inline `translate: none` on layers it tweens.
+   will-change keeps the per-frame translate on the compositor so the shove
+   never repaints the (large) pushed blocks. */
 [data-leaving='forward'] .wipe-push {
   translate: min(0vw, var(--seam-p, 1) * 100vw - var(--push-at, 100) * 1vw) 0 !important;
+  will-change: translate;
 }
 
 [data-leaving='backward'] .wipe-push {
   translate: max(0vw, var(--seam-p, 0) * 100vw - var(--push-from, 0) * 1vw) 0 !important;
+  will-change: translate;
 }
 
 @media (prefers-reduced-motion: reduce) {

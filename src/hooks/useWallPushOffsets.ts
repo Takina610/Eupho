@@ -1,5 +1,4 @@
 import { useEffect, type RefObject } from 'react'
-import { imageVisualSpan } from '@/lib/alphaEdge'
 
 /**
  * The wall-push (see the .wipe-push rules in app.css) shoves an element only
@@ -7,18 +6,22 @@ import { imageVisualSpan } from '@/lib/alphaEdge'
  * its edges in vw as custom properties: `--push-at` (right edge, contact on
  * forward wipes) and `--push-from` (left edge, backward wipes).
  *
- * Elements containing an image (transparent character art) report the visible
- * silhouette edge instead of the image box edge — the art is square with
- * transparent padding, so the box edge would make the wall push air. The
- * drawn-image rect is derived from `object-fit: contain` with
- * `object-position: center bottom` (the layout the character stage uses).
- *
- * Re-measured on resize, on element/image size changes, and whenever the
- * section becomes active: stylesheets (dev) and art load after mount, so the
- * mount-time layout must not be the last word — and re-measuring on arrival
- * guarantees the edges are current before any wipe can leave the section.
+ * Elements containing an image that fills them (transparent character art)
+ * place their contact edges at the visible silhouette, precomputed per
+ * character as width fractions (`imageSpan`, see `pushEdge` in
+ * constants/characters.ts) and mapped through the `object-fit: contain`
+ * drawn rect — the element box is the base on purpose, because entrance
+ * animations (cp-drift) temporarily translate the img while its resting
+ * layout position is the stable reference. Elements without a filling image
+ * use their box edges. Measured on mount, resize, element size changes,
+ * section arrival, and — with live rects — once at wipe start, so a figure
+ * that is mid-drift is contacted exactly where it is drawn. All writes are
+ * synchronous: no scanning, no awaiting, nothing to jank the wipe.
  */
-export function useWallPushOffsets(ref: RefObject<HTMLElement | null>) {
+export function useWallPushOffsets(
+  ref: RefObject<HTMLElement | null>,
+  imageSpan: readonly [number, number] | null,
+) {
   useEffect(() => {
     const root = ref.current
     if (!root) {
@@ -27,12 +30,7 @@ export function useWallPushOffsets(ref: RefObject<HTMLElement | null>) {
 
     const elements = () => root.querySelectorAll<HTMLElement>('.wipe-push')
 
-    const midWipe = () => {
-      const leaving = root.closest('[data-active]')?.getAttribute('data-leaving')
-      return Boolean(leaving && leaving !== 'false')
-    }
-
-    const writeElement = async (el: HTMLElement) => {
+    const writeElement = (el: HTMLElement, live: boolean) => {
       const vw = window.innerWidth || 1
       const rect = el.getBoundingClientRect()
       let contactRight = rect.right
@@ -41,88 +39,65 @@ export function useWallPushOffsets(ref: RefObject<HTMLElement | null>) {
       // element. Nested imgs (e.g. thumbnails inside the copy block) are
       // children, not the pushed surface.
       const img = el.querySelector('img')
-      if (img) {
-        const imgRect = img.getBoundingClientRect()
-        const fillsElement =
-          imgRect.width >= rect.width * 0.9 && imgRect.height >= rect.height * 0.9
-        if (!fillsElement || !img.complete || img.naturalWidth === 0) {
-          if (!fillsElement) {
-            // keep box edges; nothing to re-measure on load either
-            el.style.setProperty('--push-at', (Math.min(contactRight / vw, 1) * 100).toFixed(3))
-            el.style.setProperty('--push-from', (Math.max(contactLeft / vw, 0) * 100).toFixed(3))
-          }
-          return // the capture-phase load listener re-runs this once decoded
-        }
-        const span = await imageVisualSpan(img)
-        if (!span || midWipe()) {
-          return
-        }
-        // object-fit: contain, object-position: center bottom → the drawn rect
-        // hugs the element box width or height, centered horizontally, pinned
-        // to bottom. The element box (not the img rect) is the base on purpose:
-        // entrance animations (cp-drift) temporarily translate the img while
-        // its resting layout position is what the wall should contact.
-        const scale = Math.min(rect.width / img.naturalWidth, rect.height / img.naturalHeight) || 0
+      const imgRect = img?.getBoundingClientRect()
+      const fillsElement =
+        img && imgRect &&
+        imgRect.width >= rect.width * 0.9 &&
+        imgRect.height >= rect.height * 0.9
+      if (img && imgRect && fillsElement && imageSpan && img.naturalWidth > 0) {
+        const scale = Math.min(imgRect.width / img.naturalWidth, imgRect.height / img.naturalHeight) || 0
         const drawnWidth = img.naturalWidth * scale
-        const offsetX = (rect.width - drawnWidth) / 2
-        contactRight = rect.left + offsetX + drawnWidth * span.right
-        contactLeft = rect.left + offsetX + drawnWidth * span.left
+        const offsetX = (imgRect.width - drawnWidth) / 2
+        // `live` keeps the img rect as-is: a figure mid-entrance-drift sits
+        // left of its resting spot, and the wall must contact it there.
+        const base = live ? imgRect.left : rect.left
+        contactRight = base + offsetX + drawnWidth * imageSpan[1]
+        contactLeft = base + offsetX + drawnWidth * imageSpan[0]
       }
       el.style.setProperty('--push-at', (Math.min(contactRight / vw, 1) * 100).toFixed(3))
       el.style.setProperty('--push-from', (Math.max(contactLeft / vw, 0) * 100).toFixed(3))
     }
 
-    const write = () => {
-      if (midWipe()) {
-        return
-      }
+    const write = (live = false) => {
       for (const el of elements()) {
-        void writeElement(el)
+        writeElement(el, live)
       }
     }
 
-    // Character swaps replace the <img> inside the (unchanged) push element;
-    // load events don't bubble, so capture them at the root instead.
-    const onLoad = (event: Event) => {
-      const target = event.target
-      if (target instanceof HTMLElement) {
-        const el = target.closest<HTMLElement>('.wipe-push')
-        if (el) {
-          void writeElement(el)
-        }
-      }
-    }
-
-    // Arrival at the section re-measures before any leaving can start; the
-    // double rAF lets late-applying stylesheets (dev) settle after mount.
+    // Wipe start: re-measure with live rects so a figure that is mid-drift is
+    // contacted exactly where it is drawn. Arrival at the section re-measures
+    // before any leaving can start.
     const layer = root.closest('[data-active]')
-    const onLayerChange = () => {
-      if (layer?.getAttribute('data-active') === 'true') {
-        write()
-      }
-    }
     const layerObserver = layer
-      ? new MutationObserver(onLayerChange)
+      ? new MutationObserver(() => {
+          const leaving = layer.getAttribute('data-leaving')
+          if (leaving === 'forward' || leaving === 'backward') {
+            write(true)
+            return
+          }
+          if (layer.getAttribute('data-active') === 'true') {
+            write()
+          }
+        })
       : null
     if (layer) {
       layerObserver?.observe(layer, { attributes: true, attributeFilter: ['data-active', 'data-leaving'] })
     }
 
     write()
-    const raf = requestAnimationFrame(() => requestAnimationFrame(write))
-    const observer = new ResizeObserver(write)
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => write()))
+    const onResize = () => write()
+    const observer = new ResizeObserver(() => write())
     observer.observe(root)
     for (const el of elements()) {
       observer.observe(el)
     }
-    window.addEventListener('resize', write)
-    root.addEventListener('load', onLoad, true)
+    window.addEventListener('resize', onResize)
     return () => {
       cancelAnimationFrame(raf)
       layerObserver?.disconnect()
       observer.disconnect()
-      window.removeEventListener('resize', write)
-      root.removeEventListener('load', onLoad, true)
+      window.removeEventListener('resize', onResize)
     }
-  }, [ref])
+  }, [ref, imageSpan])
 }

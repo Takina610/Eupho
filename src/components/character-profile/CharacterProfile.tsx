@@ -29,7 +29,7 @@ function Chevron() {
 
 export function CharacterProfile() {
   const { character, count, index, select, stageRef, step, uniqueBackdrop } = useCharacterSelect()
-  useWallPushOffsets(stageRef)
+  useWallPushOffsets(stageRef, character.pushEdge)
   const watermarkRef = useRef<HTMLParagraphElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
