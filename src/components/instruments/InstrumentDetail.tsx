@@ -25,16 +25,16 @@ const EXIT_TOTAL_MS = 530
 
 function Chevron({ direction }: { direction: 'left' | 'right' }) {
   return (
-    <svg viewBox="0 0 15 14" className="h-3.5 w-4" fill="none" aria-hidden>
+    <svg viewBox="0 0 15 14" className="h-9 w-10 sm:h-10 sm:w-11" fill="none" aria-hidden>
       {direction === 'left' ? (
         <>
-          <path d="M7 1 2 7l5 6" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M13 1 8 7l5 6" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M7 1 2 7l5 6" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M13 1 8 7l5 6" stroke="currentColor" strokeWidth="1.2" />
         </>
       ) : (
         <>
-          <path d="M8 1l5 6-5 6" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M2 1l5 6-5 6" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M8 1l5 6-5 6" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M2 1l5 6-5 6" stroke="currentColor" strokeWidth="1.2" />
         </>
       )}
     </svg>
@@ -168,7 +168,7 @@ export function InstrumentDetail({
         type="button"
         onClick={() => onStep(-1)}
         aria-label="上一件乐器"
-        className="absolute left-5 top-1/2 z-10 flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center text-white/70 transition hover:text-white max-sm:top-[40%] sm:left-14"
+        className="absolute left-5 top-1/2 z-10 flex min-h-14 min-w-14 -translate-y-1/2 items-center justify-center text-white/80 transition hover:text-white max-sm:top-[40%] sm:left-20"
       >
         <Chevron direction="left" />
       </button>
@@ -176,7 +176,7 @@ export function InstrumentDetail({
         type="button"
         onClick={() => onStep(1)}
         aria-label="下一件乐器"
-        className="absolute right-5 top-1/2 z-10 flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center text-white/70 transition hover:text-white max-sm:top-[40%] sm:right-14"
+        className="absolute right-5 top-1/2 z-10 flex min-h-14 min-w-14 -translate-y-1/2 items-center justify-center text-white/80 transition hover:text-white max-sm:top-[40%] sm:right-20"
       >
         <Chevron direction="right" />
       </button>
