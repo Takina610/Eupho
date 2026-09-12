@@ -10,8 +10,10 @@
     <link rel="stylesheet" href="/src/styles/bootLoader.css" />
   </head>
   <body>
-    <div id="root">
-      <!-- 开屏静态加载壳：JS 下载期间先显示品牌画面；React 挂载后由 BootGate 接管并替换。 -->
+    <div id="root"></div>
+    <!-- 开屏静态加载壳：放在 #root 之外，React 接管/挂起清空 #root 时它不受影响，
+         由 BootGate 首次提交后移除。样式见 src/styles/bootLoader.css。 -->
+    <div id="boot-shell">
       <div class="boot-overlay" aria-hidden="true">
         <div class="boot-brand">
           <img class="boot-logo" src="/src/assets/re_logo.png" alt="" />

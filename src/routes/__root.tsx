@@ -1,5 +1,6 @@
+import { Suspense } from 'react'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { BootGate } from '@/components/loading/BootGate'
+import { BootGate, BootHold } from '@/components/loading/BootGate'
 import '@/styles/app.css'
 
 export const Route = createRootRoute({
@@ -9,7 +10,10 @@ export const Route = createRootRoute({
 function RootLayout() {
   return (
     <BootGate>
-      <Outlet />
+      {/* 路由组件在 BootGate 之下仍可能悬挂（分块加载），兜底层与加载层同色 */}
+      <Suspense fallback={<BootHold />}>
+        <Outlet />
+      </Suspense>
     </BootGate>
   )
 }

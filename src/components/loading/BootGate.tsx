@@ -1,7 +1,16 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import logoUrl from '@/assets/re_logo.png'
 import fclefUrl from '@/assets/re_fclef.png'
 import { useBootPreloader } from '@/hooks/useBootPreloader'
+
+/**
+ * 路由懒加载分块未就绪时的兜底画面：与加载层同色。
+ * RouterProvider 匹配挂起时（defaultPendingComponent）和 Outlet 悬挂时都会用到，
+ * 避免 React 清掉静态壳后露出深色 body。
+ */
+export function BootHold() {
+  return <div className="boot-hold" aria-hidden="true" />
+}
 
 /**
  * 开屏加载闸：预载期间盖住页面，完成后先挂载内容再淡出加载层，
@@ -12,6 +21,12 @@ import { useBootPreloader } from '@/hooks/useBootPreloader'
 export function BootGate({ children }: { children: ReactNode }) {
   const { progress, phase } = useBootPreloader()
   const percent = Math.round(progress * 100)
+
+  // React 首次提交后静态壳（index.html 的 #boot-shell）就已完成使命：
+  // 加载层已同帧铺上，此时移除，避免它留在 #root 之外挡住页面。
+  useEffect(() => {
+    document.getElementById('boot-shell')?.remove()
+  }, [])
 
   return (
     <>
