@@ -52,6 +52,8 @@ export function getSeamLayerRole(index: number, from: number, to: number) {
     isIdleActive: !animating && index === to,
     isLower: animating && index === lower,
     isUpper: animating && index === upper,
+    // The layer being navigated away from while the wipe plays.
+    isLeaving: animating && index !== to,
   }
 }
 

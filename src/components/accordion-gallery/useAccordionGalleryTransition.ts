@@ -6,13 +6,19 @@ const INTRO_DURATION = 0.62
 const INTRO_STAGGER = 0.055
 const INTRO_OFFSET = -110
 
-function introOffset(vertical: boolean) {
+// Exit plays inside the seam wipe (WIPE_MS = 1000ms): panels retract back to the
+// intro offset, right to left, lifted clear before the wipe erases each one.
+const EXIT_DURATION = 0.5
+const EXIT_STAGGER = 0.06
+const EXIT_EASE = 'power2.out'
+
+function transitionOffset(vertical: boolean) {
   return vertical
     ? { xPercent: INTRO_OFFSET, yPercent: 0 }
     : { xPercent: 0, yPercent: INTRO_OFFSET }
 }
 
-export function useAccordionGalleryIntro({
+export function useAccordionGalleryTransition({
   rootRef,
   vertical,
   count,
@@ -35,7 +41,7 @@ export function useAccordionGalleryIntro({
     if (inserts.length !== count) {
       return
     }
-    gsap.set(inserts, introOffset(vertical))
+    gsap.set(inserts, transitionOffset(vertical))
   }, [count, vertical])
 
   useEffect(() => {
@@ -59,7 +65,7 @@ export function useAccordionGalleryIntro({
         gsap.set(inserts, { xPercent: 0, yPercent: 0 })
         return
       }
-      gsap.set(inserts, introOffset(vertical))
+      gsap.set(inserts, transitionOffset(vertical))
     }
 
     const play = () => {
@@ -76,7 +82,7 @@ export function useAccordionGalleryIntro({
       }
 
       root.style.pointerEvents = 'none'
-      gsap.set(inserts, introOffset(vertical))
+      gsap.set(inserts, transitionOffset(vertical))
       tlRef.current = gsap.timeline({
         onComplete: () => {
           root.style.pointerEvents = ''
@@ -91,9 +97,39 @@ export function useAccordionGalleryIntro({
       })
     }
 
+    const exit = () => {
+      const inserts = liveInserts()
+      if (!inserts.length) {
+        return
+      }
+      tlRef.current?.kill()
+      tlRef.current = null
+      enteredRef.current = false
+      root.style.pointerEvents = ''
+
+      if (prefersReducedMotion()) {
+        gsap.set(inserts, transitionOffset(vertical))
+        return
+      }
+
+      tlRef.current = gsap.timeline()
+      tlRef.current.to(inserts, {
+        ...transitionOffset(vertical),
+        duration: EXIT_DURATION,
+        ease: EXIT_EASE,
+        stagger: { each: EXIT_STAGGER, from: 'end' },
+      })
+    }
+
     const sync = () => {
-      const active = !layer || layer.getAttribute('data-active') === 'true'
-      if (active) {
+      if (!layer) {
+        return
+      }
+      if (layer.getAttribute('data-leaving') === 'true') {
+        exit()
+        return
+      }
+      if (layer.getAttribute('data-active') === 'true') {
         play()
       } else {
         park()
@@ -111,7 +147,7 @@ export function useAccordionGalleryIntro({
     }
 
     const observer = new MutationObserver(sync)
-    observer.observe(layer, { attributes: true, attributeFilter: ['data-active'] })
+    observer.observe(layer, { attributes: true, attributeFilter: ['data-active', 'data-leaving'] })
     return () => {
       observer.disconnect()
       tlRef.current?.kill()

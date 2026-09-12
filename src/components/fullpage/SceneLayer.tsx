@@ -5,6 +5,7 @@ type SceneLayerProps = {
   isLower: boolean
   isUpper: boolean
   isIdleActive: boolean
+  isLeaving: boolean
   isAriaCurrent: boolean
   clipPath?: string
   zIndex: number
@@ -15,6 +16,7 @@ export function SceneLayer({
   isLower,
   isUpper,
   isIdleActive,
+  isLeaving,
   isAriaCurrent,
   clipPath,
   zIndex,
@@ -31,6 +33,7 @@ export function SceneLayer({
       aria-hidden={!isAriaCurrent}
       className={`absolute inset-0 ${isIdleActive ? '' : 'pointer-events-none'}`.trim()}
       data-active={visible ? 'true' : 'false'}
+      data-leaving={isLeaving ? 'true' : 'false'}
       style={style}
     >
       {children}

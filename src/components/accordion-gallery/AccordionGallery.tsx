@@ -1,5 +1,5 @@
 import { useState, type CSSProperties, type MouseEvent } from 'react'
-import { useAccordionGalleryIntro } from '@/components/accordion-gallery/useAccordionGalleryIntro'
+import { useAccordionGalleryTransition } from '@/components/accordion-gallery/useAccordionGalleryTransition'
 import { useAccordionGalleryLayout } from '@/components/accordion-gallery/useAccordionGalleryLayout'
 import { useAccordionGalleryPointer } from '@/components/accordion-gallery/useAccordionGalleryPointer'
 import { useMatchMedia } from '@/hooks/useMatchMedia'
@@ -92,7 +92,7 @@ export function AccordionGallery({
     stagger,
     gap,
   })
-  const { insertRefs } = useAccordionGalleryIntro({
+  const { insertRefs } = useAccordionGalleryTransition({
     rootRef,
     vertical,
     count,

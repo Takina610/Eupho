@@ -27,6 +27,7 @@ export function FullpageScenes({ sections, from, to }: FullpageScenesProps) {
             clipPath={style?.clipPath}
             isIdleActive={role.isIdleActive}
             isAriaCurrent={index === to}
+            isLeaving={role.isLeaving}
             isLower={role.isLower}
             isUpper={role.isUpper}
             zIndex={role.isUpper ? 1 : 0}
