@@ -213,7 +213,7 @@ export function InstrumentDetail({
       <button
         type="button"
         onClick={onClose}
-        className="inst-back absolute bottom-0 right-0 z-20 hidden h-10 items-center gap-3 bg-deep pl-6 pr-8 text-left text-white hover:bg-accent hover:text-ink sm:flex"
+        className="inst-back absolute bottom-0 right-0 z-20 hidden h-10 items-center gap-3 bg-deep pl-6 pr-8 text-left text-white sm:flex"
       >
         <Chevron direction="left" className="h-3.5 w-4" />
         <span className="text-sm font-bold leading-tight">
@@ -227,7 +227,7 @@ export function InstrumentDetail({
       <button
         type="button"
         onClick={onOpenList}
-        className="absolute bottom-[9vh] right-5 z-10 min-h-11 border border-white/50 px-4 text-xs font-semibold tracking-widest text-white sm:hidden"
+        className="absolute bottom-[9vh] right-5 z-10 min-h-11 border border-white/40 bg-ink/35 px-4 text-xs font-semibold tracking-widest text-white backdrop-blur-md sm:hidden"
       >
         查看列表
       </button>

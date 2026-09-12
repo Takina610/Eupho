@@ -148,7 +148,7 @@ export function InstrumentList({
             <button
               type="button"
               onClick={onCloseMobile}
-              className="min-h-11 border border-white/40 px-4 text-xs font-semibold tracking-widest text-white"
+              className="min-h-11 border border-white/40 bg-ink/35 px-4 text-xs font-semibold tracking-widest text-white backdrop-blur-md"
             >
               关闭
             </button>
