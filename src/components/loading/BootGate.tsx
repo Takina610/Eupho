@@ -3,8 +3,8 @@ import logoUrl from '@/assets/re_logo.png'
 import fclefUrl from '@/assets/re_fclef.png'
 import { useBootPreloader } from '@/hooks/useBootPreloader'
 
-/** 各谱线起始端的阶梯错位（从上到下依次变短，右端对齐）；CSS 里按 --stagger-scale 缩放。 */
-const LINE_STARTS = ['0', '16', '32', '48', '64'] as const
+/** 各谱线起始端的阶梯错位（官网 staffNotation 为 10px 一档），CSS 按 --stagger-unit 缩放。 */
+const LINE_STARTS = ['0', '10', '20', '30', '40'] as const
 
 /**
  * 路由懒加载分块未就绪时的兜底画面：与加载层同色。

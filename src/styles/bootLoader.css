@@ -62,50 +62,43 @@ body:has(#root:empty) {
 
 .boot-staff {
   position: relative;
-  /* 高度压进谱号「脚」的纵向范围：五条线都被脚的宽剪影盖住 */
-  height: 28px;
+  /* 官网 staffNotation 几何：1px 谱线、5px 行距（11px 一档），
+     谱号 91×95 跨在谱线左端，脚部盖住前三条线 */
+  height: 50px;
   --stagger-unit: 1px;
   /* 谱号几何：谱线遮挡 mask 与谱号 <img> 共用这一组变量 */
-  --clef-x: 104px;
-  --clef-h: 100px;
+  --clef-x: 0px;
+  --clef-top: -70px;
+  --clef-h: 95px;
   --clef-w: calc(var(--clef-h) * 0.958);
 }
 
 .boot-staff-lines {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
+  /* 普通块级流（官网同款）：flex column 会因容器高度不足把 1px 谱线 shrink 没了 */
+  display: block;
   pointer-events: none;
-  /* 谱线在离谱号尾巴较远处就停住、穿过处不显示：全幅遮罩依次减去
-     谱号剪影 + 五行谱线高度处跟随尾巴斜度的宽遮挡块 */
-  -webkit-mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png'),
-    linear-gradient(#000 0 0), linear-gradient(#000 0 0), linear-gradient(#000 0 0),
-    linear-gradient(#000 0 0), linear-gradient(#000 0 0);
-  -webkit-mask-position: 0 0, var(--clef-x) calc(100% - var(--clef-h) + 4px),
-    112px 0, 108px 6px, 104px 12px, 100px 19px, 96px 25px;
-  -webkit-mask-size: 100% 100%, auto var(--clef-h),
-    120px 4px, 110px 4px, 100px 4px, 90px 4px, 80px 4px;
+  /* 谱线从谱号背后穿出：全幅遮罩减去谱号剪影（官网即谱线被谱号盖住） */
+  -webkit-mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png');
+  -webkit-mask-position: 0 0, var(--clef-x) var(--clef-top);
+  -webkit-mask-size: 100% 100%, auto var(--clef-h);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite: destination-out;
-  mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png'),
-    linear-gradient(#000 0 0), linear-gradient(#000 0 0), linear-gradient(#000 0 0),
-    linear-gradient(#000 0 0), linear-gradient(#000 0 0);
-  mask-position: 0 0, var(--clef-x) calc(100% - var(--clef-h) + 4px),
-    112px 0, 108px 6px, 104px 12px, 100px 19px, 96px 25px;
-  mask-size: 100% 100%, auto var(--clef-h),
-    120px 4px, 110px 4px, 100px 4px, 90px 4px, 80px 4px;
+  mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png');
+  mask-position: 0 0, var(--clef-x) var(--clef-top);
+  mask-size: 100% 100%, auto var(--clef-h);
   mask-repeat: no-repeat;
   mask-composite: subtract;
 }
 
 /* 黄色谱线：右端对齐，起始端按 --start 阶梯错位（错位出现在开头） */
 .boot-line {
+  display: block;
   position: relative;
-  height: 3px;
+  height: 1px;
   width: calc(100% - var(--start) * var(--stagger-unit));
+  margin: 5px 0;
   margin-left: calc(var(--start) * var(--stagger-unit));
   overflow: hidden;
   background: #fff830;
@@ -125,7 +118,7 @@ body:has(#root:empty) {
 .boot-clef {
   position: absolute;
   left: var(--clef-x);
-  bottom: -4px;
+  top: var(--clef-top);
   height: var(--clef-h);
   width: auto;
   /* 素材保持蓝色；青底上加白边光晕提轮廓（参考图里谱号带白边高光） */
@@ -252,29 +245,13 @@ body:has(#root:empty) {
   }
 
   .boot-staff {
-    height: 20px;
     --stagger-unit: 0.75px;
-    --clef-x: 76px;
     --clef-h: 74px;
-  }
-
-  .boot-staff-lines {
-    -webkit-mask-position: 0 0, var(--clef-x) calc(100% - var(--clef-h) + 4px),
-      81px 0, 78px 4px, 75px 8px, 72px 13px, 69px 17px;
-    -webkit-mask-size: 100% 100%, auto var(--clef-h),
-      86px 3px, 79px 3px, 72px 3px, 65px 3px, 58px 3px;
-    mask-position: 0 0, var(--clef-x) calc(100% - var(--clef-h) + 4px),
-      81px 0, 78px 4px, 75px 8px, 72px 13px, 69px 17px;
-    mask-size: 100% 100%, auto var(--clef-h),
-      86px 3px, 79px 3px, 72px 3px, 65px 3px, 58px 3px;
+    --clef-top: -49px;
   }
 
   .boot-line {
-    height: 2px;
-  }
-
-  .boot-clef {
-    left: var(--clef-x);
+    margin: 4px 0;
   }
 
   .boot-meta {
