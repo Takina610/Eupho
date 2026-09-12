@@ -34,13 +34,18 @@ export function useSeamTransition({
       return
     }
 
+    // Completion value of the seam: direction-aware (1 = lower fully visible, 0 =
+    // upper fully visible). Writing it before onComplete keeps any frame rendered
+    // before React commits the idle styles identical to the final state.
+    const completionP = String(seamProgressAt(1, from, to))
+
     if (from === to) {
-      surface.style.setProperty('--seam-p', '1')
+      surface.style.setProperty('--seam-p', completionP)
       return
     }
 
     if (reducedMotion) {
-      surface.style.setProperty('--seam-p', '1')
+      surface.style.setProperty('--seam-p', completionP)
       onCompleteRef.current()
       return
     }
@@ -57,7 +62,7 @@ export function useSeamTransition({
       cancelled = true
       cancelAnimationFrame(raf)
       window.clearTimeout(watchdog)
-      surface.style.setProperty('--seam-p', '1')
+      surface.style.setProperty('--seam-p', completionP)
       onCompleteRef.current()
     }
 
