@@ -104,7 +104,9 @@ export function useWallPushOffsets(ref: RefObject<HTMLElement | null>) {
     const layerObserver = layer
       ? new MutationObserver(onLayerChange)
       : null
-    layerObserver?.observe(layer, { attributes: true, attributeFilter: ['data-active', 'data-leaving'] })
+    if (layer) {
+      layerObserver?.observe(layer, { attributes: true, attributeFilter: ['data-active', 'data-leaving'] })
+    }
 
     write()
     const raf = requestAnimationFrame(() => requestAnimationFrame(write))
