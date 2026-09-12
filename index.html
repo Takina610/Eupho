@@ -13,10 +13,28 @@
     <div id="root">
       <!-- 开屏静态加载壳：JS 下载期间先显示品牌画面；React 挂载后由 BootGate 接管并替换。 -->
       <div class="boot-overlay" aria-hidden="true">
-        <img class="boot-logo" src="/src/assets/eupho.webp" alt="" />
-        <p class="boot-caption">NOW LOADING</p>
-        <div class="boot-bar"><span class="boot-bar-fill boot-bar-fill--sweep"></span></div>
-        <p class="boot-count">0%</p>
+        <div class="boot-brand">
+          <img class="boot-logo" src="/src/assets/re_logo.png" alt="" />
+        </div>
+        <div class="boot-hud">
+          <div class="boot-staff">
+            <span class="boot-staff-clip"
+              ><span class="boot-staff-fill boot-staff-fill--sweep"></span
+            ></span>
+            <span class="boot-staff-lines"><i></i><i></i><i></i><i></i><i></i></span>
+            <img class="boot-clef" src="/src/assets/re_fclef.png" alt="" />
+          </div>
+          <div class="boot-meta">
+            <p class="boot-loading">
+              <i class="boot-caret"></i>LOADING - <span class="boot-count">0</span>%<span
+                class="boot-dots"
+                ><i></i><i></i><i></i></span
+              >
+            </p>
+            <p class="boot-site">吹响吧！上低音号 // FAN SITE</p>
+          </div>
+        </div>
+        <p class="boot-corner">© SOUND! EUPHONIUM</p>
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
