@@ -1,10 +1,10 @@
 import type { ComponentType } from 'react'
 import { CtaSection } from '@/components/fullpage/sections/CtaSection'
 import { IndexSection } from '@/components/fullpage/sections/IndexSection'
-import { StackSection } from '@/components/fullpage/sections/StackSection'
+import { MembersSection } from '@/components/fullpage/sections/MembersSection'
 import { InstrumentsSection } from '@/components/instruments/InstrumentsSection'
 
-export type HomeSectionId = 'index' | 'stack' | 'instruments' | 'cta'
+export type HomeSectionId = 'index' | 'members' | 'instruments' | 'cta'
 
 /** Sections may opt into knowing whether they are the currently visible page. */
 export type SectionActiveProps = { active?: boolean }
@@ -22,7 +22,7 @@ export type HomeSectionConfig = {
 
 export const HOME_SECTIONS: HomeSectionConfig[] = [
   { id: 'index', Component: IndexSection },
-  { id: 'stack', Component: StackSection },
+  { id: 'members', Component: MembersSection },
   { id: 'instruments', Component: InstrumentsSection, usesActive: true },
   { id: 'cta', Component: CtaSection },
 ]

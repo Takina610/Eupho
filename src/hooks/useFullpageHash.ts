@@ -3,6 +3,8 @@ import { HOME_SECTIONS, type HomeSectionId } from '@/constants/homeSections'
 
 const SECTION_ID_ALIASES: Record<string, HomeSectionId> = {
   hero: 'index',
+  // Old section name before the members rename.
+  stack: 'members',
   showcase: 'instruments',
 }
 
