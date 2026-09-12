@@ -36,6 +36,7 @@
   transform-origin: center center;
   will-change: flex-grow, transform;
   -webkit-tap-highlight-color: transparent;
+  transition: filter 0.45s ease;
 }
 
 .ag-panel:focus-visible {
@@ -134,8 +135,21 @@
   pointer-events: none;
 }
 
-.accordion-gallery.is-recessed .ag-panel {
-  opacity: 0.38;
+/* Dim with a filter, not opacity: the panels stay opaque so the staff-line
+   background can never bleed through them while the detail dialog is open. */
+.accordion-gallery.is-dimmed .ag-panel {
+  filter: brightness(0.42) saturate(0.85);
+}
+
+/* While a detail dialog is open the gallery eases back a touch for depth. */
+@media (prefers-reduced-motion: no-preference) {
+  .accordion-gallery {
+    transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .accordion-gallery.is-dimmed {
+    transform: scale(0.982);
+  }
 }
 
 /* Keep in sync with STACK_QUERY in AccordionGallery.tsx */

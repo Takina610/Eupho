@@ -1,4 +1,8 @@
 .series-detail {
+  --detail-inset-top: max(1.25rem, env(safe-area-inset-top, 0px));
+  --detail-inset-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  --detail-inset-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+  --detail-inset-left: max(1.25rem, env(safe-area-inset-left, 0px));
   position: fixed;
   inset: 0;
   z-index: 50;
@@ -13,15 +17,38 @@
 
 .series-detail__stage {
   position: fixed;
-  top: max(1.25rem, env(safe-area-inset-top, 0px));
-  right: max(1.25rem, env(safe-area-inset-right, 0px));
-  bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
-  left: max(1.25rem, env(safe-area-inset-left, 0px));
+  top: var(--detail-inset-top);
+  right: var(--detail-inset-right);
+  bottom: var(--detail-inset-bottom);
+  left: var(--detail-inset-left);
   overflow: hidden;
   border-radius: 18px;
   background: #021c21;
   box-shadow: 0 24px 64px -24px rgba(0, 0, 0, 0.72);
-  will-change: transform;
+  will-change: clip-path;
+}
+
+/* Outline of the stage that hosts the seam line sweeping the reveal edge. */
+.series-detail__frame {
+  position: fixed;
+  top: var(--detail-inset-top);
+  right: var(--detail-inset-right);
+  bottom: var(--detail-inset-bottom);
+  left: var(--detail-inset-left);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.series-detail__seam {
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  background: #fff830;
+  box-shadow:
+    0 0 4px color-mix(in srgb, #fff830 85%, transparent),
+    0 0 16px color-mix(in srgb, #fff830 55%, transparent);
+  opacity: 0;
 }
 
 .series-detail__hero,
@@ -78,13 +105,20 @@
   padding: 2.25rem 2.5rem;
 }
 
-.series-detail__portrait {
+.series-detail__portrait-mask {
   width: min(32vw, 280px);
   flex: 0 0 auto;
   aspect-ratio: 2 / 3;
-  object-fit: cover;
+  overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7);
+}
+
+.series-detail__portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .series-detail__copy {
@@ -102,6 +136,10 @@
   background: #fff830;
   transform-origin: top center;
   box-shadow: 0 0 12px color-mix(in srgb, #fff830 60%, transparent);
+}
+
+.series-detail__mask {
+  overflow: hidden;
 }
 
 .series-detail__text {
@@ -137,11 +175,11 @@
 }
 
 @media (max-width: 640px) {
-  .series-detail__stage {
-    top: max(0.75rem, env(safe-area-inset-top, 0px));
-    right: max(0.75rem, env(safe-area-inset-right, 0px));
-    bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
-    left: max(0.75rem, env(safe-area-inset-left, 0px));
+  .series-detail {
+    --detail-inset-top: max(0.75rem, env(safe-area-inset-top, 0px));
+    --detail-inset-right: max(0.75rem, env(safe-area-inset-right, 0px));
+    --detail-inset-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+    --detail-inset-left: max(0.75rem, env(safe-area-inset-left, 0px));
   }
 
   .series-detail__veil {
@@ -157,7 +195,7 @@
     padding: 1.25rem 1.15rem 1.5rem;
   }
 
-  .series-detail__portrait {
+  .series-detail__portrait-mask {
     width: min(42vw, 168px);
   }
 

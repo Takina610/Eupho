@@ -6,10 +6,12 @@ import '@/components/series-detail/SeriesDetailStage.css'
 
 type SeriesDetailStageProps = {
   work: SeriesWork
+  /** Fired once when closing starts, before the exit animation plays out. */
+  onClosing?: () => void
   onExited: () => void
 }
 
-export function SeriesDetailStage({ work, onExited }: SeriesDetailStageProps) {
+export function SeriesDetailStage({ work, onClosing, onExited }: SeriesDetailStageProps) {
   const stageRef = useRef<HTMLDivElement>(null)
   const scrimRef = useRef<HTMLButtonElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
@@ -17,6 +19,7 @@ export function SeriesDetailStage({ work, onExited }: SeriesDetailStageProps) {
   const { close } = useSeriesDetailTimeline({
     stageRef,
     scrimRef,
+    onClosing,
     onExited,
   })
 
@@ -71,22 +74,33 @@ export function SeriesDetailStage({ work, onExited }: SeriesDetailStageProps) {
           ×
         </button>
         <div className="series-detail__body">
-          <img className="series-detail__portrait" src={work.portrait} alt={work.alt} draggable={false} />
+          <div className="series-detail__portrait-mask">
+            <img className="series-detail__portrait" src={work.portrait} alt={work.alt} draggable={false} />
+          </div>
           <div className="series-detail__copy">
             <span className="series-detail__rule" aria-hidden="true" />
             <div className="series-detail__text">
-              <p className="series-detail__meta">
+              <p className="series-detail__meta" data-copy-reveal>
                 <span>{work.year}</span>
                 <span aria-hidden="true">·</span>
                 <span>{work.kind}</span>
               </p>
-              <h2 id="series-detail-title" className="series-detail__title">
-                {work.title}
-              </h2>
-              <p className="series-detail__synopsis">{work.synopsis}</p>
+              <div className="series-detail__mask">
+                <h2 id="series-detail-title" className="series-detail__title">
+                  {work.title}
+                </h2>
+              </div>
+              <p className="series-detail__synopsis" data-copy-reveal>
+                {work.synopsis}
+              </p>
             </div>
           </div>
         </div>
+      </div>
+      {/* Seam line riding the stage's clip reveal; outside the stage so the
+          wipe edge never clips it. */}
+      <div className="series-detail__frame" aria-hidden="true">
+        <span className="series-detail__seam" />
       </div>
     </div>,
     document.body,

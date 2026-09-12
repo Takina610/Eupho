@@ -37,7 +37,11 @@ type AccordionGalleryProps = {
   showLabels?: boolean
   grayscale?: boolean
   className?: string
+  /** Locks interaction while a dialog is open (panels stay put and unclickable). */
   recessed?: boolean
+  /** Visual dim/defocus of the gallery; independent from `recessed` so the
+      scene can restore while the dialog's exit animation is still playing. */
+  dimmed?: boolean
   onOpenActive?: (index: number) => void
 }
 
@@ -62,6 +66,7 @@ export function AccordionGallery({
   grayscale = true,
   className = '',
   recessed = false,
+  dimmed = false,
   onOpenActive,
 }: AccordionGalleryProps) {
   const stackOnNarrow = useMatchMedia(STACK_QUERY)
@@ -103,7 +108,7 @@ export function AccordionGallery({
   return (
     <div
       ref={rootRef}
-      className={`accordion-gallery${vertical ? ' accordion-gallery--vertical' : ''}${recessed ? ' is-recessed' : ''}${className ? ` ${className}` : ''}`}
+      className={`accordion-gallery${vertical ? ' accordion-gallery--vertical' : ''}${recessed ? ' is-recessed' : ''}${dimmed ? ' is-dimmed' : ''}${className ? ` ${className}` : ''}`}
       style={
         {
           '--ag-accent': accentColor,
