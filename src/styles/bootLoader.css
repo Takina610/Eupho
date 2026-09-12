@@ -62,7 +62,8 @@ body:has(#root:empty) {
 
 .boot-staff {
   position: relative;
-  height: 52px;
+  /* 高度压进谱号「脚」的纵向范围：五条线都被脚的宽剪影盖住 */
+  height: 28px;
   /* 谱号几何：谱线遮挡 mask 与谱号 <img> 共用这一组变量 */
   --clef-x: 104px;
   --clef-h: 100px;
@@ -242,13 +243,13 @@ body:has(#root:empty) {
   }
 
   .boot-staff {
-    height: 40px;
+    height: 20px;
     --clef-x: 76px;
     --clef-h: 74px;
   }
 
   .boot-line {
-    height: 2.5px;
+    height: 2px;
   }
 
   .boot-clef {
