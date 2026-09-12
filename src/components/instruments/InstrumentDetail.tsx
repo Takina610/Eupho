@@ -168,7 +168,7 @@ export function InstrumentDetail({
         type="button"
         onClick={() => onStep(-1)}
         aria-label="上一件乐器"
-        className="absolute left-3 top-1/2 z-10 flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center text-white/70 transition hover:text-white max-sm:top-[40%] sm:left-6"
+        className="absolute left-5 top-1/2 z-10 flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center text-white/70 transition hover:text-white max-sm:top-[40%] sm:left-14"
       >
         <Chevron direction="left" />
       </button>
@@ -176,7 +176,7 @@ export function InstrumentDetail({
         type="button"
         onClick={() => onStep(1)}
         aria-label="下一件乐器"
-        className="absolute right-3 top-1/2 z-10 flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center text-white/70 transition hover:text-white max-sm:top-[40%] sm:right-6"
+        className="absolute right-5 top-1/2 z-10 flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center text-white/70 transition hover:text-white max-sm:top-[40%] sm:right-14"
       >
         <Chevron direction="right" />
       </button>
@@ -189,7 +189,7 @@ export function InstrumentDetail({
         <div aria-hidden className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-white/25" />
         <div
           aria-hidden
-          className="absolute top-1/2 h-[10px] -translate-y-1/2 bg-[#3ec1f0] transition-[left] duration-300"
+          className="absolute top-1/2 h-[10px] -translate-y-1/2 bg-accent transition-[left] duration-300"
           style={{ width: `${100 / total}%`, left: `${(index * 100) / total}%` }}
         />
         {INSTRUMENTS.map((item, i) => (
@@ -207,7 +207,7 @@ export function InstrumentDetail({
       <button
         type="button"
         onClick={onClose}
-        className="absolute bottom-0 right-0 z-20 hidden h-10 items-center gap-3 bg-[#3c4249] pl-6 pr-8 text-left text-white transition-colors hover:bg-white hover:text-ink sm:flex"
+        className="inst-back absolute bottom-0 right-0 z-20 hidden h-10 items-center gap-3 bg-deep pl-6 pr-8 text-left text-white hover:bg-accent hover:text-ink sm:flex"
       >
         <Chevron direction="left" />
         <span className="text-sm font-bold leading-tight">

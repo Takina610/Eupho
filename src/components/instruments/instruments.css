@@ -117,6 +117,23 @@
   width: 100%;
 }
 
+/* 返回按钮：进详情时自右滑入，退出详情时向右滑出 */
+.inst-back {
+  transform: translateX(110%);
+  transition:
+    transform 0.35s cubic-bezier(0.6, 0.04, 0.98, 0.34),
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.inst-detail[data-open='true'] .inst-back {
+  transform: translateX(0);
+  transition:
+    transform 0.45s cubic-bezier(0.33, 1, 0.68, 1) 0.25s,
+    background-color 0.3s ease 0.25s,
+    color 0.3s ease 0.25s;
+}
+
 .inst-panel {
   transition:
     opacity 0.8s ease,
@@ -238,6 +255,11 @@
     transition: none;
     transform: none;
     opacity: 1;
+  }
+
+  .inst-back {
+    transition: none;
+    transform: none;
   }
 
   .inst-reveal-item,
