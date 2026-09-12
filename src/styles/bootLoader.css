@@ -63,23 +63,10 @@ body:has(#root:empty) {
 .boot-staff {
   position: relative;
   height: 52px;
-}
-
-/* 裁切层：黄色填充不许越出线谱（谱号要越出上下，所以不能裁在 .boot-staff 上） */
-.boot-staff-clip {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.boot-staff-fill {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  background: #fff830;
-  transition: width 260ms ease-out;
+  /* 谱号几何：谱线遮挡 mask 与谱号 <img> 共用这一组变量 */
+  --clef-x: 104px;
+  --clef-h: 100px;
+  --clef-w: calc(var(--clef-h) * 0.958);
 }
 
 .boot-staff-lines {
@@ -90,46 +77,50 @@ body:has(#root:empty) {
   align-items: flex-start;
   justify-content: space-between;
   pointer-events: none;
-  /* 谱号盖在谱线上、穿过处不显示谱线：全幅遮罩减去谱号形状（双层 mask 相减） */
-  -webkit-mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png');
-  -webkit-mask-position: 0 0, -8px center;
-  -webkit-mask-size: 100% 100%, auto 100px;
-  -webkit-mask-repeat: no-repeat, no-repeat;
+  /* 谱号盖在谱线上、穿过处不显示谱线：全幅遮罩依次减去
+     谱号形状与谱号下缘左右两块扩大遮挡区 */
+  -webkit-mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png'),
+    linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  -webkit-mask-position: 0 0, var(--clef-x) center,
+    calc(var(--clef-x) - 28px) 6%, calc(var(--clef-x) + var(--clef-w) - 6px) 6%;
+  -webkit-mask-size: 100% 100%, auto var(--clef-h), 40px 94%, 40px 94%;
+  -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite: destination-out;
-  mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png');
-  mask-position: 0 0, -8px center;
-  mask-size: 100% 100%, auto 100px;
-  mask-repeat: no-repeat, no-repeat;
+  mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png'),
+    linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  mask-position: 0 0, var(--clef-x) center,
+    calc(var(--clef-x) - 28px) 6%, calc(var(--clef-x) + var(--clef-w) - 6px) 6%;
+  mask-size: 100% 100%, auto var(--clef-h), 40px 94%, 40px 94%;
+  mask-repeat: no-repeat;
   mask-composite: subtract;
 }
 
-.boot-staff-lines i {
+/* 黄色谱线：右端对齐，起始端按 --start 阶梯错位（错位出现在开头） */
+.boot-line {
+  position: relative;
   height: 3px;
-  background: rgba(255, 255, 255, 0.78);
+  width: calc(100% - var(--start));
+  margin-left: var(--start);
+  overflow: hidden;
+  background: #fff830;
 }
 
-/* 谱线自上而下依次变短，做出层次与递进感 */
-.boot-staff-lines i:nth-child(1) {
-  width: 100%;
-}
-.boot-staff-lines i:nth-child(2) {
-  width: 85%;
-}
-.boot-staff-lines i:nth-child(3) {
-  width: 70%;
-}
-.boot-staff-lines i:nth-child(4) {
-  width: 55%;
-}
-.boot-staff-lines i:nth-child(5) {
-  width: 40%;
+/* 白色进度条：从所在谱线的起始端向右生长 */
+.boot-line-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  background: #fff;
+  transition: width 260ms ease-out;
 }
 
 .boot-clef {
   position: absolute;
-  left: -8px;
+  left: var(--clef-x);
   top: 50%;
-  height: 100px;
+  height: var(--clef-h);
   width: auto;
   transform: translateY(-50%);
   /* 素材保持蓝色；青底上加白边光晕提轮廓（参考图里谱号带白边高光） */
@@ -207,9 +198,9 @@ body:has(#root:empty) {
   color: #fff;
 }
 
-/* ---- 静态壳不知道真实进度，用一段扫过的黄色光带示意「加载中」 ---- */
+/* ---- 静态壳不知道真实进度，每条谱线里用一段白色光带示意「加载中」 ---- */
 
-.boot-staff-fill--sweep {
+.boot-line-bar--sweep {
   width: 34%;
   animation: boot-sweep 1.6s ease-in-out infinite;
 }
@@ -257,22 +248,16 @@ body:has(#root:empty) {
 
   .boot-staff {
     height: 40px;
+    --clef-x: 76px;
+    --clef-h: 74px;
   }
 
-  .boot-staff-lines {
-    -webkit-mask-position: 0 0, -5px center;
-    -webkit-mask-size: 100% 100%, auto 74px;
-    mask-position: 0 0, -5px center;
-    mask-size: 100% 100%, auto 74px;
-  }
-
-  .boot-staff-lines i {
+  .boot-line {
     height: 2.5px;
   }
 
   .boot-clef {
-    height: 74px;
-    left: -5px;
+    left: var(--clef-x);
   }
 
   .boot-meta {
@@ -280,12 +265,14 @@ body:has(#root:empty) {
   }
 
   .boot-loading {
-    font-size: 12px;
+    font-size: 11px;
+    white-space: nowrap;
   }
 
   .boot-site {
-    font-size: 11px;
-    letter-spacing: 0.12em;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
   }
 
   .boot-corner {
@@ -295,12 +282,12 @@ body:has(#root:empty) {
 
 @media (prefers-reduced-motion: reduce) {
   .boot-logo,
-  .boot-staff-fill--sweep,
+  .boot-line-bar--sweep,
   .boot-dots i {
     animation: none;
   }
 
-  .boot-staff-fill--sweep {
+  .boot-line-bar--sweep {
     width: 100%;
     opacity: 0.4;
   }
