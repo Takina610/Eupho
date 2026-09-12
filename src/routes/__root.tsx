@@ -1,4 +1,5 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
+import { BootGate } from '@/components/loading/BootGate'
 import '@/styles/app.css'
 
 export const Route = createRootRoute({
@@ -6,5 +7,9 @@ export const Route = createRootRoute({
 })
 
 function RootLayout() {
-  return <Outlet />
+  return (
+    <BootGate>
+      <Outlet />
+    </BootGate>
+  )
 }

@@ -1,0 +1,101 @@
+/*
+ * 开屏加载层。由 index.html 以 <link> 引入（保证 JS 下载期间静态壳就有样式），
+ * React 的 BootGate 挂载后复用同一套类名无缝接管。淡出时长与
+ * constants/bootLoader.ts 的 BOOT_FADE_MS 保持一致。
+ */
+
+.boot-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #021c21 0%, #04333c 100%);
+  transition: opacity 600ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.boot-overlay[data-leaving] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot-logo {
+  width: clamp(56px, 13vw, 84px);
+  filter: drop-shadow(0 0 26px rgba(1, 172, 198, 0.35));
+  animation: boot-float 2.6s ease-in-out infinite;
+}
+
+.boot-caption {
+  margin: 20px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.42em;
+  /* 抵消最后一个字母的间距，让文字视觉居中 */
+  text-indent: 0.42em;
+  color: rgba(244, 251, 252, 0.62);
+}
+
+.boot-bar {
+  width: min(240px, 62vw);
+  height: 2px;
+  margin-top: 22px;
+  overflow: hidden;
+  border-radius: 999px;
+  /* 带一点青色底：扫光带折返离场时轨道不至于看起来全空 */
+  background: rgba(1, 172, 198, 0.18);
+}
+
+.boot-bar-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: #01acc6;
+  transition: width 260ms ease-out;
+}
+
+/* 静态壳不知道真实进度，用一段扫过的光带示意「加载中」 */
+.boot-bar-fill--sweep {
+  width: 34%;
+  animation: boot-sweep 1.6s ease-in-out infinite;
+}
+
+.boot-count {
+  margin: 12px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: #fff830;
+}
+
+@keyframes boot-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes boot-sweep {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(330%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-logo,
+  .boot-bar-fill--sweep {
+    animation: none;
+  }
+
+  .boot-bar-fill--sweep {
+    width: 100%;
+    opacity: 0.4;
+  }
+}

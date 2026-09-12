@@ -7,9 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#01acc6" />
     <title>吹响吧！上低音号</title>
+    <link rel="stylesheet" href="/src/styles/bootLoader.css" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- 开屏静态加载壳：JS 下载期间先显示品牌画面；React 挂载后由 BootGate 接管并替换。 -->
+      <div class="boot-overlay" aria-hidden="true">
+        <img class="boot-logo" src="/src/assets/eupho.webp" alt="" />
+        <p class="boot-caption">NOW LOADING</p>
+        <div class="boot-bar"><span class="boot-bar-fill boot-bar-fill--sweep"></span></div>
+        <p class="boot-count">0%</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
