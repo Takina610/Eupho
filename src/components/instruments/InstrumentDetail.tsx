@@ -23,9 +23,15 @@ type CopyStage = 'reveal' | 'exit' | 'enter'
 // Keep in sync with .inst-swap-out's delays + duration in instruments.css.
 const EXIT_TOTAL_MS = 530
 
-function Chevron({ direction }: { direction: 'left' | 'right' }) {
+function Chevron({
+  direction,
+  className = 'h-9 w-10 sm:h-10 sm:w-11',
+}: {
+  direction: 'left' | 'right'
+  className?: string
+}) {
   return (
-    <svg viewBox="0 0 15 14" className="h-9 w-10 sm:h-10 sm:w-11" fill="none" aria-hidden>
+    <svg viewBox="0 0 15 14" className={className} fill="none" aria-hidden>
       {direction === 'left' ? (
         <>
           <path d="M7 1 2 7l5 6" stroke="currentColor" strokeWidth="1.2" />
@@ -209,7 +215,7 @@ export function InstrumentDetail({
         onClick={onClose}
         className="inst-back absolute bottom-0 right-0 z-20 hidden h-10 items-center gap-3 bg-deep pl-6 pr-8 text-left text-white hover:bg-accent hover:text-ink sm:flex"
       >
-        <Chevron direction="left" />
+        <Chevron direction="left" className="h-3.5 w-4" />
         <span className="text-sm font-bold leading-tight">
           返回
           <span className="block text-[0.6rem] font-semibold uppercase tracking-[0.28em] opacity-70">
