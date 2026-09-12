@@ -77,20 +77,16 @@ body:has(#root:empty) {
   align-items: flex-start;
   justify-content: space-between;
   pointer-events: none;
-  /* 谱号盖在谱线上、穿过处不显示谱线：全幅遮罩依次减去
-     谱号形状与谱号下缘左右两块扩大遮挡区 */
-  -webkit-mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png'),
-    linear-gradient(#000 0 0), linear-gradient(#000 0 0);
-  -webkit-mask-position: 0 0, var(--clef-x) center,
-    calc(var(--clef-x) - 28px) 6%, calc(var(--clef-x) + var(--clef-w) - 6px) 6%;
-  -webkit-mask-size: 100% 100%, auto var(--clef-h), 40px 94%, 40px 94%;
+  /* 谱号盖在谱线上、穿过处不显示谱线：全幅遮罩减去谱号形状。
+     谱号下缘那条宽「脚」本身就是设计好的遮挡物（左右宽出压住谱线） */
+  -webkit-mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png');
+  -webkit-mask-position: 0 0, var(--clef-x) calc(100% - var(--clef-h) + 4px);
+  -webkit-mask-size: 100% 100%, auto var(--clef-h);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-composite: destination-out;
-  mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png'),
-    linear-gradient(#000 0 0), linear-gradient(#000 0 0);
-  mask-position: 0 0, var(--clef-x) center,
-    calc(var(--clef-x) - 28px) 6%, calc(var(--clef-x) + var(--clef-w) - 6px) 6%;
-  mask-size: 100% 100%, auto var(--clef-h), 40px 94%, 40px 94%;
+  mask-image: linear-gradient(#000 0 0), url('../assets/re_fclef.png');
+  mask-position: 0 0, var(--clef-x) calc(100% - var(--clef-h) + 4px);
+  mask-size: 100% 100%, auto var(--clef-h);
   mask-repeat: no-repeat;
   mask-composite: subtract;
 }
@@ -119,10 +115,9 @@ body:has(#root:empty) {
 .boot-clef {
   position: absolute;
   left: var(--clef-x);
-  top: 50%;
+  bottom: -4px;
   height: var(--clef-h);
   width: auto;
-  transform: translateY(-50%);
   /* 素材保持蓝色；青底上加白边光晕提轮廓（参考图里谱号带白边高光） */
   filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff);
   opacity: 0.95;
@@ -132,7 +127,7 @@ body:has(#root:empty) {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-top: 28px;
+  margin-top: 16px;
   color: #fff;
 }
 
@@ -261,7 +256,7 @@ body:has(#root:empty) {
   }
 
   .boot-meta {
-    margin-top: 22px;
+    margin-top: 12px;
   }
 
   .boot-loading {
