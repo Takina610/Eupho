@@ -94,7 +94,7 @@ export function CharacterProfile() {
             }
           />
         </div>
-        <p ref={watermarkRef} className="cp__watermark wipe-push" data-cp-layer="main">
+        <p ref={watermarkRef} className="cp__watermark" data-cp-layer="main">
           {watermark}
         </p>
         <div className="cp__portrait wipe-push" data-cp-layer="main">
