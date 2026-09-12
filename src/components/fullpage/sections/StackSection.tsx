@@ -1,8 +1,9 @@
+import { memo } from 'react'
 import { CharacterProfile } from '@/components/character-profile/CharacterProfile'
 import { IndexBackground } from '@/components/fullpage/IndexBackground'
 import { Section } from '@/components/fullpage/Section'
 
-export function StackSection() {
+export const StackSection = memo(function StackSection() {
   return (
     <Section id="stack" className="relative text-[#f2fafa]">
       <IndexBackground />
@@ -12,4 +13,4 @@ export function StackSection() {
       </div>
     </Section>
   )
-}
+})

@@ -9,9 +9,11 @@ import { prefersReducedMotion, subscribePrefersReducedMotion } from '@/lib/motio
 export function useFullpagePager({
   pageCount,
   targetRef,
+  surfaceRef,
 }: {
   pageCount: number
   targetRef: RefObject<HTMLElement | null>
+  surfaceRef: RefObject<HTMLDivElement | null>
 }) {
   const [reducedMotion, setReducedMotion] = useState(false)
   const [activeIndex, setActiveIndex] = useState(getIndexFromHash)
@@ -45,11 +47,12 @@ export function useFullpagePager({
     lockedRef.current = fromRef.current !== toRef.current || footerLockRef.current || locked
   }, [])
 
-  const { progress, rawT } = useSeamTransition({
+  useSeamTransition({
     from,
     to,
     durationMs: WIPE_MS,
     reducedMotion,
+    surfaceRef,
     onComplete: () => setFrom(toRef.current),
   })
 
@@ -142,8 +145,6 @@ export function useFullpagePager({
     goTo,
     isAnimating: from !== to || footerLock,
     footerLock,
-    progress,
-    rawT,
     reducedMotion,
     to,
     setOverlayLock,

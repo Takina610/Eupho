@@ -1,8 +1,9 @@
+import { memo } from 'react'
 import { Reveal } from '@/components/fullpage/Reveal'
 import { Section } from '@/components/fullpage/Section'
 import { useFullpageGoTo } from '@/components/fullpage/FullpagePagerContext'
 
-export function CtaSection() {
+export const CtaSection = memo(function CtaSection() {
   const goTo = useFullpageGoTo()
 
   return (
@@ -26,4 +27,4 @@ export function CtaSection() {
       </Reveal>
     </Section>
   )
-}
+})

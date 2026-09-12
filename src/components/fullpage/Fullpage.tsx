@@ -10,9 +10,14 @@ import { EASE_OUT_QUAD_CSS } from '@/lib/easing'
 
 export function Fullpage() {
   const rootRef = useRef<HTMLDivElement>(null)
+  const scenesRef = useRef<HTMLDivElement>(null)
   const footerRef = useRef<HTMLElement>(null)
   const footerHeight = useElementHeight(footerRef)
-  const pager = useFullpagePager({ pageCount: HOME_SECTIONS.length, targetRef: rootRef })
+  const pager = useFullpagePager({
+    pageCount: HOME_SECTIONS.length,
+    targetRef: rootRef,
+    surfaceRef: scenesRef,
+  })
 
   return (
     <FullpagePagerProvider goTo={pager.goTo} setOverlayLock={pager.setOverlayLock}>
@@ -28,6 +33,7 @@ export function Fullpage() {
           }}
         >
           <div
+            ref={scenesRef}
             className="relative h-dvh overflow-clip touch-none"
             style={
               {
@@ -37,13 +43,7 @@ export function Fullpage() {
               } as CSSProperties
             }
           >
-            <FullpageScenes
-              from={pager.from}
-              progress={pager.progress}
-              rawT={pager.rawT}
-              sections={HOME_SECTIONS}
-              to={pager.to}
-            />
+            <FullpageScenes from={pager.from} sections={HOME_SECTIONS} to={pager.to} />
           </div>
           <FullpageFooter ref={footerRef} />
         </div>

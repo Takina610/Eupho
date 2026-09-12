@@ -87,6 +87,20 @@ export function createPointRenderer(canvas: HTMLCanvasElement): PointRenderer | 
 
   // Particle count is implied by the last upload; draw() reads it from here.
   let drawCount = 0
+  // Track allocated byte sizes so per-frame uploads reuse the GPU buffer
+  // (bufferSubData) instead of reallocating it (bufferData) every frame.
+  const capacities = new Map<WebGLBuffer, number>()
+
+  const uploadBuffer = (buffer: WebGLBuffer, data: Float32Array, usage: number) => {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+    const bytes = data.byteLength
+    if (capacities.get(buffer) !== bytes) {
+      gl.bufferData(gl.ARRAY_BUFFER, data, usage)
+      capacities.set(buffer, bytes)
+      return
+    }
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, data)
+  }
 
   const bindAttribute = (buffer: WebGLBuffer, location: number, size: number) => {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
@@ -108,12 +122,9 @@ export function createPointRenderer(canvas: HTMLCanvasElement): PointRenderer | 
     },
     upload(positions, alphas, sizes) {
       drawCount = alphas.length
-      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
-      gl.bufferData(gl.ARRAY_BUFFER, positions, gl.DYNAMIC_DRAW)
-      gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuffer)
-      gl.bufferData(gl.ARRAY_BUFFER, alphas, gl.DYNAMIC_DRAW)
-      gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuffer)
-      gl.bufferData(gl.ARRAY_BUFFER, sizes, gl.STATIC_DRAW)
+      uploadBuffer(positionBuffer, positions, gl.DYNAMIC_DRAW)
+      uploadBuffer(alphaBuffer, alphas, gl.DYNAMIC_DRAW)
+      uploadBuffer(sizeBuffer, sizes, gl.STATIC_DRAW)
       bindAttribute(positionBuffer, aPosition, 2)
       bindAttribute(alphaBuffer, aAlpha, 1)
       bindAttribute(sizeBuffer, aSize, 1)

@@ -12,11 +12,17 @@ export type SectionActiveProps = { active?: boolean }
 export type HomeSectionConfig = {
   id: HomeSectionId
   Component: ComponentType<SectionActiveProps>
+  /**
+   * Only sections that actually react to `active` should receive it: flipping the prop
+   * would otherwise re-render (heavy) sections at every wipe start/end even though
+   * their output does not depend on it.
+   */
+  usesActive?: boolean
 }
 
 export const HOME_SECTIONS: HomeSectionConfig[] = [
   { id: 'index', Component: IndexSection },
   { id: 'stack', Component: StackSection },
-  { id: 'instruments', Component: InstrumentsSection },
+  { id: 'instruments', Component: InstrumentsSection, usesActive: true },
   { id: 'cta', Component: CtaSection },
 ]

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { AccordionGallery } from '@/components/accordion-gallery/AccordionGallery'
 import { IndexBackground } from '@/components/fullpage/IndexBackground'
 import { useFullpageOverlayLock } from '@/components/fullpage/FullpagePagerContext'
@@ -6,7 +6,7 @@ import { Section } from '@/components/fullpage/Section'
 import { SeriesDetailStage } from '@/components/series-detail/SeriesDetailStage'
 import { SERIES_WORKS } from '@/constants/seriesCovers'
 
-export function IndexSection() {
+export const IndexSection = memo(function IndexSection() {
   const setOverlayLock = useFullpageOverlayLock()
   const [detailIndex, setDetailIndex] = useState<number | null>(null)
 
@@ -50,4 +50,4 @@ export function IndexSection() {
       {work ? <SeriesDetailStage work={work} onExited={() => setDetailIndex(null)} /> : null}
     </Section>
   )
-}
+})

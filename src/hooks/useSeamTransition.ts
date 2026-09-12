@@ -1,39 +1,46 @@
-import { useLayoutEffect, useRef, useState } from 'react'
-import { easeInOutQuad } from '@/lib/easing'
+import { useLayoutEffect, useRef, type RefObject } from 'react'
+import { seamProgressAt } from '@/lib/seamWipe'
 
 type UseSeamTransitionOptions = {
   from: number
   to: number
   durationMs: number
   reducedMotion: boolean
+  /** Element that receives the per-frame `--seam-p` variable (the scenes shell). */
+  surfaceRef: RefObject<HTMLElement | null>
   onComplete: () => void
 }
 
+/**
+ * Drive the seam wipe outside React: a rAF loop writes the eased `--seam-p` custom
+ * property straight to the surface element, so no per-frame state updates (and thus no
+ * full-tree re-renders) happen while the wipe plays. React only re-renders when the
+ * from/to pair changes and once more when the wipe completes.
+ */
 export function useSeamTransition({
   from,
   to,
   durationMs,
   reducedMotion,
+  surfaceRef,
   onComplete,
 }: UseSeamTransitionOptions) {
-  const [rawT, setRawT] = useState(1)
   const onCompleteRef = useRef(onComplete)
-  const rawTPairRef = useRef(`${from}:${to}`)
   onCompleteRef.current = onComplete
 
-  const pair = `${from}:${to}`
-  const displayRawT = from === to || reducedMotion ? 1 : rawTPairRef.current !== pair ? 0 : rawT
-
   useLayoutEffect(() => {
-    rawTPairRef.current = pair
+    const surface = surfaceRef.current
+    if (!surface) {
+      return
+    }
 
     if (from === to) {
-      setRawT(1)
+      surface.style.setProperty('--seam-p', '1')
       return
     }
 
     if (reducedMotion) {
-      setRawT(1)
+      surface.style.setProperty('--seam-p', '1')
       onCompleteRef.current()
       return
     }
@@ -41,7 +48,6 @@ export function useSeamTransition({
     let raf = 0
     let watchdog = 0
     let cancelled = false
-    setRawT(0)
     const start = performance.now()
 
     const finish = () => {
@@ -51,7 +57,7 @@ export function useSeamTransition({
       cancelled = true
       cancelAnimationFrame(raf)
       window.clearTimeout(watchdog)
-      setRawT(1)
+      surface.style.setProperty('--seam-p', '1')
       onCompleteRef.current()
     }
 
@@ -60,9 +66,9 @@ export function useSeamTransition({
         return
       }
 
-      const next = Math.min(1, (now - start) / durationMs)
-      setRawT(next)
-      if (next < 1) {
+      const rawT = Math.min(1, (now - start) / durationMs)
+      surface.style.setProperty('--seam-p', String(seamProgressAt(rawT, from, to)))
+      if (rawT < 1) {
         raf = requestAnimationFrame(tick)
         return
       }
@@ -70,6 +76,8 @@ export function useSeamTransition({
       finish()
     }
 
+    // Seed the start progress before the first paint so the wipe never flashes its end state.
+    surface.style.setProperty('--seam-p', String(seamProgressAt(0, from, to)))
     raf = requestAnimationFrame(tick)
     watchdog = window.setTimeout(finish, durationMs + 48)
     return () => {
@@ -77,11 +85,9 @@ export function useSeamTransition({
       cancelAnimationFrame(raf)
       window.clearTimeout(watchdog)
     }
-  }, [from, to, durationMs, reducedMotion, pair])
+  }, [from, to, durationMs, reducedMotion, surfaceRef])
 
   return {
-    progress: easeInOutQuad(displayRawT),
-    rawT: displayRawT,
     isAnimating: from !== to && !reducedMotion,
   }
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Section } from '@/components/fullpage/Section'
 import { IndexBackground } from '@/components/fullpage/IndexBackground'
@@ -18,7 +18,7 @@ const INITIAL_INDEX = Math.max(
   INSTRUMENTS.findIndex((instrument) => instrument.id === DEFAULT_INSTRUMENT_ID),
 )
 
-export function InstrumentsSection({ active = false }: { active?: boolean }) {
+export const InstrumentsSection = memo(function InstrumentsSection({ active = false }: { active?: boolean }) {
   const { width, height } = useViewportSize()
   const isNarrow = width < 640
 
@@ -171,4 +171,4 @@ export function InstrumentsSection({ active = false }: { active?: boolean }) {
       />
     </Section>
   )
-}
+})

@@ -17,12 +17,25 @@ export function usePointerTracker(targetRef: RefObject<HTMLElement | null>, enab
       return
     }
 
-    const update = (clientX: number, clientY: number) => {
+    // Cache the target rect: reading getBoundingClientRect on every pointermove can
+    // force a synchronous layout while frame animations are writing styles.
+    let rect: DOMRect | null = null
+    const invalidate = () => {
+      rect = null
+    }
+    const ensureRect = () => {
       const target = targetRef.current
-      if (!target) return
-      const rect = target.getBoundingClientRect()
-      state.x = clientX - rect.left - rect.width / 2
-      state.y = rect.height / 2 - (clientY - rect.top)
+      if (!target) return null
+      rect ??= target.getBoundingClientRect()
+      return rect
+    }
+    window.addEventListener('resize', invalidate)
+
+    const update = (clientX: number, clientY: number) => {
+      const cached = ensureRect()
+      if (!cached) return
+      state.x = clientX - cached.left - cached.width / 2
+      state.y = cached.height / 2 - (clientY - cached.top)
       state.active = true
     }
 
@@ -45,6 +58,7 @@ export function usePointerTracker(targetRef: RefObject<HTMLElement | null>, enab
     window.addEventListener('blur', onTouchEnd)
 
     return () => {
+      window.removeEventListener('resize', invalidate)
       window.removeEventListener('pointermove', onPointerMove)
       window.removeEventListener('pointerout', onPointerLeave)
       window.removeEventListener('touchmove', onTouchMove)
