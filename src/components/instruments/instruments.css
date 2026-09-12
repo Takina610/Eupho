@@ -145,10 +145,13 @@
  * Desktop list rows: opening the detail cascades every row out to the left
  * one by one (top to bottom, --i is the row order); closing cascades them
  * back in from the left via the global .reveal transition, same rhythm.
+ * --enter-base holds the rows back on forward wipes until the seam has
+ * uncovered the left column (see the .reveal rule in app.css).
  */
 .inst-list {
   --enter-ms: 500ms;
   --enter-stagger: 60ms;
+  --enter-base: 620ms;
 }
 
 .inst-list[data-hidden] {

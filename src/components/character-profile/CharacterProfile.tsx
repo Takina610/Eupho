@@ -92,10 +92,10 @@ export function CharacterProfile() {
             }
           />
         </div>
-        <p ref={watermarkRef} className="cp__watermark" data-cp-layer="main">
+        <p ref={watermarkRef} className="cp__watermark wipe-push" data-cp-layer="main">
           {watermark}
         </p>
-        <div className="cp__portrait" data-cp-layer="main">
+        <div className="cp__portrait wipe-push" data-cp-layer="main">
           <img
             key={character.id}
             className="cp__portrait-img"
@@ -106,7 +106,7 @@ export function CharacterProfile() {
         </div>
       </div>
 
-      <div className="cp__copy">
+      <div className="cp__copy wipe-push">
         <div className="cp__kicker">
           <p className="cp__kicker-path">KITAUJI BAND ://</p>
           <p className="cp__kicker-title">PROFILE</p>
@@ -149,7 +149,7 @@ export function CharacterProfile() {
         </div>
       </div>
 
-      <div className="cp__rail" data-fullpage-ignore onKeyDown={onThumbsKey}>
+      <div className="cp__rail wipe-push" data-fullpage-ignore onKeyDown={onThumbsKey}>
         <p className="cp__index-current">{pad2(index + 1)}</p>
         <span className="cp__index-rest">/ {pad2(count)}</span>
         <span className="cp__index-label">MEMBER</span>

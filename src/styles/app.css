@@ -58,18 +58,38 @@ body {
   opacity: 0;
 }
 
+/* --enter-base only bites on forward wipes (--wipe-forward: 1), where the seam
+   uncovers the right side first and left-side content needs to wait for it. */
 [data-active='true'] .reveal {
   transform: translateX(0);
   opacity: 1;
   transition:
-    transform var(--enter-ms, 800ms) cubic-bezier(0.33, 1, 0.68, 1) calc(var(--i, 0) * var(--enter-stagger, 200ms)),
-    opacity var(--enter-ms, 800ms) cubic-bezier(0.33, 1, 0.68, 1) calc(var(--i, 0) * var(--enter-stagger, 200ms));
+    transform var(--enter-ms, 800ms) cubic-bezier(0.33, 1, 0.68, 1)
+      calc(var(--wipe-forward, 0) * var(--enter-base, 0ms) + var(--i, 0) * var(--enter-stagger, 200ms)),
+    opacity var(--enter-ms, 800ms) cubic-bezier(0.33, 1, 0.68, 1)
+      calc(var(--wipe-forward, 0) * var(--enter-base, 0ms) + var(--i, 0) * var(--enter-stagger, 200ms));
+}
+
+/* Leaving layers can shove their foreground along with the seam: on forward
+   wipes the wall sweeps right-to-left and pushes content left (dir -1), the
+   mirror image on backward wipes. `translate` composes with existing
+   transforms; 100vw keeps every pushed point exactly glued to the wall.
+   !important is required: GSAP leaves inline `translate: none` on the layers
+   it tweens, and the push must win over it while the layer is leaving. */
+[data-leaving='true'] .wipe-push {
+  translate: calc((1 - 2 * var(--wipe-forward, 0)) * 100vw) 0 !important;
+  transition: translate var(--wipe-ms, 1000ms) cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     transform: none;
     opacity: 1;
+    transition: none;
+  }
+
+  .wipe-push {
+    translate: none;
     transition: none;
   }
 

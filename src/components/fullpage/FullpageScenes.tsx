@@ -16,6 +16,10 @@ type FullpageScenesProps = {
 }
 
 export function FullpageScenes({ sections, from, to }: FullpageScenesProps) {
+  // Forward wipes sweep the seam right-to-left, backward wipes the other way.
+  // Layers expose the direction as a CSS variable so section CSS can sync its
+  // reveal delays and leaving-motion with the seam (see app.css).
+  const wipeForward = to > from
   return (
     <>
       {sections.map(({ id, Component, usesActive }, index) => {
@@ -30,6 +34,7 @@ export function FullpageScenes({ sections, from, to }: FullpageScenesProps) {
             isLeaving={role.isLeaving}
             isLower={role.isLower}
             isUpper={role.isUpper}
+            wipeForward={wipeForward}
             zIndex={role.isUpper ? 1 : 0}
           >
             <Component {...(usesActive ? { active: index === to } : {})} />
