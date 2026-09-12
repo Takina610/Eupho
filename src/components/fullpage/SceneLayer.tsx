@@ -37,7 +37,7 @@ export function SceneLayer({
       aria-hidden={!isAriaCurrent}
       className={`absolute inset-0 ${isIdleActive ? '' : 'pointer-events-none'}`.trim()}
       data-active={visible ? 'true' : 'false'}
-      data-leaving={isLeaving ? 'true' : 'false'}
+      data-leaving={isLeaving ? (wipeForward ? 'forward' : 'backward') : 'false'}
       style={style}
     >
       {children}

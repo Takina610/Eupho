@@ -1,5 +1,5 @@
 import { useRef, type CSSProperties } from 'react'
-import { FOOTER_MS, WIPE_MS, ENTER_MS, ENTER_OFFSET, ENTER_STAGGER_MS } from '@/constants/fullpageMotion'
+import { ENTER_MS, ENTER_OFFSET, ENTER_STAGGER_MS, FOOTER_MS } from '@/constants/fullpageMotion'
 import { HOME_SECTIONS } from '@/constants/homeSections'
 import { FullpageFooter } from '@/components/fullpage/FullpageFooter'
 import { FullpagePagerProvider } from '@/components/fullpage/FullpagePagerContext'
@@ -40,7 +40,6 @@ export function Fullpage() {
                 '--enter-offset': ENTER_OFFSET,
                 '--enter-ms': `${ENTER_MS}ms`,
                 '--enter-stagger': `${ENTER_STAGGER_MS}ms`,
-                '--wipe-ms': `${WIPE_MS}ms`,
               } as CSSProperties
             }
           >

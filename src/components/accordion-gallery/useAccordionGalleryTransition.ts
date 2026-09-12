@@ -125,7 +125,8 @@ export function useAccordionGalleryTransition({
       if (!layer) {
         return
       }
-      if (layer.getAttribute('data-leaving') === 'true') {
+      const leaving = layer.getAttribute('data-leaving')
+      if (leaving === 'forward' || leaving === 'backward') {
         exit()
         return
       }

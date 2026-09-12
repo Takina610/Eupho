@@ -4,6 +4,7 @@ import { CharacterThumb } from '@/components/character-profile/CharacterThumb'
 import { fitWatermark } from '@/components/character-profile/characterSwitch'
 import { useCharacterSelect } from '@/components/character-profile/useCharacterSelect'
 import { useDragScroll } from '@/hooks/useDragScroll'
+import { useWallPushOffsets } from '@/hooks/useWallPushOffsets'
 import '@/components/character-profile/CharacterProfile.css'
 import '@/components/character-profile/characterCopy.css'
 import '@/components/character-profile/characterThumbs.css'
@@ -28,6 +29,7 @@ function Chevron() {
 
 export function CharacterProfile() {
   const { character, count, index, select, stageRef, step, uniqueBackdrop } = useCharacterSelect()
+  useWallPushOffsets(stageRef)
   const watermarkRef = useRef<HTMLParagraphElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
@@ -149,7 +151,7 @@ export function CharacterProfile() {
         </div>
       </div>
 
-      <div className="cp__rail wipe-push" data-fullpage-ignore onKeyDown={onThumbsKey}>
+      <div className="cp__rail" data-fullpage-ignore onKeyDown={onThumbsKey}>
         <p className="cp__index-current">{pad2(index + 1)}</p>
         <span className="cp__index-rest">/ {pad2(count)}</span>
         <span className="cp__index-label">MEMBER</span>

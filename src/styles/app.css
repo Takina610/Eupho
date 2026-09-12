@@ -70,15 +70,19 @@ body {
       calc(var(--wipe-forward, 0) * var(--enter-base, 0ms) + var(--i, 0) * var(--enter-stagger, 200ms));
 }
 
-/* Leaving layers can shove their foreground along with the seam: on forward
-   wipes the wall sweeps right-to-left and pushes content left (dir -1), the
-   mirror image on backward wipes. `translate` composes with existing
-   transforms; 100vw keeps every pushed point exactly glued to the wall.
-   !important is required: GSAP leaves inline `translate: none` on the layers
-   it tweens, and the push must win over it while the layer is leaving. */
-[data-leaving='true'] .wipe-push {
-  translate: calc((1 - 2 * var(--wipe-forward, 0)) * 100vw) 0 !important;
-  transition: translate var(--wipe-ms, 1000ms) cubic-bezier(0.45, 0, 0.55, 1);
+/* Leaving layers get shoved by the seam like a wall: an element sits still
+   until the seam line reaches its edge, then rides the line exactly. Each
+   .wipe-push publishes its edges in vw via useWallPushOffsets (`--push-at`
+   right edge for forward wipes, `--push-from` left edge for backward ones),
+   and the clamp makes contact start exactly at the element's edge.
+   `translate` composes with existing transforms; !important is required
+   because GSAP leaves inline `translate: none` on layers it tweens. */
+[data-leaving='forward'] .wipe-push {
+  translate: min(0vw, var(--seam-p, 1) * 100vw - var(--push-at, 100) * 1vw) 0 !important;
+}
+
+[data-leaving='backward'] .wipe-push {
+  translate: max(0vw, var(--seam-p, 0) * 100vw - var(--push-from, 0) * 1vw) 0 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -88,9 +92,8 @@ body {
     transition: none;
   }
 
-  .wipe-push {
+  [data-leaving] .wipe-push {
     translate: none;
-    transition: none;
   }
 
   .fullpage-shell {
