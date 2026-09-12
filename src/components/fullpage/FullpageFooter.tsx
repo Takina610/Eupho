@@ -10,14 +10,14 @@ export function FullpageFooter({ ref }: FullpageFooterProps) {
   return (
     <footer
       ref={ref}
-      className="relative flex min-h-[min(435px,70dvh)] items-center justify-center overflow-hidden bg-brand px-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-14 pb-[max(3rem,env(safe-area-inset-bottom))] sm:px-8 sm:pt-20 sm:pb-16"
+      className="relative flex min-h-[min(435px,70dvh)] items-center justify-center overflow-hidden bg-brand px-[max(0.5rem,env(safe-area-inset-left))] pr-[max(0.5rem,env(safe-area-inset-right))] pt-14 pb-[max(3rem,env(safe-area-inset-bottom))] sm:px-8 sm:pt-20 sm:pb-16"
     >
-      {/* 官网同款巨型水印 */}
+      {/* 官网同款巨型水印：Sound! 一行、Euphonium 一行，移动端居中出血 */}
       <div
         aria-hidden
         className="pointer-events-none absolute -inset-x-12 -inset-y-10 flex -rotate-6 select-none flex-col justify-center"
       >
-        <p className="text-[28vw] sm:text-[clamp(5.5rem,16vw,15rem)] font-black leading-[0.92] tracking-tight text-white/15">
+        <p className="-ml-[5%] w-[110%] text-center text-[31vw] font-black leading-[0.9] tracking-tight text-white/15 sm:ml-0 sm:w-full sm:text-left sm:text-[clamp(5.5rem,16vw,15rem)]">
           Sound! Euphonium
         </p>
       </div>
@@ -29,7 +29,7 @@ export function FullpageFooter({ ref }: FullpageFooterProps) {
         <div className="h-[20px] bg-accent" />
       </div>
 
-      <ul className="relative grid w-fit grid-cols-3 items-center gap-x-3 gap-y-5 sm:gap-x-12 sm:gap-y-10">
+      <ul className="relative grid w-fit grid-cols-3 items-center gap-x-2 gap-y-4 sm:gap-x-12 sm:gap-y-10">
         {SERIES_BANNERS.map((banner) => (
           <li key={banner.href}>
             <a
