@@ -57,11 +57,13 @@
   outline-offset: 3px;
 }
 
+/* Sits behind the white mat: the frame corner stays visible and the triangle
+   peeks out above and to the right of it (reference: folded-corner style). */
 .cp__thumb-tab {
   position: absolute;
   top: -0.5rem;
   right: -0.375rem;
-  z-index: 5;
+  z-index: -1;
   border: 1rem solid;
   border-color: var(--cp-brand) var(--cp-brand) transparent transparent;
   opacity: 0;
