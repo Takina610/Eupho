@@ -25,12 +25,18 @@ const EXIT_TOTAL_MS = 530
 
 function Chevron({ direction }: { direction: 'left' | 'right' }) {
   return (
-    <svg viewBox="0 0 8 14" className="h-4 w-2.5" fill="none" aria-hidden>
-      <path
-        d={direction === 'left' ? 'M7 1 1 7l6 6' : 'M1 1l6 6-6 6'}
-        stroke="currentColor"
-        strokeWidth="1.6"
-      />
+    <svg viewBox="0 0 15 14" className="h-3.5 w-4" fill="none" aria-hidden>
+      {direction === 'left' ? (
+        <>
+          <path d="M7 1 2 7l5 6" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M13 1 8 7l5 6" stroke="currentColor" strokeWidth="1.5" />
+        </>
+      ) : (
+        <>
+          <path d="M8 1l5 6-5 6" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M2 1l5 6-5 6" stroke="currentColor" strokeWidth="1.5" />
+        </>
+      )}
     </svg>
   )
 }
@@ -175,10 +181,17 @@ export function InstrumentDetail({
         <Chevron direction="right" />
       </button>
 
+      {/* AK 风格进度条：灰色轨道 + 青色位置块，横向平铺的透明按钮保留跳转 */}
       <nav
         aria-label="乐器快速切换"
         className="absolute inset-x-0 bottom-0 z-10 flex h-10 max-sm:inset-x-5"
       >
+        <div aria-hidden className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-white/25" />
+        <div
+          aria-hidden
+          className="absolute top-1/2 h-[10px] -translate-y-1/2 bg-[#3ec1f0] transition-[left] duration-300"
+          style={{ width: `${100 / total}%`, left: `${(index * 100) / total}%` }}
+        />
         {INSTRUMENTS.map((item, i) => (
           <button
             key={item.id}
@@ -186,20 +199,15 @@ export function InstrumentDetail({
             onClick={() => onJump(i)}
             aria-label={item.name}
             aria-current={i === index || undefined}
-            className="h-full flex-1 border-ink/80 bg-white/20 bg-clip-content py-2 transition-colors hover:bg-white/50 [&+&]:border-l"
+            className="relative h-full flex-1"
           />
         ))}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute bottom-2 top-2 bg-accent transition-[left] duration-300"
-          style={{ width: `${100 / total}%`, left: `${(index * 100) / total}%` }}
-        />
       </nav>
 
       <button
         type="button"
         onClick={onClose}
-        className="absolute bottom-8 right-0 z-10 hidden min-h-11 items-center gap-3 bg-white/10 py-2 pl-6 pr-8 text-left text-white transition-colors hover:bg-white hover:text-ink sm:flex"
+        className="absolute bottom-0 right-0 z-20 hidden h-10 items-center gap-3 bg-[#3c4249] pl-6 pr-8 text-left text-white transition-colors hover:bg-white hover:text-ink sm:flex"
       >
         <Chevron direction="left" />
         <span className="text-sm font-bold leading-tight">
