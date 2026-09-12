@@ -13,8 +13,9 @@ function pad2(value: number) {
   return String(value).padStart(2, '0')
 }
 
+// nameEn is family-name-first (Oumae Kumiko); the watermark keeps showing the given name.
 function watermarkOf(nameEn: string) {
-  return (nameEn.split(' ')[0] ?? nameEn).toUpperCase()
+  return (nameEn.split(' ').pop() ?? nameEn).toUpperCase()
 }
 
 function Chevron() {
