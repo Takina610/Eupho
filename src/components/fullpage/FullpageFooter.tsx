@@ -10,9 +10,26 @@ export function FullpageFooter({ ref }: FullpageFooterProps) {
   return (
     <footer
       ref={ref}
-      className="flex min-h-[min(435px,70dvh)] items-center justify-center bg-ink px-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] pt-12 pb-[max(3rem,env(safe-area-inset-bottom))] sm:pt-16 sm:pb-16"
+      className="relative flex min-h-[min(435px,70dvh)] items-center justify-center overflow-hidden bg-brand px-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] pt-14 pb-[max(3rem,env(safe-area-inset-bottom))] sm:pt-20 sm:pb-16"
     >
-      <ul className="grid w-fit grid-cols-2 items-center gap-x-6 gap-y-6 sm:grid-cols-3 sm:gap-x-12 sm:gap-y-10">
+      {/* 官网同款巨型水印 */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -inset-x-12 -inset-y-10 flex -rotate-6 select-none flex-col justify-center"
+      >
+        <p className="text-[clamp(5.5rem,16vw,15rem)] font-black leading-[0.92] tracking-tight text-white/15">
+          Sound! Euphonium
+        </p>
+      </div>
+
+      {/* 与上一屏的分隔：双黄线 */}
+      <div aria-hidden className="absolute inset-x-0 top-0">
+        <div className="h-[3px] bg-accent" />
+        <div className="h-[9px]" />
+        <div className="h-[20px] bg-accent" />
+      </div>
+
+      <ul className="relative grid w-fit grid-cols-3 items-center gap-x-6 gap-y-6 sm:gap-x-12 sm:gap-y-10">
         {SERIES_BANNERS.map((banner) => (
           <li key={banner.href}>
             <a
