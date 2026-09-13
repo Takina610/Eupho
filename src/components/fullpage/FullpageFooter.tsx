@@ -10,7 +10,7 @@ export function FullpageFooter({ ref }: FullpageFooterProps) {
   return (
     <footer
       ref={ref}
-      className="relative flex min-h-[min(435px,70dvh)] items-center justify-center overflow-hidden bg-brand px-[max(0.5rem,env(safe-area-inset-left))] pr-[max(0.5rem,env(safe-area-inset-right))] pt-14 pb-[max(3rem,env(safe-area-inset-bottom))] sm:px-8 sm:pt-20 sm:pb-16"
+      className="relative flex min-h-[min(300px,42dvh)] items-center justify-center overflow-hidden bg-brand px-[max(0.5rem,env(safe-area-inset-left))] pr-[max(0.5rem,env(safe-area-inset-right))] pt-14 pb-[max(3rem,env(safe-area-inset-bottom))] sm:min-h-[min(435px,70dvh)] sm:px-8 sm:pt-20 sm:pb-16"
     >
       {/* 官网同款巨型水印：靠右、从左上到右下倾斜；移动端整体压在双黄线以下 */}
       <div

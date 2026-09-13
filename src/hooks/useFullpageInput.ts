@@ -7,6 +7,20 @@ function isFullpageIgnored(target: EventTarget | null) {
   return target instanceof Element && target.closest('[data-fullpage-ignore]') != null
 }
 
+/** 当前激活屏里可滚动的长内容区（如移动端 Introduction 长屏）；无溢出时视为不存在。 */
+function findActiveScrollRegion() {
+  const region = document.querySelector<HTMLElement>('[data-active="true"] [data-fullpage-scroll]')
+  if (!region || region.scrollHeight <= region.clientHeight + 1) {
+    return null
+  }
+  return region
+}
+
+function isAtScrollEdge(region: HTMLElement, goingDown: boolean) {
+  const maxScroll = region.scrollHeight - region.clientHeight
+  return goingDown ? region.scrollTop >= maxScroll - 1 : region.scrollTop <= 1
+}
+
 type UseFullpageInputOptions = {
   lockedRef: RefObject<boolean>
   onStep: (delta: 1 | -1) => void
@@ -24,7 +38,13 @@ export function useFullpageInput({
 }: UseFullpageInputOptions) {
   const onStepRef = useRef(onStep)
   const onGoToRef = useRef(onGoTo)
-  const touchStart = useRef<{ ignore: boolean; x: number; y: number } | null>(null)
+  const touchStart = useRef<{
+    ignore: boolean
+    x: number
+    y: number
+    lastY: number
+    scrollRegion: HTMLElement | null
+  } | null>(null)
   onStepRef.current = onStep
   onGoToRef.current = onGoTo
 
@@ -38,6 +58,16 @@ export function useFullpageInput({
       const delta = absX > absY ? event.deltaX : event.deltaY
       if (lockedRef.current || Math.abs(delta) < WHEEL_THRESHOLD) {
         return
+      }
+
+      // 激活屏内有长内容区时先滚内容，滚到边缘才继续翻页
+      const region = findActiveScrollRegion()
+      if (region) {
+        const goingDown = delta > 0
+        if (!isAtScrollEdge(region, goingDown)) {
+          region.scrollTop += delta * (event.deltaMode === 1 ? 16 : 1)
+          return
+        }
       }
 
       onStepRef.current(delta > 0 ? 1 : -1)
@@ -88,9 +118,21 @@ export function useFullpageInput({
 
     const onTouchStart = (event: TouchEvent) => {
       const touch = event.touches[0]
-      touchStart.current = touch
-        ? { ignore: isFullpageIgnored(event.target), x: touch.clientX, y: touch.clientY }
-        : null
+      if (!touch) {
+        touchStart.current = null
+        return
+      }
+
+      const region = findActiveScrollRegion()
+      const inRegion =
+        region != null && event.target instanceof Element && region.contains(event.target)
+      touchStart.current = {
+        ignore: isFullpageIgnored(event.target),
+        x: touch.clientX,
+        y: touch.clientY,
+        lastY: touch.clientY,
+        scrollRegion: inRegion ? region : null,
+      }
     }
 
     const onTouchMove = (event: TouchEvent) => {
@@ -99,11 +141,21 @@ export function useFullpageInput({
         return
       }
 
+      const touch = event.touches[0]
+      if (!touch) {
+        return
+      }
+
+      // 滚动区手势：手动滚动内容（场景壳是 touch-action: none，原生滚动不可用），
+      // 全程不触发翻页，翻页统一留给 touchend 的边缘判定
+      if (start.scrollRegion) {
+        start.scrollRegion.scrollTop += start.lastY - touch.clientY
+        start.lastY = touch.clientY
+        event.preventDefault()
+        return
+      }
+
       if (start.ignore) {
-        const touch = event.touches[0]
-        if (!touch) {
-          return
-        }
         const dx = touch.clientX - start.x
         const dy = touch.clientY - start.y
         if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) {
@@ -129,6 +181,21 @@ export function useFullpageInput({
 
       const deltaX = start.x - end.clientX
       const deltaY = start.y - end.clientY
+
+      // 滚动区手势：只有已经滚到上/下边缘的 swipe 才翻页，中途一律视为滚动
+      if (start.scrollRegion) {
+        if (Math.abs(deltaY) < SWIPE_THRESHOLD || Math.abs(deltaX) >= Math.abs(deltaY)) {
+          return
+        }
+        const region = start.scrollRegion
+        if (deltaY > 0 && isAtScrollEdge(region, true)) {
+          onStepRef.current(1)
+        } else if (deltaY < 0 && isAtScrollEdge(region, false)) {
+          onStepRef.current(-1)
+        }
+        return
+      }
+
       if (start.ignore && Math.abs(deltaX) >= Math.abs(deltaY)) {
         return
       }

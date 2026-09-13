@@ -33,6 +33,15 @@
   display: none;
 }
 
+/* 屏内滚动容器：桌面内容恰好一屏（仅作布局壳），移动端内容比一屏长时在此滚动 */
+.intro-scroll {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
 /* ---------- 标题：Poppins 大字 + 逐字上浮入场 ---------- */
 
 .intro-title {
@@ -90,6 +99,8 @@
   margin-left: auto;
   font-weight: 600;
   color: #111;
+  /* 官网 body 的字距 */
+  letter-spacing: 0.04em;
 }
 
 .intro-lead {
@@ -218,15 +229,29 @@
     display: none;
   }
 
+  /* 立绘与面板通到屏幕边缘（官网全幅），这一屏比一屏长，在 .intro-scroll 里滚动 */
+  .intro-stage {
+    padding: 0;
+  }
+
+  .intro-scroll {
+    display: block;
+    height: 100%;
+    overflow: hidden auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+
+  .intro-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 官网移动端：立绘按原比例全幅铺开，面板以 -65% 叠上来 */
   .intro-art-sp {
     display: block;
     position: relative;
-    flex-shrink: 0;
     width: 100%;
-    /* 立绘原比全屏还高，裁掉下半只保留人物上半身，给面板腾出空间 */
-    height: clamp(150px, 24dvh, 280px);
-    object-fit: cover;
-    object-position: top center;
+    height: auto;
   }
 
   .intro-title {
@@ -243,20 +268,15 @@
 
   .intro-panel {
     position: relative;
-    flex: 1;
-    min-height: 0;
     width: 95%;
-    margin: auto;
+    margin: -65% auto 0;
     background-color: #f2fafa;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
   }
 
   .intro-inner {
     height: auto;
-    /* 顶部让出逐字标题压进面板的下半截 */
-    padding: clamp(3rem, 6.5dvh, 4.25rem) 0 max(1rem, env(safe-area-inset-bottom));
+    /* 官网 .introduction-box 移动端 padding：50px 0 */
+    padding: 50px 0;
   }
 
   .intro-txt {
@@ -268,9 +288,9 @@
   .intro-lead {
     text-align: center;
     font-weight: 900;
-    font-size: clamp(1.125rem, 4.6vw, 1.375rem);
-    line-height: 1.55;
-    margin-bottom: clamp(0.75rem, 2dvh, 1.25rem);
+    font-size: clamp(1.375rem, 0.147rem + 2.35vw, 2.5rem);
+    line-height: 1.3;
+    margin-bottom: 25px;
   }
 
   .intro-lead .hl {
@@ -282,18 +302,14 @@
   }
 
   .intro-body {
-    font-size: clamp(0.78125rem, 3.2vw, 0.875rem);
-    line-height: 1.72;
-    margin-bottom: clamp(0.4375rem, 1.4dvh, 0.875rem);
-  }
-
-  .intro-body:last-of-type {
-    margin-bottom: clamp(0.5rem, 1.7dvh, 1rem);
+    font-size: clamp(0.875rem, 0.67rem + 0.39vw, 1.063rem);
+    line-height: 1.8;
+    margin-bottom: clamp(0.938rem, -1.45rem + 4.58vw, 3.125rem);
   }
 
   .intro-release {
-    font-size: clamp(0.90625rem, 3.8vw, 1rem);
-    line-height: 1.75;
+    font-size: clamp(0.938rem, 0.051rem + 1.7vw, 1.75rem);
+    line-height: 1.8;
   }
 }
 
