@@ -152,6 +152,7 @@ export const InstrumentsSection = memo(function InstrumentsSection({ active = fa
         instrument={selected}
         index={selectedIndex}
         open={detailOpen}
+        active={active}
         onStep={(delta) => {
           markInteracted()
           step(delta)

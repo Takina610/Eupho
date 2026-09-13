@@ -100,6 +100,22 @@
   }
 }
 
+/* 试听键帽入场:不进 overflow 遮罩(均衡条、音符特效会超出文字块),改用淡入上移。 */
+.inst-sound-reveal {
+  animation: inst-sound-in 0.7s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+@keyframes inst-sound-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .inst-rule {
   height: 1px;
   width: 0;
@@ -265,5 +281,9 @@
     animation: none;
     transform: none;
     opacity: 1;
+  }
+
+  .inst-sound-reveal {
+    animation: none;
   }
 }

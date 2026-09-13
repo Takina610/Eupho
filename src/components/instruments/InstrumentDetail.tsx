@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react'
 
+import { useInstrumentSound } from '@/hooks/useInstrumentSound'
 import { INSTRUMENTS, type Instrument } from '@/constants/instruments'
+
+import { SoundKeycap } from './SoundKeycap'
 
 type InstrumentDetailProps = {
   instrument: Instrument
   index: number
   open: boolean
+  /** 本屏是否处于当前页;离开乐器页时停掉试听音效。 */
+  active: boolean
   onStep: (delta: 1 | -1) => void
   onJump: (index: number) => void
   onClose: () => void
@@ -47,7 +52,15 @@ function Chevron({
   )
 }
 
-function RevealCopy({ instrument }: { instrument: Instrument }) {
+function RevealCopy({
+  instrument,
+  soundPlaying,
+  onSoundToggle,
+}: {
+  instrument: Instrument
+  soundPlaying: boolean
+  onSoundToggle: () => void
+}) {
   return (
     <>
       <div className="inst-reveal-mask">
@@ -69,12 +82,26 @@ function RevealCopy({ instrument }: { instrument: Instrument }) {
           {instrument.intro}
         </span>
       </p>
+      {/* 不进遮罩:均衡条与音符特效会超出文字块边界。 */}
+      <div className="inst-sound-reveal mt-5 sm:mt-6" style={{ animationDelay: '270ms' }}>
+        <SoundKeycap playing={soundPlaying} onToggle={onSoundToggle} name={instrument.name} />
+      </div>
     </>
   )
 }
 
-function SwapCopy({ instrument, exiting }: { instrument: Instrument; exiting: boolean }) {
-  const delays = exiting ? ['0ms', '60ms', '120ms'] : ['0ms', '90ms', '180ms']
+function SwapCopy({
+  instrument,
+  exiting,
+  soundPlaying,
+  onSoundToggle,
+}: {
+  instrument: Instrument
+  exiting: boolean
+  soundPlaying: boolean
+  onSoundToggle: () => void
+}) {
+  const delays = exiting ? ['0ms', '60ms', '120ms', '160ms'] : ['0ms', '90ms', '180ms', '240ms']
   const item = exiting ? 'inst-swap-item inst-swap-out' : 'inst-swap-item inst-swap-in'
   return (
     <>
@@ -96,6 +123,9 @@ function SwapCopy({ instrument, exiting }: { instrument: Instrument; exiting: bo
           {instrument.intro}
         </span>
       </p>
+      <div className={`${item} mt-5 sm:mt-6`} style={{ animationDelay: delays[3] }}>
+        <SoundKeycap playing={soundPlaying} onToggle={onSoundToggle} name={instrument.name} />
+      </div>
     </>
   )
 }
@@ -108,6 +138,7 @@ export function InstrumentDetail({
   instrument,
   index,
   open,
+  active,
   onStep,
   onJump,
   onClose,
@@ -116,6 +147,8 @@ export function InstrumentDetail({
   const total = INSTRUMENTS.length
   const [shownId, setShownId] = useState(instrument.id)
   const [stage, setStage] = useState<CopyStage>('reveal')
+  const sound = useInstrumentSound()
+  const { stop: stopSound } = sound
 
   // Prop-driven state adjustments (React's "adjust state during render" pattern):
   // (re)opening arms the masked reveal; a switch while open arms the exit stage.
@@ -142,6 +175,11 @@ export function InstrumentDetail({
     return () => window.clearTimeout(timer)
   }, [instrument.id, open, shownId, stage])
 
+  // 切换乐器、收起详情或翻离本屏时,立刻停掉试听音效。
+  useEffect(() => {
+    stopSound()
+  }, [stopSound, instrument.id, open, active])
+
   const shown = INSTRUMENTS.find((item) => item.id === shownId) ?? instrument
 
   return (
@@ -164,9 +202,18 @@ export function InstrumentDetail({
         className="absolute max-sm:inset-x-6 max-sm:bottom-[13vh] sm:right-[6vw] sm:top-1/2 sm:w-[min(38rem,40vw)] sm:-translate-y-1/2"
       >
         {stage === 'reveal' ? (
-          <RevealCopy instrument={shown} />
+          <RevealCopy
+            instrument={shown}
+            soundPlaying={sound.playingId === shown.id}
+            onSoundToggle={() => sound.toggle(shown.id, shown.sound)}
+          />
         ) : (
-          <SwapCopy instrument={shown} exiting={stage === 'exit'} />
+          <SwapCopy
+            instrument={shown}
+            exiting={stage === 'exit'}
+            soundPlaying={sound.playingId === shown.id}
+            onSoundToggle={() => sound.toggle(shown.id, shown.sound)}
+          />
         )}
       </div>
 
