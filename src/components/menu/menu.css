@@ -36,10 +36,19 @@
 .menu-scrim {
   position: absolute;
   inset: 0;
-  /* 官网 keyvisual 打底，压深色罩保证条目可读 */
-  background:
+  /* 官网 keyvisual 打底，压深色罩保证条目可读。
+     ★ 背景取景在这两行调：
+     - background-size 第二个值：cover=按比例铺满（竖图在横屏下会裁掉上下），
+       改成「auto 130%」这类写法可手动放大/缩小图片高度（100%=刚好一屏高）
+     - background-position 第二个值：0%=对齐图片顶部，100%=对齐图片底部，
+       中间值（如 80%）决定优先展示图片的哪一段 */
+  background-color: rgba(2, 28, 33, 0.9);
+  background-image:
     linear-gradient(rgba(2, 28, 33, 0.82), rgba(2, 28, 33, 0.9)),
-    url('../../assets/keyvisual.jpg') center bottom / cover no-repeat;
+    url('../../assets/keyvisual.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%, cover;
+  background-position: 0 0, center bottom;
   opacity: 0;
   /* 收起时让条目先退场，遮罩随后跟进 */
   transition: opacity 0.3s ease-out calc(var(--menu-step) * 3.4);
@@ -162,7 +171,9 @@
 .menu-label-cell {
   position: relative;
   display: inline-block;
-  overflow: hidden;
+  /* 用 clip-path 而非 overflow：斜体字形会向右伸出直立字形的步进宽度，
+     裁剪窗口向右扩 0.14em 露出右上角；竖直方向由 1.35 行高兜住不扩 */
+  clip-path: inset(0 -0.14em);
 }
 
 .menu-label-size {
