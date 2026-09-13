@@ -5,12 +5,11 @@ import './katanaReveal.css'
 /** 静场 / 拔刀 / 挥斩节奏（秒）。参考 slash loading 原版（JIEJOE），把开场 1s 静场压短 */
 const DRAW_DELAY_S = 0.5
 const DRAW_S = 0.45
-const SLASH_S = 1.2
+const SLASH_S = 1.5
 const SLASH_OVERLAP_S = 0.3
 
-/** 先冲入、行至画面中央明显减速（切口顿挫感）、再加速离场 */
-const slashEase = (t: number) =>
-  t < 0.5 ? 0.5 * (1 - (1 - t * 2) ** 3) : 0.5 + 0.5 * (t * 2 - 1) ** 3
+/** 全程匀中带慢：冲入后行至中央平滑降到最慢（不停顿），再平滑加速离场 */
+const slashEase = (t: number) => t + (0.75 * Math.sin(2 * Math.PI * t)) / (2 * Math.PI)
 
 /**
  * 居合斩揭幕：加载层淡出的同时，两块与加载层同色的遮罩盖屏，
