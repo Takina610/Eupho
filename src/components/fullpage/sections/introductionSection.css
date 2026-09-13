@@ -123,6 +123,82 @@
   line-height: 2.2;
 }
 
+/* ---------- 段落双语：日文为底，悬浮/切换显示中文 ---------- */
+
+.intro-i18n {
+  display: grid;
+}
+
+.intro-i18n-ja,
+.intro-i18n-zh {
+  grid-area: 1 / 1;
+  transition: opacity 0.3s ease-out;
+}
+
+.intro-i18n-zh {
+  opacity: 0;
+  font-family: 'Noto Sans SC', 'Noto Sans JP', sans-serif;
+}
+
+.intro-lead .intro-i18n-zh {
+  font-family: 'Noto Serif SC', 'Noto Serif JP', serif;
+}
+
+@media (min-width: 835px) {
+  .intro-i18n:hover .intro-i18n-ja {
+    opacity: 0;
+  }
+
+  .intro-i18n:hover .intro-i18n-zh {
+    opacity: 1;
+  }
+}
+
+@media not (min-width: 835px) {
+  .intro-stage.zh .intro-i18n-ja {
+    opacity: 0;
+  }
+
+  .intro-stage.zh .intro-i18n-zh {
+    opacity: 1;
+  }
+}
+
+/* ---------- 移动端中文化切换按钮 ---------- */
+
+.intro-lang-btn {
+  display: none;
+}
+
+@media not (min-width: 835px) {
+  .intro-lang-btn {
+    position: absolute;
+    z-index: 2;
+    /* 全局 Menu 圆钮固定在右上角（0.9rem + 56px），本按钮排在其正下方、右缘对齐 */
+    top: calc(max(0.9rem, env(safe-area-inset-top)) + 5rem);
+    right: max(0.9rem, env(safe-area-inset-right));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 0.875rem;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.45);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: #021c21;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .intro-lang-btn:active {
+    background: rgba(255, 255, 255, 0.65);
+  }
+}
+
 /* 移动端专用标题容器：压在立绘与浅色面板的接缝上 */
 .intro-title-sp {
   display: none;
@@ -223,6 +299,11 @@
   .intro-title-line span {
     opacity: 1;
     transform: none;
+    transition: none;
+  }
+
+  .intro-i18n-ja,
+  .intro-i18n-zh {
     transition: none;
   }
 }
