@@ -1,5 +1,9 @@
 import type { MenuItemConfig } from '@/constants/homeSections'
 
+/** 背景大字的文案，逐字母交错出场。 */
+const MENU_BG_WORDS = ['Sound!', 'Euphonium']
+const MENU_BG_LETTER_COUNT = MENU_BG_WORDS.join('').length
+
 type MenuOverlayProps = {
   open: boolean
   items: MenuItemConfig[]
@@ -12,16 +16,34 @@ type MenuOverlayProps = {
  * 全局菜单浮层，样式对照 ak.hypergryph.com 移动端菜单：
  * 全屏深色遮罩 + 右上角下方的双行条目列表（EN 主标签 + 中文副标签）。
  * 常驻 DOM，靠 data-open 切换 visibility；条目自右向左 70ms 逐条交错，
- * 关闭时按反序收回（时间线倒放），细节见 menu.css。
+ * 背景大字以字母为单位交错出现/退场，细节见 menu.css。
  */
 export function MenuOverlay({ open, items, activeIndex, onSelect, onClose }: MenuOverlayProps) {
+  let letterIndex = -1
   return (
     <div className="menu-overlay" data-open={open}>
       <button type="button" className="menu-scrim" aria-hidden="true" onClick={onClose}>
-        <span className="menu-bg-word" aria-hidden="true">
-          Sound!
-          <br />
-          Euphonium
+        <span
+          className="menu-bg-word"
+          aria-hidden="true"
+          style={{ '--n': MENU_BG_LETTER_COUNT } as React.CSSProperties}
+        >
+          {MENU_BG_WORDS.map((word) => (
+            <span className="menu-bg-line" key={word}>
+              {word.split('').map((ch) => {
+                letterIndex += 1
+                return (
+                  <span
+                    key={letterIndex}
+                    className="menu-bg-char"
+                    style={{ '--ci': letterIndex } as React.CSSProperties}
+                  >
+                    {ch}
+                  </span>
+                )
+              })}
+            </span>
+          ))}
         </span>
       </button>
       <nav

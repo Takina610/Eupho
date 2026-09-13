@@ -47,7 +47,9 @@
   transition: opacity 0.3s ease-out;
 }
 
-/* 官网同款的斜置背景大字，随遮罩一起淡入，压在条目下方 */
+/* 官网同款的斜置背景大字：以字母为单位交错出场/退场。
+   进场第 ci 个字母延迟 menu-base + ci*45ms、带一点左下偏移与额外倾角滑入定格；
+   退场按反序更快收回（时间线倒放），与条目的交错节奏同构。 */
 .menu-bg-word {
   position: absolute;
   left: -0.05em;
@@ -63,6 +65,32 @@
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
+}
+
+.menu-bg-line {
+  display: block;
+}
+
+.menu-bg-char {
+  display: inline-block;
+  opacity: 0;
+  translate: -0.3em 0.18em;
+  rotate: -14deg;
+  transition:
+    translate 0.32s cubic-bezier(0.5, 0, 0.75, 0.4),
+    rotate 0.32s cubic-bezier(0.5, 0, 0.75, 0.4),
+    opacity 0.28s ease-in;
+  transition-delay: calc((var(--n) - 1 - var(--ci)) * 24ms);
+}
+
+.menu-overlay[data-open='true'] .menu-bg-char {
+  opacity: 1;
+  translate: 0 0;
+  rotate: 0deg;
+  transition:
+    translate 0.5s var(--menu-ease) calc(var(--menu-base) + var(--ci) * 45ms),
+    rotate 0.5s var(--menu-ease) calc(var(--menu-base) + var(--ci) * 45ms),
+    opacity 0.35s ease-out calc(var(--menu-base) + var(--ci) * 45ms);
 }
 
 .menu-panel {
@@ -221,5 +249,12 @@ button[aria-expanded='true'] .menu-btn-icon {
 
   .menu-item {
     translate: none;
+  }
+
+  .menu-bg-char {
+    translate: 0 0;
+    rotate: 0deg;
+    opacity: 1;
+    transition: none;
   }
 }
