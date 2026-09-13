@@ -1,5 +1,6 @@
 import type { Ref } from 'react'
 
+import topIntroCopyLast from '@/assets/top-intro-copy-last.webp'
 import { SERIES_BANNERS } from '@/constants/seriesBanners'
 
 type FullpageFooterProps = {
@@ -29,27 +30,38 @@ export function FullpageFooter({ ref }: FullpageFooterProps) {
         <div className="h-[20px] bg-accent" />
       </div>
 
-      <ul className="relative grid w-fit grid-cols-3 items-center gap-x-2 gap-y-4 sm:gap-x-12 sm:gap-y-10">
-        {SERIES_BANNERS.map((banner) => (
-          <li key={banner.href}>
-            <a
-              href={banner.href}
-              target="_blank"
-              rel="noreferrer"
-              className="block transition-opacity hover:opacity-75 focus-visible:opacity-75"
-            >
-              <img
-                src={banner.src}
-                alt={banner.alt}
-                width={240}
-                height={60}
-                loading="lazy"
-                className="h-auto w-[240px] max-w-full"
-              />
-            </a>
-          </li>
-        ))}
-      </ul>
+      {/* 官网末屏宣传语：放在外站横幅列表上方 */}
+      <div className="relative flex flex-col items-center gap-8 sm:gap-12">
+        <img
+          src={topIntroCopyLast}
+          alt="そして、次の曲が始まるのです。"
+          width={1120}
+          height={120}
+          loading="lazy"
+          className="h-auto w-[min(86vw,640px)]"
+        />
+        <ul className="grid w-fit grid-cols-3 items-center gap-x-2 gap-y-4 sm:gap-x-12 sm:gap-y-10">
+          {SERIES_BANNERS.map((banner) => (
+            <li key={banner.href}>
+              <a
+                href={banner.href}
+                target="_blank"
+                rel="noreferrer"
+                className="block transition-opacity hover:opacity-75 focus-visible:opacity-75"
+              >
+                <img
+                  src={banner.src}
+                  alt={banner.alt}
+                  width={240}
+                  height={60}
+                  loading="lazy"
+                  className="h-auto w-[240px] max-w-full"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </footer>
   )
 }
