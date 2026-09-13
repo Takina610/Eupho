@@ -113,37 +113,131 @@
   display: flex;
   width: 100%;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
   padding: clamp(1rem, 0.875rem + 0.5vw, 1.25rem) 0.25rem;
   text-align: left;
   cursor: pointer;
   border-bottom: 1px solid rgba(244, 251, 252, 0.22);
   opacity: 0;
   translate: min(15vw, 56px) 0;
-  /* 五线谱颜色：默认隐形，悬浮用主题青，选中用黄 */
+  /* 高亮色：默认隐形，悬浮用主题青，选中用黄（谱线、备样字符、短块共用） */
   --staff: transparent;
   transition:
     opacity 0.45s var(--menu-ease) calc((var(--menu-n) - 1 - var(--i)) * var(--menu-step)),
     translate 0.45s var(--menu-ease) calc((var(--menu-n) - 1 - var(--i)) * var(--menu-step));
 }
 
-/* 悬浮/选中时文字上下浮现五线谱——各两道细线，像谱线夹着音符 */
+.menu-labels {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-width: 0;
+}
+
+/* 双层逐字标签：data-on 时底层白色字符从左往右逐字向下掉，
+   上层高亮样式（--staff 色，EN 斜体）自上方逐字落下补位。节奏刻意放缓。 */
+.menu-label {
+  position: relative;
+  display: inline-block;
+  white-space: pre;
+  font-size: clamp(1.25rem, 1rem + 1.8vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  color: #f4fbfc;
+}
+
+.menu-label--zh {
+  font-size: clamp(0.875rem, 0.8125rem + 0.3vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: rgba(244, 251, 252, 0.9);
+}
+
+.menu-label-cell {
+  position: relative;
+  display: inline-block;
+}
+
+.menu-label-base,
+.menu-label-alt {
+  display: inline-block;
+  transition:
+    transform 0.5s var(--menu-ease) calc(var(--li) * 45ms),
+    opacity 0.4s ease-out calc(var(--li) * 45ms);
+}
+
+.menu-label-base {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.menu-label-alt {
+  position: absolute;
+  inset: 0;
+  color: var(--staff);
+  font-style: italic;
+  transform: translateY(-0.85em);
+  opacity: 0;
+}
+
+.menu-label--zh .menu-label-alt {
+  font-style: normal;
+}
+
+.menu-label[data-on='true'] .menu-label-base {
+  transform: translateY(0.6em);
+  opacity: 0;
+}
+
+.menu-label[data-on='true'] .menu-label-alt {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 悬浮/选中时浮现五线谱：上谱自上方滑入、下谱自下方滑入，
+   下谱的最低一道线更厚（谱线压着音符的感觉）。 */
 .menu-item::before {
   content: '';
   position: absolute;
-  inset: 4px 0;
+  left: 0;
+  right: 0;
+  top: 4px;
+  height: 12px;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s ease-out;
-  background:
-    repeating-linear-gradient(to bottom, var(--staff) 0 1.5px, transparent 1.5px 7px) 0 0 / 100% 12px no-repeat,
-    repeating-linear-gradient(to bottom, var(--staff) 0 1.5px, transparent 1.5px 7px) 0 100% / 100% 12px no-repeat;
+  transform: translateY(-9px);
+  background: repeating-linear-gradient(to bottom, var(--staff) 0 1.5px, transparent 1.5px 7px);
+  transition:
+    transform 0.32s var(--menu-ease),
+    opacity 0.3s ease-out;
 }
 
-/* 每条菜单栏底部都有分隔线，右端压一段白色粗短条（官网菜单的装饰记号） */
 .menu-item::after {
   content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  height: 12px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(9px);
+  background: linear-gradient(
+    to bottom,
+    var(--staff) 0 1.5px,
+    transparent 1.5px 8.5px,
+    var(--staff) 8.5px 11.5px,
+    transparent 11.5px
+  );
+  transition:
+    transform 0.32s var(--menu-ease),
+    opacity 0.3s ease-out;
+}
+
+/* 分隔线右端的粗短条（官网菜单的装饰记号），悬停/选中随 --staff 变色 */
+.menu-item-tab {
   position: absolute;
   right: 0;
   bottom: -2px;
@@ -159,79 +253,72 @@
   transition-delay: calc(var(--menu-base) + var(--i) * var(--menu-step));
 }
 
-.menu-item-en {
-  font-size: clamp(1.25rem, 1rem + 1.8vw, 1.75rem);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  line-height: 1.1;
-  color: #f4fbfc;
-  transition: color 0.25s;
-}
-
-.menu-item-zh {
-  font-size: clamp(0.875rem, 0.8125rem + 0.3vw, 1rem);
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  color: rgba(244, 251, 252, 0.9);
-  transition: color 0.25s;
-}
-
 @media (hover: hover) {
-  /* 悬浮：主题青 + 斜体 + 五线谱；选中仍是黄色（黄只留给当前页） */
+  /* 悬浮：主题青 + 五线谱 + 逐字切换；黄色只留给选中项 */
   .menu-item:hover {
     --staff: var(--color-brand);
   }
 
-  .menu-item:hover::before,
-  .menu-item:focus-visible::before {
+  .menu-item:hover::before {
     opacity: 1;
+    transform: translateY(0);
   }
 
-  .menu-item:hover .menu-item-en,
-  .menu-item:focus-visible .menu-item-en {
-    color: var(--color-brand);
-    font-style: italic;
+  .menu-item:hover::after {
+    opacity: 1;
+    transform: translateY(0);
   }
 
-  .menu-item:hover .menu-item-zh,
-  .menu-item:focus-visible .menu-item-zh {
-    color: var(--color-brand);
-  }
-
-  .menu-item:hover::after,
-  .menu-item:focus-visible::after {
+  .menu-item:hover .menu-item-tab {
     background: var(--color-brand);
   }
+}
+
+/* data-hot 与 :hover 等价：触屏/程序化触发没有真实指针悬停，靠属性兜底。
+   键盘聚焦同理。三者均不套 hover 媒体查询，保证触屏可用。 */
+.menu-item[data-hot='true'],
+.menu-item:focus-visible {
+  --staff: var(--color-brand);
+}
+
+.menu-item[data-hot='true']::before,
+.menu-item:focus-visible::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.menu-item[data-hot='true']::after,
+.menu-item:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.menu-item[data-hot='true'] .menu-item-tab,
+.menu-item:focus-visible .menu-item-tab {
+  background: var(--color-brand);
 }
 
 .menu-item:focus-visible {
   --staff: var(--color-brand);
 }
 
+.menu-item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
 .menu-item[data-current='true'] {
   --staff: var(--color-accent);
 }
 
-.menu-item[data-current='true']::before {
-  opacity: 1;
-}
-
-.menu-item[data-current='true'] .menu-item-en,
-.menu-item[data-current='true'] .menu-item-zh {
-  color: var(--color-accent);
-}
-
-.menu-item[data-current='true'] .menu-item-en {
-  font-style: italic;
-}
-
+.menu-item[data-current='true']::before,
 .menu-item[data-current='true']::after {
-  background: var(--color-accent);
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.menu-item:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: -2px;
+.menu-item[data-current='true'] .menu-item-tab {
+  background: var(--color-accent);
 }
 
 /* 按钮出入场：其他浮层（如系列详情）开着时缩小淡出，关闭时放大淡入。
@@ -278,7 +365,11 @@ button[aria-expanded='true'] .menu-btn-icon {
 @media (prefers-reduced-motion: reduce) {
   .menu-overlay,
   .menu-btn,
-  .menu-btn-icon {
+  .menu-btn-icon,
+  .menu-item::before,
+  .menu-item::after,
+  .menu-label-base,
+  .menu-label-alt {
     transition: none;
   }
 
@@ -290,6 +381,16 @@ button[aria-expanded='true'] .menu-btn-icon {
 
   .menu-item {
     translate: none;
+  }
+
+  .menu-item::before,
+  .menu-item::after {
+    transform: none;
+  }
+
+  .menu-label-base,
+  .menu-label-alt {
+    transform: none;
   }
 
   .menu-bg-char {
