@@ -21,7 +21,8 @@ export type HomeSectionConfig = {
 }
 
 export const HOME_SECTIONS: HomeSectionConfig[] = [
-  { id: 'index', Component: IndexSection },
+  // index 需要感知离页：系列详情开着时从全局菜单跳走，要顺手收起详情。
+  { id: 'index', Component: IndexSection, usesActive: true },
   { id: 'members', Component: MembersSection },
   { id: 'instruments', Component: InstrumentsSection, usesActive: true },
   { id: 'introduction', Component: IntroductionSection, usesActive: true },

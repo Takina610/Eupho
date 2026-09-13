@@ -6,12 +6,14 @@ import '@/components/series-detail/SeriesDetailStage.css'
 
 type SeriesDetailStageProps = {
   work: SeriesWork
+  /** 所在区块是否处于前台；翻页离开时自动播放退场，避免 portal 残留在新页面上。 */
+  active?: boolean
   /** Fired once when closing starts, before the exit animation plays out. */
   onClosing?: () => void
   onExited: () => void
 }
 
-export function SeriesDetailStage({ work, onClosing, onExited }: SeriesDetailStageProps) {
+export function SeriesDetailStage({ work, active, onClosing, onExited }: SeriesDetailStageProps) {
   const stageRef = useRef<HTMLDivElement>(null)
   const scrimRef = useRef<HTMLButtonElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
@@ -39,6 +41,12 @@ export function SeriesDetailStage({ work, onClosing, onExited }: SeriesDetailSta
     closeBtnRef.current?.focus()
     return () => window.removeEventListener('keydown', onKeyClose, true)
   }, [onKeyClose])
+
+  useEffect(() => {
+    if (active === false) {
+      close()
+    }
+  }, [active, close])
 
   return createPortal(
     <div className="series-detail" role="presentation">

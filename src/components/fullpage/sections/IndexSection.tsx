@@ -5,8 +5,9 @@ import { useFullpageOverlayLock } from '@/components/fullpage/FullpagePagerConte
 import { Section } from '@/components/fullpage/Section'
 import { SeriesDetailStage } from '@/components/series-detail/SeriesDetailStage'
 import { SERIES_WORKS } from '@/constants/seriesCovers'
+import type { SectionActiveProps } from '@/constants/homeSections'
 
-export const IndexSection = memo(function IndexSection() {
+export const IndexSection = memo(function IndexSection({ active }: SectionActiveProps) {
   const setOverlayLock = useFullpageOverlayLock()
   const [detailIndex, setDetailIndex] = useState<number | null>(null)
   // Flips as soon as the detail starts closing, so the scene restores while
@@ -57,6 +58,7 @@ export const IndexSection = memo(function IndexSection() {
       {work ? (
         <SeriesDetailStage
           work={work}
+          active={active}
           onClosing={closeDetail}
           onExited={() => {
             setDetailIndex(null)
