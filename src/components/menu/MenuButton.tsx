@@ -10,7 +10,7 @@ export function MenuButton() {
     <button
       type="button"
       aria-label="菜单"
-      className="fixed top-[max(3%,env(safe-area-inset-top))] right-[max(3%,env(safe-area-inset-right))] z-50 h-[clamp(4.375rem,0.857rem+6.74vw,6.25rem)] w-[clamp(4.375rem,0.857rem+6.74vw,6.25rem)] cursor-pointer touch-manipulation rounded-full bg-brand text-accent outline-4 outline-solid outline-white outline-offset-[-6px] select-none focus-visible:brightness-110 sm:top-[30px] sm:right-[30px] sm:outline-offset-[-7px]"
+      className="fixed top-[max(3vw,env(safe-area-inset-top))] right-[max(3vw,env(safe-area-inset-right))] z-50 h-[clamp(4.375rem,0.857rem+6.74vw,6.25rem)] w-[clamp(4.375rem,0.857rem+6.74vw,6.25rem)] cursor-pointer touch-manipulation rounded-full bg-brand text-accent outline-4 outline-solid outline-white outline-offset-[-6px] select-none focus-visible:brightness-110 sm:top-[30px] sm:right-[30px] sm:outline-offset-[-7px]"
     >
       <img
         src={euphoIcon}
