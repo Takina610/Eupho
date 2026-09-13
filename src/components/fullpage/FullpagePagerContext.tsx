@@ -1,8 +1,9 @@
 import { createContext, useContext, type ReactNode } from 'react'
+import type { GoToOptions } from '@/hooks/useFullpageHash'
 
 type FullpagePagerContextValue = {
   activeIndex: number
-  goTo: (index: number) => void
+  goTo: (index: number, options?: GoToOptions) => void
   /** 按 key 声明浮层锁：同一 key 重复声明幂等，全部 key 释放后才恢复翻页。 */
   setOverlayLock: (key: string, locked: boolean) => void
   /** 当前占用浮层锁的 key 集合（响应式），供菜单等按需显隐自身。 */
