@@ -42,6 +42,9 @@ type AccordionGalleryProps = {
   /** Visual dim/defocus of the gallery; independent from `recessed` so the
       scene can restore while the dialog's exit animation is still playing. */
   dimmed?: boolean
+  /** Controlled active panel. Omit to keep selection inside the gallery. */
+  activeIndex?: number
+  onActiveChange?: (index: number) => void
   onOpenActive?: (index: number) => void
 }
 
@@ -67,6 +70,8 @@ export function AccordionGallery({
   className = '',
   recessed = false,
   dimmed = false,
+  activeIndex,
+  onActiveChange,
   onOpenActive,
 }: AccordionGalleryProps) {
   const stackOnNarrow = useMatchMedia(STACK_QUERY)
@@ -74,7 +79,16 @@ export function AccordionGallery({
   const hoverExpand = trigger === 'hover' && fineHover && !stackOnNarrow
   const vertical = orientation === 'vertical' || stackOnNarrow
   const count = items.length
-  const [active, setActive] = useState(() => Math.min(Math.max(defaultIndex, 0), Math.max(count - 1, 0)))
+  const [uncontrolled, setUncontrolled] = useState(() =>
+    Math.min(Math.max(defaultIndex, 0), Math.max(count - 1, 0)),
+  )
+  const active = activeIndex ?? uncontrolled
+  const setActive = (index: number) => {
+    if (activeIndex === undefined) {
+      setUncontrolled(index)
+    }
+    onActiveChange?.(index)
+  }
   const { handleEnter, handlePointerDown, handleClick, handleFocus, handleKeyDown } = useAccordionGalleryPointer({
     active,
     setActive,

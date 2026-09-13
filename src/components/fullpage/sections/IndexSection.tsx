@@ -4,11 +4,15 @@ import { IndexBackground } from '@/components/fullpage/IndexBackground'
 import { useFullpageOverlayLock } from '@/components/fullpage/FullpagePagerContext'
 import { Section } from '@/components/fullpage/Section'
 import { SeriesDetailStage } from '@/components/series-detail/SeriesDetailStage'
+import { SeriesStaff } from '@/components/series-staff/SeriesStaff'
 import { SERIES_WORKS } from '@/constants/seriesCovers'
 import type { SectionActiveProps } from '@/constants/homeSections'
 
+const DEFAULT_SERIES_INDEX = 2
+
 export const IndexSection = memo(function IndexSection({ active }: SectionActiveProps) {
   const setOverlayLock = useFullpageOverlayLock()
+  const [activeIndex, setActiveIndex] = useState(DEFAULT_SERIES_INDEX)
   const [detailIndex, setDetailIndex] = useState<number | null>(null)
   // Flips as soon as the detail starts closing, so the scene restores while
   // the exit wipe plays instead of after it.
@@ -32,15 +36,19 @@ export const IndexSection = memo(function IndexSection({ active }: SectionActive
   const closeDetail = useCallback(() => setDetailClosing(true), [])
 
   const work = detailIndex != null ? SERIES_WORKS[detailIndex] : null
+  const detailOpen = detailIndex != null
+  const dimmed = detailOpen && !detailClosing
 
   return (
     <Section id="index" className="relative text-[#f2fafa]">
-      <IndexBackground veiled={detailIndex != null && !detailClosing} />
+      <IndexBackground veiled={dimmed} />
       <h1 className="sr-only">吹响吧！上低音号</h1>
-      <div className="relative flex min-h-0 w-full flex-1">
+      <div className="relative flex min-h-0 w-full flex-1 flex-col">
         <AccordionGallery
           items={SERIES_WORKS}
-          defaultIndex={2}
+          defaultIndex={DEFAULT_SERIES_INDEX}
+          activeIndex={activeIndex}
+          onActiveChange={setActiveIndex}
           expandRatio={0.42}
           trigger="hover"
           height="100%"
@@ -50,9 +58,16 @@ export const IndexSection = memo(function IndexSection({ active }: SectionActive
           overlayColor="#021c21"
           textColor="#f2fafa"
           className="min-h-0 flex-1"
-          recessed={detailIndex != null}
-          dimmed={detailIndex != null && !detailClosing}
+          recessed={detailOpen}
+          dimmed={dimmed}
           onOpenActive={openDetail}
+        />
+        <SeriesStaff
+          activeIndex={activeIndex}
+          onActiveChange={setActiveIndex}
+          onOpenActive={openDetail}
+          recessed={detailOpen}
+          dimmed={dimmed}
         />
       </div>
       {work ? (
