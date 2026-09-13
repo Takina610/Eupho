@@ -31,6 +31,10 @@ export function useFullpagePager({
   const toRef = useRef(to)
   const reducedMotionRef = useRef(reducedMotion)
   const overlayLockRef = useRef(false)
+  // 按 key 记录锁占用者（系列详情、全局菜单等），允许浮层叠加：
+  // effect 写法「set(key, cond) + cleanup set(key, false)」下同一 key 幂等，
+  // 全部 key 释放后才算解锁。
+  const overlayLockKeysRef = useRef(new Set<string>())
 
   activeIndexRef.current = activeIndex
   footerRevealedRef.current = footerRevealed
@@ -42,9 +46,15 @@ export function useFullpagePager({
 
   useEffect(() => subscribePrefersReducedMotion(setReducedMotion), [])
 
-  const setOverlayLock = useCallback((locked: boolean) => {
-    overlayLockRef.current = locked
-    lockedRef.current = fromRef.current !== toRef.current || footerLockRef.current || locked
+  const setOverlayLock = useCallback((key: string, locked: boolean) => {
+    if (locked) {
+      overlayLockKeysRef.current.add(key)
+    } else {
+      overlayLockKeysRef.current.delete(key)
+    }
+    const overlayLocked = overlayLockKeysRef.current.size > 0
+    overlayLockRef.current = overlayLocked
+    lockedRef.current = fromRef.current !== toRef.current || footerLockRef.current || overlayLocked
   }, [])
 
   useSeamTransition({

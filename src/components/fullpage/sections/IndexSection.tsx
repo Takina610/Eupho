@@ -14,8 +14,8 @@ export const IndexSection = memo(function IndexSection() {
   const [detailClosing, setDetailClosing] = useState(false)
 
   useEffect(() => {
-    setOverlayLock(detailIndex != null)
-    return () => setOverlayLock(false)
+    setOverlayLock('series-detail', detailIndex != null)
+    return () => setOverlayLock('series-detail', false)
   }, [detailIndex, setOverlayLock])
 
   const openDetail = useCallback((index: number) => {

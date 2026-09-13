@@ -4,6 +4,7 @@ import { HOME_SECTIONS } from '@/constants/homeSections'
 import { FullpageFooter } from '@/components/fullpage/FullpageFooter'
 import { FullpagePagerProvider } from '@/components/fullpage/FullpagePagerContext'
 import { FullpageScenes } from '@/components/fullpage/FullpageScenes'
+import { GlobalMenu } from '@/components/menu/GlobalMenu'
 import { useElementHeight } from '@/hooks/useElementHeight'
 import { useFullpagePager } from '@/hooks/useFullpagePager'
 import { EASE_OUT_QUAD_CSS } from '@/lib/easing'
@@ -20,7 +21,7 @@ export function Fullpage() {
   })
 
   return (
-    <FullpagePagerProvider goTo={pager.goTo} setOverlayLock={pager.setOverlayLock}>
+    <FullpagePagerProvider goTo={pager.goTo} setOverlayLock={pager.setOverlayLock} activeIndex={pager.activeIndex}>
       <div ref={rootRef} className="h-dvh overflow-clip">
         <div
           className="fullpage-shell"
@@ -47,6 +48,8 @@ export function Fullpage() {
           </div>
           <FullpageFooter ref={footerRef} />
         </div>
+        {/* 全局菜单在 shell 之外：不随谱线切页位移，遮罩能盖住整个页面 */}
+        <GlobalMenu />
       </div>
     </FullpagePagerProvider>
   )

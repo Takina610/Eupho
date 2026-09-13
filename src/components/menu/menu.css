@@ -1,0 +1,190 @@
+/* 全局菜单动画，对照 ak.hypergryph.com 移动端菜单的规格：
+   全屏深色遮罩；条目为 EN 主标签 + 中文副标签的双行「菜单栏」；
+   入场时条目从右侧 ~15vw 滑入，自上而下每条错开 70ms（官网同款步长）；
+   关闭是入场时间线的倒放（下面的条目先退场），最后整层淡出。
+   --menu-top/--menu-inset 与 MenuButton 的定位完全同源，保证面板正好落在按钮下方。 */
+
+.menu-overlay {
+  --menu-inset: max(3vw, env(safe-area-inset-right, 0px));
+  --menu-top: calc(
+    max(3vw, env(safe-area-inset-top, 0px)) +
+    clamp(4.375rem, 0.857rem + 6.74vw, 6.25rem) +
+    0.625rem
+  );
+  --menu-step: 70ms;
+  --menu-base: 140ms;
+  --menu-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  position: fixed;
+  inset: 0;
+  /* 高于 body 级业务浮层（系列详情等 z-50），低于开屏加载层（9998/9999） */
+  z-index: 55;
+  visibility: hidden;
+  pointer-events: none;
+  /* 收起动画（条目反序 210ms + 450ms 过渡）播完后再整体隐藏 */
+  transition: visibility 0s linear 0.7s;
+}
+
+.menu-overlay[data-open='true'] {
+  visibility: visible;
+  pointer-events: auto;
+  transition: visibility 0s;
+}
+
+.menu-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 28, 33, 0.92);
+  opacity: 0;
+  /* 收起时让条目先退场，遮罩随后跟进 */
+  transition: opacity 0.3s ease-out calc(var(--menu-step) * 3.4);
+}
+
+.menu-overlay[data-open='true'] .menu-scrim {
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+
+.menu-panel {
+  position: absolute;
+  top: var(--menu-top);
+  right: var(--menu-inset);
+  width: min(24rem, calc(100vw - var(--menu-inset) * 2));
+  max-height: calc(100dvh - var(--menu-top) - 1rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  scrollbar-width: none;
+}
+
+.menu-panel::-webkit-scrollbar {
+  display: none;
+}
+
+.menu-item {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: clamp(0.875rem, 0.75rem + 0.5vw, 1.125rem) 0.5rem
+    clamp(0.875rem, 0.75rem + 0.5vw, 1.125rem) 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  opacity: 0;
+  translate: min(15vw, 56px) 0;
+  transition:
+    opacity 0.45s var(--menu-ease) calc((var(--menu-n) - 1 - var(--i)) * var(--menu-step)),
+    translate 0.45s var(--menu-ease) calc((var(--menu-n) - 1 - var(--i)) * var(--menu-step));
+}
+
+.menu-item + .menu-item {
+  border-top: 1px solid rgba(244, 251, 252, 0.14);
+}
+
+.menu-overlay[data-open='true'] .menu-item {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: calc(var(--menu-base) + var(--i) * var(--menu-step));
+}
+
+/* 当前页与悬停条目：文字转黄 + 左侧短划线（黄只做点缀） */
+.menu-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 2px;
+  translate: 0 -50%;
+  background: var(--color-accent);
+  transition: width 0.25s var(--menu-ease);
+}
+
+.menu-item-en {
+  display: block;
+  font-size: clamp(1.25rem, 1rem + 1.8vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  color: #f4fbfc;
+  transition: color 0.25s;
+}
+
+.menu-item-zh {
+  display: block;
+  margin-top: 0.1875rem;
+  font-size: clamp(0.6875rem, 0.625rem + 0.3vw, 0.8125rem);
+  letter-spacing: 0.32em;
+  color: rgba(244, 251, 252, 0.55);
+  transition: color 0.25s;
+}
+
+@media (hover: hover) {
+  .menu-item:hover .menu-item-en,
+  .menu-item:focus-visible .menu-item-en {
+    color: var(--color-accent);
+  }
+
+  .menu-item:hover .menu-item-zh,
+  .menu-item:focus-visible .menu-item-zh {
+    color: rgba(255, 248, 48, 0.75);
+  }
+
+  .menu-item:hover::before,
+  .menu-item:focus-visible::before {
+    width: 0.875rem;
+  }
+}
+
+.menu-item[data-current='true'] .menu-item-en {
+  color: var(--color-accent);
+}
+
+.menu-item[data-current='true'] .menu-item-zh {
+  color: rgba(255, 248, 48, 0.75);
+}
+
+.menu-item[data-current='true']::before {
+  width: 0.875rem;
+}
+
+.menu-item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+/* 按钮图标：开合各转一圈，回弹式缓动；rotate 属性独立于居中用的 translate */
+.menu-btn-icon {
+  rotate: 0deg;
+  transition: rotate 0.65s cubic-bezier(0.34, 1.3, 0.42, 1);
+}
+
+button[aria-expanded='true'] .menu-btn-icon {
+  rotate: 360deg;
+}
+
+@media (min-width: 640px) {
+  .menu-overlay {
+    --menu-inset: max(30px, env(safe-area-inset-right, 0px));
+    --menu-top: calc(
+      max(30px, env(safe-area-inset-top, 0px)) +
+      clamp(4.375rem, 0.857rem + 6.74vw, 6.25rem) +
+      0.875rem
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-overlay,
+  .menu-btn-icon {
+    transition: none;
+  }
+
+  .menu-scrim,
+  .menu-item {
+    transition: opacity 0.2s ease-out;
+    transition-delay: 0s !important;
+  }
+
+  .menu-item {
+    translate: none;
+  }
+}

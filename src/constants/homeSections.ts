@@ -26,3 +26,13 @@ export const HOME_SECTIONS: HomeSectionConfig[] = [
   { id: 'instruments', Component: InstrumentsSection, usesActive: true },
   { id: 'introduction', Component: IntroductionSection, usesActive: true },
 ]
+
+/** 全局菜单的条目：顺序与 HOME_SECTIONS 对齐，EN 为主标签（AK 官网导航的双行样式）。 */
+export type MenuItemConfig = { id: HomeSectionId; en: string; zh: string }
+
+export const MENU_ITEMS: MenuItemConfig[] = [
+  { id: 'index', en: 'INDEX', zh: '首页' },
+  { id: 'members', en: 'MEMBERS', zh: '部员' },
+  { id: 'instruments', en: 'INSTRUMENTS', zh: '乐器' },
+  { id: 'introduction', en: 'INTRODUCTION', zh: '作品介绍' },
+]

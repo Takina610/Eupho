@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { BootGate, BootHold } from '@/components/loading/BootGate'
-import { MenuButton } from '@/components/menu/MenuButton'
 import '@/styles/app.css'
 
 export const Route = createRootRoute({
@@ -15,7 +14,6 @@ function RootLayout() {
       <Suspense fallback={<BootHold />}>
         <Outlet />
       </Suspense>
-      <MenuButton />
     </BootGate>
   )
 }
