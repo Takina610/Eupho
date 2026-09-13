@@ -27,6 +27,11 @@
   filter: brightness(0.42) saturate(0.85);
 }
 
+/* 未激活屏层整块隐藏；到达时的显现交给下方「奏响谱面」编排逐件完成 */
+[data-active='false'] .series-staff {
+  opacity: 0;
+}
+
 .series-staff__cue {
   position: relative;
   margin: 0 0 0.05rem;
@@ -47,11 +52,11 @@
 
 .series-staff__cue-label {
   min-width: 0;
-  flex: 1 1 12rem;
+  /* 恒单行题注：放不下时省略号收尾，绝不换行顶高谱面 */
+  flex: 0 1 auto;
   overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .series-staff__board {
@@ -81,12 +86,24 @@
   touch-action: manipulation;
 }
 
+/* 击音涟漪：垫在音符下面的一圈共鸣光晕，key 换曲重挂载时重播 */
+.series-staff__ripple {
+  position: absolute;
+  z-index: 0;
+  width: 8.5rem;
+  height: 8.5rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 248 48 / 0.32), rgb(1 172 198 / 0.2) 55%, transparent);
+  opacity: 0;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
 .series-staff__cue-in {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: baseline;
-  gap: 0.35rem 0.65rem;
+  gap: 0.65rem;
   min-width: 0;
 }
 
@@ -215,8 +232,69 @@
     animation: staff-cue-in 0.38s cubic-bezier(0.33, 1, 0.68, 1);
   }
 
-  .series-staff.is-dimmed {
+  /* ── 切页进出场：按「奏响一份谱面」编排 ──
+     到达（后退向切页，seam 自左向右揭幕）：五线从左画出 → 谱号落位 →
+     音符带落键回弹自左向右依次落到各自音高 → cue 收尾浮现；
+     离场（前进向切页，seam 自右向左盖幕）：音符自右向左松键升起、
+     谱线向左收卷，与 .wipe-push 的推挤同向退场。 */
+  [data-active='true'] .series-staff {
     transition: filter 0.45s ease;
+  }
+
+  [data-leaving='forward'] .series-staff,
+  [data-leaving='backward'] .series-staff {
+    opacity: 0;
+    transition:
+      opacity 0.55s cubic-bezier(0.6, 0.04, 0.98, 0.34) 0.1s,
+      filter 0.45s ease;
+  }
+
+  .series-staff__lines i {
+    transform-origin: left center;
+  }
+
+  [data-active='true'] .series-staff__lines i {
+    animation: staff-line-rule 0.55s cubic-bezier(0.33, 1, 0.68, 1) both;
+    animation-delay: calc(var(--line-i, 0) * 60ms);
+  }
+
+  [data-active='true'] .series-staff__clef {
+    animation: staff-clef-in 0.45s cubic-bezier(0.33, 1, 0.68, 1) 0.4s both;
+  }
+
+  [data-active='true'] .series-staff__note {
+    animation: staff-note-land 0.5s cubic-bezier(0.22, 1.35, 0.36, 1) both;
+    animation-delay: calc(0.4s + var(--note-i, 0) * 45ms);
+  }
+
+  [data-active='true'] .series-staff__cue {
+    animation: staff-cue-in 0.38s cubic-bezier(0.33, 1, 0.68, 1) 0.9s both;
+  }
+
+  .series-staff__ripple {
+    animation: staff-ripple 0.7s cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  /* 离场与进场同特异性，靠后声明覆盖：编队按 seam 扫向撤退 */
+  [data-leaving='forward'] .series-staff__note,
+  [data-leaving='backward'] .series-staff__note {
+    animation: staff-note-release 0.4s cubic-bezier(0.6, 0.04, 0.98, 0.34) both;
+    animation-delay: calc((var(--note-last, 9) - var(--note-i, 0)) * 28ms);
+  }
+
+  [data-leaving='forward'] .series-staff__lines i,
+  [data-leaving='backward'] .series-staff__lines i {
+    animation: staff-line-retract 0.45s cubic-bezier(0.6, 0.04, 0.98, 0.34) 0.12s both;
+  }
+
+  [data-leaving='forward'] .series-staff__clef,
+  [data-leaving='backward'] .series-staff__clef {
+    animation: staff-clef-out 0.35s ease-in both;
+  }
+
+  [data-leaving='forward'] .series-staff__cue,
+  [data-leaving='backward'] .series-staff__cue {
+    animation: staff-cue-out 0.3s ease-in both;
   }
 }
 
@@ -243,6 +321,97 @@
   }
 }
 
+@keyframes staff-line-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes staff-line-retract {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes staff-clef-in {
+  from {
+    opacity: 0;
+    translate: -0.7rem 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes staff-clef-out {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+  to {
+    opacity: 0;
+    translate: -0.5rem 0;
+  }
+}
+
+/* 落键：从上方落到谱线音高上，落点由过冲缓动带回弹 */
+@keyframes staff-note-land {
+  from {
+    opacity: 0;
+    translate: 0 -1.05rem;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* 松键：向左上方放开飘起，随 seam 扫向撤退 */
+@keyframes staff-note-release {
+  0% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: -0.55rem -1rem;
+  }
+}
+
+@keyframes staff-cue-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* 击音共鸣：以被击音符为圆心荡开一圈光晕 */
+@keyframes staff-ripple {
+  0% {
+    opacity: 0;
+    transform: scale(0.2, 0.45);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.06, 1.06);
+  }
+}
+
 @media (max-width: 640px) {
   .series-staff {
     margin-top: 0.2rem;
@@ -260,6 +429,11 @@
 
   .series-staff__note {
     --head-nudge: 0.26rem;
+  }
+
+  .series-staff__ripple {
+    width: 5.5rem;
+    height: 5.5rem;
   }
 
   .series-staff__glyph {
@@ -296,7 +470,6 @@
   }
 
   .series-staff__cue-in {
-    justify-content: flex-start;
     padding-inline: 0.1rem;
   }
 }

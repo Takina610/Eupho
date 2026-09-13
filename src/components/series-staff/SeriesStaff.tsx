@@ -1,4 +1,4 @@
-import { useEffect, useRef, type KeyboardEvent } from 'react'
+import { useEffect, useRef, type CSSProperties, type KeyboardEvent } from 'react'
 import { SERIES_WORKS } from '@/constants/seriesCovers'
 import { STAFF_BASS_CLEF_SRC, seriesStaffNote, staffNoteMark, staffNoteStemDown, staffNoteWide } from '@/constants/seriesStaff'
 import { useMatchMedia } from '@/hooks/useMatchMedia'
@@ -82,6 +82,7 @@ export function SeriesStaff({
     <div
       ref={rootRef}
       className={`series-staff${recessed ? ' is-recessed' : ''}${dimmed ? ' is-dimmed' : ''}`}
+      style={{ '--note-last': count - 1 } as CSSProperties}
       data-fullpage-ignore
       role="group"
       aria-label="系列时间轴"
@@ -110,16 +111,26 @@ export function SeriesStaff({
           }}
           onClick={handleClick}
         >
+          {/* 共鸣涟漪：key 取当前作品，悬浮切换/点选换曲时重挂载即重播一圈光晕 */}
+          {work ? (
+            <span
+              key={work.id}
+              className="series-staff__ripple"
+              aria-hidden
+              style={{
+                left: `${noteLeftPercent(activeIndex, count)}%`,
+                top: `${pitchTopPercent(seriesStaffNote(activeIndex).pitch)}%`,
+              }}
+            />
+          ) : null}
           <div
             className="series-staff__lines"
             style={{ top: `${STAFF_LINE_TOP}%`, bottom: `${100 - STAFF_LINE_BOTTOM}%` }}
             aria-hidden="true"
           >
-            <i />
-            <i />
-            <i />
-            <i />
-            <i />
+            {Array.from({ length: 5 }, (_, lineIndex) => (
+              <i key={lineIndex} style={{ '--line-i': lineIndex } as CSSProperties} />
+            ))}
           </div>
           <img
             className="series-staff__clef"
@@ -152,7 +163,11 @@ export function SeriesStaff({
                 }}
                 type="button"
                 className={classes}
-                style={{ left: `${noteLeftPercent(index, count)}%`, top: `${pitchTopPercent(note.pitch)}%` }}
+                style={{
+                  '--note-i': index,
+                  left: `${noteLeftPercent(index, count)}%`,
+                  top: `${pitchTopPercent(note.pitch)}%`,
+                } as CSSProperties}
                 tabIndex={recessed ? -1 : isActive ? 0 : -1}
                 aria-current={isActive ? 'true' : undefined}
                 aria-label={`${item.year} ${item.kind} ${item.label}`}
