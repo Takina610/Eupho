@@ -39,7 +39,7 @@
   /* 官网 keyvisual 打底，压深色罩保证条目可读 */
   background:
     linear-gradient(rgba(2, 28, 33, 0.82), rgba(2, 28, 33, 0.9)),
-    url('../../assets/keyvisual.jpg') center / cover no-repeat;
+    url('../../assets/keyvisual.jpg') center bottom / cover no-repeat;
   opacity: 0;
   /* 收起时让条目先退场，遮罩随后跟进 */
   transition: opacity 0.3s ease-out calc(var(--menu-step) * 3.4);
@@ -147,7 +147,8 @@
   font-size: clamp(1.25rem, 1rem + 1.8vw, 1.75rem);
   font-weight: 700;
   letter-spacing: 0.02em;
-  line-height: 1.1;
+  /* 1.35 行高让斜体字形完整落在裁剪窗口内（1.1 会削顶） */
+  line-height: 1.35;
   color: #f4fbfc;
 }
 
