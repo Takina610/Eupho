@@ -146,6 +146,7 @@
 
 .intro-i18n {
   display: grid;
+  position: relative;
 }
 
 .intro-i18n-ja,
@@ -181,7 +182,8 @@
     mask-position 0.85s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* 段落底部的辉线随扫过一起浮现，呼应站点缝线（桌面黄、移动端青） */
+/* 段落底部的小谱线（主线 + 上下两根淡线）随扫过一起浮现，呼应站点缝线与五线谱；
+   桌面黄、移动端青 */
 .intro-i18n-zh::after {
   content: '';
   position: absolute;
@@ -191,6 +193,52 @@
   height: 2px;
   background: linear-gradient(90deg, transparent, #fff830 25%, #fff830 75%, transparent);
   opacity: 0.9;
+  box-shadow:
+    0 -5px 0 rgba(255, 248, 48, 0.28),
+    0 5px 0 rgba(255, 248, 48, 0.22);
+}
+
+/* 乐句收尾时从右缘飘出的音符 */
+.intro-note {
+  position: absolute;
+  top: -16px;
+  right: -4px;
+  z-index: 1;
+  pointer-events: none;
+  font-style: normal;
+  line-height: 1;
+  color: #fff830;
+  text-shadow: 0 0 6px rgba(255, 248, 48, 0.45);
+  opacity: 0;
+}
+
+.intro-note-a {
+  font-size: 15px;
+}
+
+.intro-note-b {
+  top: -2px;
+  right: 26px;
+  font-size: 11px;
+}
+
+@keyframes intro-note-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) rotate(-10deg) scale(0.8);
+    filter: blur(2px);
+  }
+
+  30% {
+    opacity: 0.95;
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-26px) rotate(8deg) scale(1.06);
+    filter: blur(1px);
+  }
 }
 
 .intro-lead .intro-i18n-zh {
@@ -208,6 +256,14 @@
     filter: blur(0);
     -webkit-mask-position: 0% 0;
     mask-position: 0% 0;
+  }
+
+  .intro-i18n:hover .intro-note-a {
+    animation: intro-note-rise 0.95s ease-out 0.5s both;
+  }
+
+  .intro-i18n:hover .intro-note-b {
+    animation: intro-note-rise 0.95s ease-out 0.72s both;
   }
 }
 
@@ -229,6 +285,22 @@
 
   .intro-i18n-zh::after {
     background: linear-gradient(90deg, transparent, #01acc6 25%, #01acc6 75%, transparent);
+    box-shadow:
+      0 -5px 0 rgba(1, 172, 198, 0.28),
+      0 5px 0 rgba(1, 172, 198, 0.22);
+  }
+
+  .intro-note {
+    color: #01acc6;
+    text-shadow: 0 0 6px rgba(1, 172, 198, 0.35);
+  }
+
+  .intro-stage.zh .intro-note-a {
+    animation: intro-note-rise 0.95s ease-out calc(var(--zh-i, 0) * 90ms + 500ms) both;
+  }
+
+  .intro-stage.zh .intro-note-b {
+    animation: intro-note-rise 0.95s ease-out calc(var(--zh-i, 0) * 90ms + 700ms) both;
   }
 }
 
@@ -393,6 +465,10 @@
   }
 
   .intro-i18n-zh::after {
+    display: none;
+  }
+
+  .intro-note {
     display: none;
   }
 }

@@ -63,6 +63,12 @@ function I18nText({
         <span className="intro-i18n-zh" lang="zh-CN" aria-hidden={!zhOn || undefined}>
           {zh}
         </span>
+        <i className="intro-note intro-note-a" aria-hidden>
+          ♪
+        </i>
+        <i className="intro-note intro-note-b" aria-hidden>
+          ♫
+        </i>
       </span>
     </p>
   )
@@ -175,7 +181,7 @@ export const IntroductionSection = memo(function IntroductionSection({
                 }
                 zh={
                   <>
-                    系列终于迎来完结<span className="ls">！！！</span>
+                    系列终于迎来完结！！！
                     <br />
                     <span className="hl">这份轨迹</span>，将成为<span className="hl">下一首曲子</span>
                     ——
@@ -233,6 +239,7 @@ export const IntroductionSection = memo(function IntroductionSection({
               <I18nText
                 className="intro-body"
                 zhOn={showZh}
+                index={3}
                 ja={
                   <>
                     胸に残るのは、あの日の誓い――。アニメ『響け！ユーフォニアム』ついに終幕へ。
