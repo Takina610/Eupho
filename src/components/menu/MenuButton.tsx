@@ -21,16 +21,15 @@ export function MenuButton({ open, onToggle }: MenuButtonProps) {
       className="fixed top-[max(3vw,env(safe-area-inset-top))] right-[max(3vw,env(safe-area-inset-right))] z-[60] h-[clamp(4.375rem,0.857rem+6.74vw,6.25rem)] w-[clamp(4.375rem,0.857rem+6.74vw,6.25rem)] cursor-pointer touch-manipulation rounded-full bg-brand text-accent outline-4 outline-solid outline-white outline-offset-[-6px] select-none focus-visible:brightness-110 sm:top-[30px] sm:right-[30px] sm:outline-offset-[-7px]"
     >
       <span aria-hidden="true" className="absolute inset-[7%] rounded-full border-2 border-white/95" />
-      <span className="relative flex flex-col items-center gap-[3px]">
-        <img
-          src={euphoIcon}
-          alt=""
-          draggable={false}
-          className="menu-btn-icon absolute top-[calc(50%-5px)] left-1/2 h-auto w-[clamp(2rem,0.827rem+2.25vw,2.625rem)] -translate-x-1/2 -translate-y-1/2"
-        />
-        <span className="text-[clamp(0.438rem,-0.149rem+1.12vw,0.75rem)] leading-none font-semibold">
-          {open ? 'Close' : 'Menu'}
-        </span>
+      {/* 图标与文字都相对整个按钮定位（官网 .nav-btn 的结构）：图标居中上提 5px，文字贴底 */}
+      <img
+        src={euphoIcon}
+        alt=""
+        draggable={false}
+        className="menu-btn-icon absolute top-[calc(50%-5px)] left-1/2 h-auto w-[clamp(2rem,0.827rem+2.25vw,2.625rem)] -translate-x-1/2 -translate-y-1/2"
+      />
+      <span className="absolute inset-x-0 bottom-[clamp(0.875rem,0.406rem+0.9vw,1.125rem)] text-center text-[clamp(0.438rem,-0.149rem+1.12vw,0.75rem)] leading-none font-semibold">
+        {open ? 'Close' : 'Menu'}
       </span>
     </button>
   )

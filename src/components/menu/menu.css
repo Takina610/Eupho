@@ -62,10 +62,12 @@
 
 .menu-item {
   position: relative;
-  display: block;
+  display: flex;
   width: 100%;
-  padding: clamp(0.875rem, 0.75rem + 0.5vw, 1.125rem) 0.5rem
-    clamp(0.875rem, 0.75rem + 0.5vw, 1.125rem) 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1rem, 0.875rem + 0.5vw, 1.25rem) 0.25rem;
   text-align: left;
   cursor: pointer;
   opacity: 0;
@@ -76,7 +78,18 @@
 }
 
 .menu-item + .menu-item {
-  border-top: 1px solid rgba(244, 251, 252, 0.14);
+  border-top: 1px solid rgba(244, 251, 252, 0.22);
+}
+
+/* 每条分隔线的右端压一段白色粗短条（官网菜单的装饰记号） */
+.menu-item::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -2px;
+  width: 2.25rem;
+  height: 3px;
+  background: #f4fbfc;
 }
 
 .menu-overlay[data-open='true'] .menu-item {
@@ -85,35 +98,20 @@
   transition-delay: calc(var(--menu-base) + var(--i) * var(--menu-step));
 }
 
-/* 当前页与悬停条目：文字转黄 + 左侧短划线（黄只做点缀） */
-.menu-item::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 0;
-  height: 2px;
-  translate: 0 -50%;
-  background: var(--color-accent);
-  transition: width 0.25s var(--menu-ease);
-}
-
 .menu-item-en {
-  display: block;
   font-size: clamp(1.25rem, 1rem + 1.8vw, 1.75rem);
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   line-height: 1.1;
   color: #f4fbfc;
   transition: color 0.25s;
 }
 
 .menu-item-zh {
-  display: block;
-  margin-top: 0.1875rem;
-  font-size: clamp(0.6875rem, 0.625rem + 0.3vw, 0.8125rem);
-  letter-spacing: 0.32em;
-  color: rgba(244, 251, 252, 0.55);
+  font-size: clamp(0.875rem, 0.8125rem + 0.3vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: rgba(244, 251, 252, 0.9);
   transition: color 0.25s;
 }
 
@@ -125,25 +123,13 @@
 
   .menu-item:hover .menu-item-zh,
   .menu-item:focus-visible .menu-item-zh {
-    color: rgba(255, 248, 48, 0.75);
-  }
-
-  .menu-item:hover::before,
-  .menu-item:focus-visible::before {
-    width: 0.875rem;
+    color: var(--color-accent);
   }
 }
 
-.menu-item[data-current='true'] .menu-item-en {
-  color: var(--color-accent);
-}
-
+.menu-item[data-current='true'] .menu-item-en,
 .menu-item[data-current='true'] .menu-item-zh {
-  color: rgba(255, 248, 48, 0.75);
-}
-
-.menu-item[data-current='true']::before {
-  width: 0.875rem;
+  color: var(--color-accent);
 }
 
 .menu-item:focus-visible {
