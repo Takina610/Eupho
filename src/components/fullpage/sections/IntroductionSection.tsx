@@ -7,7 +7,6 @@ import { prefersReducedMotion } from '@/lib/motion'
 import { setScrollRegionLenis } from '@/lib/scrollRegion'
 import introArt from '@/assets/introduction/intro-img.webp'
 import introArtSp from '@/assets/introduction/intro-img-sp.webp'
-import sceneStrip from '@/assets/introduction/scene-strip.webp'
 
 import './introductionSection.css'
 import 'lenis/dist/lenis.css'
@@ -270,8 +269,6 @@ export const IntroductionSection = memo(function IntroductionSection({
             </div>
           </div>
         </div>
-        {/* 官网同款场景长卷跑马灯：桌面钉在屏底，移动端在面板之后入流 */}
-        <div className="intro-scene-strip" aria-hidden style={{ backgroundImage: `url(${sceneStrip})` }} />
         </div>
       </div>
       <IntroTitle />
