@@ -7,6 +7,8 @@ type FullpagePagerContextValue = {
   setOverlayLock: (key: string, locked: boolean) => void
   /** 当前占用浮层锁的 key 集合（响应式），供菜单等按需显隐自身。 */
   overlayLockKeys: ReadonlySet<string>
+  /** 谱线切页进行中（页脚揭示不算）。 */
+  wiping: boolean
 }
 
 const FullpagePagerContext = createContext<FullpagePagerContextValue | null>(null)
@@ -16,10 +18,11 @@ export function FullpagePagerProvider({
   goTo,
   setOverlayLock,
   overlayLockKeys,
+  wiping,
   children,
 }: FullpagePagerContextValue & { children: ReactNode }) {
   return (
-    <FullpagePagerContext.Provider value={{ activeIndex, goTo, setOverlayLock, overlayLockKeys }}>
+    <FullpagePagerContext.Provider value={{ activeIndex, goTo, setOverlayLock, overlayLockKeys, wiping }}>
       {children}
     </FullpagePagerContext.Provider>
   )
@@ -39,6 +42,10 @@ export function useFullpageActiveIndex() {
 
 export function useFullpageOverlayLockKeys() {
   return useFullpagePagerContext().overlayLockKeys
+}
+
+export function useFullpageWiping() {
+  return useFullpagePagerContext().wiping
 }
 
 export function useFullpageGoTo() {

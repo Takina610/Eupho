@@ -4,6 +4,7 @@ import {
   useFullpageGoTo,
   useFullpageOverlayLockKeys,
   useFullpageOverlayLock,
+  useFullpageWiping,
 } from '@/components/fullpage/FullpagePagerContext'
 import { MENU_ITEMS } from '@/constants/homeSections'
 import { MenuButton } from '@/components/menu/MenuButton'
@@ -14,7 +15,8 @@ import './menu.css'
  * 全局菜单：右上角圆形按钮 + 全屏菜单浮层的组合。
  * 打开时通过 setOverlayLock 冻结全屏翻页（键盘被锁、指针事件被浮层挡住）；
  * 点条目则先收菜单再 interrupt 跳转，让收起动画与谱线切页并行。
- * 系列详情等浮层开着时按钮隐藏，避免压住浮层自己的关闭按钮。
+ * 其他浮层（系列详情等）开着时按钮隐藏；每次谱线切页按钮缩小再放大，
+ * 页脚揭示（不触发谱线）不参与，细节见 menu.css 与 GlobalMenu 的挂载时序。
  */
 export function GlobalMenu() {
   const [open, setOpen] = useState(false)
@@ -22,21 +24,22 @@ export function GlobalMenu() {
   const goTo = useFullpageGoTo()
   const setOverlayLock = useFullpageOverlayLock()
   const overlayLockKeys = useFullpageOverlayLockKeys()
-  // 菜单自己的锁不算数，只看「别的浮层」是否开着
-  const otherOverlayOpen = [...overlayLockKeys].some((key) => key !== 'global-menu')
-  // 按钮随其他浮层的开合缩放出入场：退出动画播完才卸载；
-  // 重挂载时先以缩小态入画，下一帧再翻到放大态，保证生长动画真正播放。
-  const [btnMounted, setBtnMounted] = useState(!otherOverlayOpen)
+  const wiping = useFullpageWiping()
+  // 菜单自己的锁不算数；切页进行中按钮同样要让位
+  const hidden = wiping || [...overlayLockKeys].some((key) => key !== 'global-menu')
+  // 按钮随切页/浮层开合缩放出入场：退出动画播完才卸载；
+  // 重挂载时先以缩小态入画，稍后翻到放大态，保证生长动画真正播放。
+  const [btnMounted, setBtnMounted] = useState(!hidden)
   const [btnReady, setBtnReady] = useState(false)
 
   useEffect(() => {
-    if (!otherOverlayOpen) {
+    if (!hidden) {
       setBtnMounted(true)
       return
     }
     const timer = window.setTimeout(() => setBtnMounted(false), 400)
     return () => window.clearTimeout(timer)
-  }, [otherOverlayOpen])
+  }, [hidden])
 
   useEffect(() => {
     if (!btnMounted) {
@@ -88,7 +91,7 @@ export function GlobalMenu() {
         onSelect={select}
         onClose={toggle}
       />
-      {btnMounted && <MenuButton open={open} onToggle={toggle} show={!otherOverlayOpen && btnReady} />}
+      {btnMounted && <MenuButton open={open} onToggle={toggle} show={!hidden && btnReady} />}
     </>
   )
 }

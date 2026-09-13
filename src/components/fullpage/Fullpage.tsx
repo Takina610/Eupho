@@ -26,6 +26,7 @@ export function Fullpage() {
       setOverlayLock={pager.setOverlayLock}
       activeIndex={pager.activeIndex}
       overlayLockKeys={pager.overlayLockKeys}
+      wiping={pager.wiping}
     >
       <div ref={rootRef} className="h-dvh overflow-clip">
         <div

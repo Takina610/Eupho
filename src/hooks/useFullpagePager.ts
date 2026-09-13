@@ -165,6 +165,8 @@ export function useFullpagePager({
     from,
     goTo,
     isAnimating: from !== to || footerLock,
+    /** 谱线切页进行中（页脚揭示不算）：全局菜单按钮据此做缩小-放大出入场。 */
+    wiping: from !== to,
     footerLock,
     reducedMotion,
     to,
