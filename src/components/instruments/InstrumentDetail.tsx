@@ -249,42 +249,33 @@ export function InstrumentDetail({
         <Chevron direction="right" />
       </button>
 
-      {/* AK 风格进度条：灰色轨道 + 青色位置块，横向平铺的透明按钮保留跳转 */}
-      <nav
-        aria-label="乐器快速切换"
-        className="absolute inset-x-0 bottom-10 z-10 flex h-10 max-sm:inset-x-5 max-sm:bottom-[max(2.5rem,env(safe-area-inset-bottom))]"
-      >
-        <div aria-hidden className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-white/25" />
-        <div
-          aria-hidden
-          className="absolute top-1/2 h-[10px] -translate-y-1/2 bg-accent transition-[left] duration-300"
-          style={{ width: `${100 / total}%`, left: `${(index * 100) / total}%` }}
-        />
-        {INSTRUMENTS.map((item, i) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => onJump(i)}
-            aria-label={item.name}
-            aria-current={i === index || undefined}
-            className="relative h-full flex-1"
+      {/* 底栏：进度条吃掉按钮左侧的剩余宽度，桌面端右侧留给返回，互不重叠。 */}
+      <div className="absolute inset-x-0 bottom-10 z-10 flex items-center max-sm:inset-x-5 max-sm:bottom-[max(2.5rem,env(safe-area-inset-bottom))] sm:right-6">
+        <nav aria-label="乐器快速切换" className="relative flex h-10 min-w-0 flex-1">
+          <div aria-hidden className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-white/25" />
+          <div
+            aria-hidden
+            className="absolute top-1/2 h-[10px] -translate-y-1/2 bg-accent transition-[left] duration-300"
+            style={{ width: `${100 / total}%`, left: `${(index * 100) / total}%` }}
           />
-        ))}
-      </nav>
+          {INSTRUMENTS.map((item, i) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => onJump(i)}
+              aria-label={item.name}
+              aria-current={i === index || undefined}
+              className="relative h-full flex-1"
+            />
+          ))}
+        </nav>
 
-      <button
-        type="button"
-        onClick={onClose}
-        className="inst-back absolute bottom-10 right-0 z-20 hidden h-10 items-center gap-3 bg-deep pl-6 pr-8 text-left text-white sm:flex"
-      >
-        <Chevron direction="left" className="h-3.5 w-4" />
-        <span className="text-sm font-bold leading-tight">
-          返回
-          <span className="block text-[0.6rem] font-semibold uppercase tracking-[0.28em] opacity-70">
-            Go Back
-          </span>
-        </span>
-      </button>
+        <div className="inst-back hidden shrink-0 sm:block">
+          <button type="button" className="inst-back-btn" onClick={onClose}>
+            <span>返回</span>
+          </button>
+        </div>
+      </div>
 
       <button
         type="button"
