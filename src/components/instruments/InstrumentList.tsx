@@ -40,14 +40,14 @@ function InstrumentRow({ instrument, selected, compact = false, onSelect, onPrev
       }`}
     >
       <span
-        className={`inst-row-main relative font-bold ${compact ? 'flex items-baseline gap-3 text-sm' : 'absolute bottom-[0.55vh] left-0 flex w-full items-baseline gap-3 text-[clamp(1.2rem,2.4vh,1.65rem)] leading-none'} ${
+        className={`inst-row-main relative font-bold ${compact ? 'flex items-baseline gap-2 whitespace-nowrap text-[0.8125rem]' : 'absolute bottom-[0.55vh] left-0 flex w-full items-baseline gap-3 text-[clamp(1.2rem,2.4vh,1.65rem)] leading-none'} ${
           selected ? 'text-white' : 'text-white/55'
         }`}
       >
         {instrument.name}
         <span
           className={`inst-row-main relative font-semibold uppercase tracking-[0.12em] ${
-            compact ? 'text-[0.58rem]' : 'text-[clamp(0.78rem,1.55vh,1.05rem)]'
+            compact ? 'text-[0.55rem]' : 'text-[clamp(0.78rem,1.55vh,1.05rem)]'
           } ${selected ? 'text-white/80' : 'text-white/35'}`}
         >
           {instrument.nameEn}

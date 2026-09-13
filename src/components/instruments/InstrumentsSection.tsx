@@ -1,5 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { useFullpageOverlayLock } from '@/components/fullpage/FullpagePagerContext'
 import { Section } from '@/components/fullpage/Section'
 import { IndexBackground } from '@/components/fullpage/IndexBackground'
 import { DEFAULT_INSTRUMENT_ID, INSTRUMENTS } from '@/constants/instruments'
@@ -21,6 +22,7 @@ const INITIAL_INDEX = Math.max(
 export const InstrumentsSection = memo(function InstrumentsSection({ active = false }: { active?: boolean }) {
   const { width, height } = useViewportSize()
   const isNarrow = width < 640
+  const setOverlayLock = useFullpageOverlayLock()
 
   const [selectedIndex, setSelectedIndex] = useState(INITIAL_INDEX)
   const [previewIndex, setPreviewIndex] = useState(INITIAL_INDEX)
@@ -29,6 +31,12 @@ export const InstrumentsSection = memo(function InstrumentsSection({ active = fa
     () => typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)').matches,
   )
   const [listOpen, setListOpen] = useState(false)
+
+  // 移动端查看列表是全屏浮层：锁翻页并让全局菜单按钮让位，露出浮层自己的关闭按钮
+  useEffect(() => {
+    setOverlayLock('instrument-list', listOpen)
+    return () => setOverlayLock('instrument-list', false)
+  }, [listOpen, setOverlayLock])
   // Desktop only: hovering a list row shows the chasing artwork near the pointer.
   const canHover = useMemo(
     () => typeof window !== 'undefined' && window.matchMedia('(any-hover: hover)').matches,
