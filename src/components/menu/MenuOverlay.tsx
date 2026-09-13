@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import type { MenuItemConfig } from '@/constants/homeSections'
+import { useScramble } from '@/components/menu/useScramble'
 
 /** 背景大字的文案，逐字母交错出场。 */
 const MENU_BG_WORDS = ['Sound!', 'Euphonium']
@@ -10,6 +12,36 @@ type MenuOverlayProps = {
   activeIndex: number
   onSelect: (index: number) => void
   onClose: () => void
+}
+
+/**
+ * 单条菜单栏：悬停时英文字符播放切换效果（useScramble），
+ * 行上下浮现五线谱（menu.css 的 ::before），配色随悬浮/选中状态区分。
+ */
+function MenuItem({ item, index, current, onSelect }: {
+  item: MenuItemConfig
+  index: number
+  current: boolean
+  onSelect: (index: number) => void
+}) {
+  const [hovered, setHovered] = useState(false)
+  const display = useScramble(item.en, hovered)
+  return (
+    <button
+      type="button"
+      className="menu-item"
+      data-current={current}
+      style={{ '--i': index } as React.CSSProperties}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      onClick={() => onSelect(index)}
+    >
+      <span className="menu-item-en">{display}</span>
+      <span className="menu-item-zh">{item.zh}</span>
+    </button>
+  )
 }
 
 /**
@@ -53,17 +85,13 @@ export function MenuOverlay({ open, items, activeIndex, onSelect, onClose }: Men
         style={{ '--menu-n': items.length } as React.CSSProperties}
       >
         {items.map((item, index) => (
-          <button
+          <MenuItem
             key={item.id}
-            type="button"
-            className="menu-item"
-            data-current={index === activeIndex}
-            style={{ '--i': index } as React.CSSProperties}
-            onClick={() => onSelect(index)}
-          >
-            <span className="menu-item-en">{item.en}</span>
-            <span className="menu-item-zh">{item.zh}</span>
-          </button>
+            item={item}
+            index={index}
+            current={index === activeIndex}
+            onSelect={onSelect}
+          />
         ))}
       </nav>
     </div>

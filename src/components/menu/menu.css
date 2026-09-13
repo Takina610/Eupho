@@ -121,9 +121,24 @@
   border-bottom: 1px solid rgba(244, 251, 252, 0.22);
   opacity: 0;
   translate: min(15vw, 56px) 0;
+  /* 五线谱颜色：默认隐形，悬浮用主题青，选中用黄 */
+  --staff: transparent;
   transition:
     opacity 0.45s var(--menu-ease) calc((var(--menu-n) - 1 - var(--i)) * var(--menu-step)),
     translate 0.45s var(--menu-ease) calc((var(--menu-n) - 1 - var(--i)) * var(--menu-step));
+}
+
+/* 悬浮/选中时文字上下浮现五线谱——各两道细线，像谱线夹着音符 */
+.menu-item::before {
+  content: '';
+  position: absolute;
+  inset: 4px 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  background:
+    repeating-linear-gradient(to bottom, var(--staff) 0 1.5px, transparent 1.5px 7px) 0 0 / 100% 12px no-repeat,
+    repeating-linear-gradient(to bottom, var(--staff) 0 1.5px, transparent 1.5px 7px) 0 100% / 100% 12px no-repeat;
 }
 
 /* 每条菜单栏底部都有分隔线，右端压一段白色粗短条（官网菜单的装饰记号） */
@@ -162,10 +177,20 @@
 }
 
 @media (hover: hover) {
-  /* 悬浮用主题青；选中仍是黄色（黄只留给当前页） */
+  /* 悬浮：主题青 + 斜体 + 五线谱；选中仍是黄色（黄只留给当前页） */
+  .menu-item:hover {
+    --staff: var(--color-brand);
+  }
+
+  .menu-item:hover::before,
+  .menu-item:focus-visible::before {
+    opacity: 1;
+  }
+
   .menu-item:hover .menu-item-en,
   .menu-item:focus-visible .menu-item-en {
     color: var(--color-brand);
+    font-style: italic;
   }
 
   .menu-item:hover .menu-item-zh,
@@ -179,9 +204,25 @@
   }
 }
 
+.menu-item:focus-visible {
+  --staff: var(--color-brand);
+}
+
+.menu-item[data-current='true'] {
+  --staff: var(--color-accent);
+}
+
+.menu-item[data-current='true']::before {
+  opacity: 1;
+}
+
 .menu-item[data-current='true'] .menu-item-en,
 .menu-item[data-current='true'] .menu-item-zh {
   color: var(--color-accent);
+}
+
+.menu-item[data-current='true'] .menu-item-en {
+  font-style: italic;
 }
 
 .menu-item[data-current='true']::after {
