@@ -5,6 +5,8 @@ const SECTION_ID_ALIASES: Record<string, HomeSectionId> = {
   hero: 'index',
   // Old section name before the members rename.
   stack: 'members',
+  // Old section name before the introduction rename.
+  cta: 'introduction',
   showcase: 'instruments',
 }
 

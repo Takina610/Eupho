@@ -1,8 +1,8 @@
-/* CTA 屏：官网 anime-eupho.com「Introduction」节复刻。
+/* Introduction 屏：官网 anime-eupho.com「Introduction」节复刻。
    断点沿用官网 835px；官网是长滚动页，这里塞进固定 100dvh 全屏，
    因此垂直间距在官网数值基础上换成 dvh 自适应。 */
 
-.cta-stage {
+.intro-stage {
   position: relative;
   overflow: hidden;
   background-color: #55ddf2;
@@ -11,14 +11,14 @@
 
 /* 官网同款背景渐变。原图把渐变挂在立绘后面，这里铺满整个舞台，
    避免立绘按高度缩放后右缘露出渐变接缝。 */
-.cta-stage::before {
+.intro-stage::before {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, #6ed8e9 40%, #59dff2 100%);
 }
 
-.cta-art {
+.intro-art {
   position: absolute;
   top: 0;
   left: 0;
@@ -29,13 +29,13 @@
   mask-image: linear-gradient(90deg, #000 88%, transparent 100%);
 }
 
-.cta-art-sp {
+.intro-art-sp {
   display: none;
 }
 
 /* ---------- 标题：Poppins 大字 + 逐字上浮入场 ---------- */
 
-.cta-title {
+.intro-title {
   position: absolute;
   top: 0;
   left: 0;
@@ -50,7 +50,7 @@
   pointer-events: none;
 }
 
-.cta-title-line {
+.intro-title-line {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,7 +58,7 @@
   overflow: hidden;
 }
 
-.cta-title-line span {
+.intro-title-line span {
   display: inline-block;
   opacity: 0;
   transform: translateY(100%);
@@ -66,14 +66,14 @@
   transition-delay: calc(var(--letter) * 30ms);
 }
 
-.cta-stage.on .cta-title-line span {
+.intro-stage.on .intro-title-line span {
   opacity: 1;
   transform: translateY(0);
 }
 
 /* ---------- 文案栏 ---------- */
 
-.cta-inner {
+.intro-inner {
   position: relative;
   z-index: 1;
   display: flex;
@@ -85,51 +85,51 @@
   margin: auto;
 }
 
-.cta-txt {
+.intro-txt {
   width: 53%;
   margin-left: auto;
   font-weight: 600;
   color: #111;
 }
 
-.cta-lead {
+.intro-lead {
   font-family: 'Noto Serif JP', serif;
   font-weight: 700;
   font-size: clamp(1.375rem, 0.147rem + 2.35vw, 2.5rem);
   margin-bottom: clamp(0.938rem, 2.4dvh, 1.563rem);
 }
 
-.cta-lead .hl {
+.intro-lead .hl {
   color: #fff830;
 }
 
-.cta-lead .ls {
+.intro-lead .ls {
   letter-spacing: -16px;
 }
 
-.cta-body {
+.intro-body {
   font-size: clamp(0.875rem, 0.67rem + 0.39vw, 1.063rem);
   line-height: 2.2;
   margin-bottom: clamp(0.75rem, 2.4dvh, 3.125rem);
 }
 
-.cta-body:last-of-type {
+.intro-body:last-of-type {
   margin-bottom: clamp(0.75rem, 3.2dvh, 4rem);
 }
 
-.cta-release {
+.intro-release {
   font-size: clamp(0.938rem, 0.051rem + 1.7vw, 1.75rem);
   font-weight: 700;
   line-height: 2.2;
 }
 
 /* 移动端专用标题容器：压在立绘与浅色面板的接缝上 */
-.cta-title-sp {
+.intro-title-sp {
   display: none;
 }
 
 @media (min-width: 835px) {
-  .cta-title-in {
+  .intro-title-in {
     display: flex;
     justify-content: center;
   }
@@ -138,11 +138,11 @@
 /* ---------- 移动端（官网 <835px 布局） ---------- */
 
 @media not (min-width: 835px) {
-  .cta-art {
+  .intro-art {
     display: none;
   }
 
-  .cta-art-sp {
+  .intro-art-sp {
     display: block;
     position: relative;
     flex-shrink: 0;
@@ -153,11 +153,11 @@
     object-position: top center;
   }
 
-  .cta-title {
+  .intro-title {
     display: none;
   }
 
-  .cta-title-sp {
+  .intro-title-sp {
     display: block;
     position: absolute;
     top: 0;
@@ -165,7 +165,7 @@
     transform: translateY(-58%);
   }
 
-  .cta-panel {
+  .intro-panel {
     position: relative;
     flex: 1;
     min-height: 0;
@@ -177,50 +177,50 @@
     justify-content: center;
   }
 
-  .cta-inner {
+  .intro-inner {
     height: auto;
     padding: clamp(3.4rem, 9.5dvh, 5.2rem) 0 max(1.4rem, env(safe-area-inset-bottom));
   }
 
-  .cta-txt {
+  .intro-txt {
     width: 100%;
     font-weight: 700;
     color: #111;
   }
 
-  .cta-lead {
+  .intro-lead {
     text-align: center;
     font-weight: 900;
     font-size: clamp(1.125rem, 4.6vw, 1.375rem);
     line-height: 1.6;
   }
 
-  .cta-lead .hl {
+  .intro-lead .hl {
     color: #01acc6;
   }
 
-  .cta-lead .ls {
+  .intro-lead .ls {
     letter-spacing: -8px;
   }
 
-  .cta-body {
+  .intro-body {
     font-size: clamp(0.8125rem, 3.4vw, 0.875rem);
     line-height: 1.8;
     margin-bottom: clamp(0.5rem, 1.6dvh, 0.938rem);
   }
 
-  .cta-body:last-of-type {
+  .intro-body:last-of-type {
     margin-bottom: clamp(0.625rem, 2dvh, 1.125rem);
   }
 
-  .cta-release {
+  .intro-release {
     font-size: clamp(0.9375rem, 4vw, 1.0625rem);
     line-height: 1.8;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cta-title-line span {
+  .intro-title-line span {
     opacity: 1;
     transform: none;
     transition: none;
