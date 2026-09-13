@@ -134,19 +134,20 @@
 }
 
 @media (hover: hover) {
+  /* 悬浮用主题青；选中仍是黄色（黄只留给当前页） */
   .menu-item:hover .menu-item-en,
   .menu-item:focus-visible .menu-item-en {
-    color: var(--color-accent);
+    color: var(--color-brand);
   }
 
   .menu-item:hover .menu-item-zh,
   .menu-item:focus-visible .menu-item-zh {
-    color: var(--color-accent);
+    color: var(--color-brand);
   }
 
   .menu-item:hover::after,
   .menu-item:focus-visible::after {
-    background: var(--color-accent);
+    background: var(--color-brand);
   }
 }
 
