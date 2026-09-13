@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { gsap } from 'gsap'
 import { createTargetLock } from './targetLock'
 import { createCursorSpin } from './cursorSpin'
-import { getContainingBlock, getContainingBlockOffset } from './targetFrame'
+import { getContainingBlock, getContainingBlockOffset, isPointInFrame } from './targetFrame'
 import './TargetCursor.css'
 
 type TargetCursorProps = {
@@ -120,10 +120,35 @@ export function TargetCursor({
       cursorColorOnTarget,
     })
 
+    // 命中按有效框判定:从指针下元素向上找第一个「匹配选择器且指针落在其
+    // 有效可视框内」的目标,避免悬在纯文本块被拉伸出的空白区时误触发。
+    const findLockTarget = (hovered: EventTarget | null, x: number, y: number): Element | null => {
+      let current = hovered instanceof Element ? hovered : null
+      while (current && current !== document.body) {
+        if (current.matches(targetSelector) && isPointInFrame(current, x, y)) {
+          return current
+        }
+        current = current.parentElement
+      }
+      return null
+    }
+
     const moveHandler = (event: MouseEvent) => {
       lastMouse = { x: event.clientX, y: event.clientY }
       moveCursor(event.clientX, event.clientY)
       syncVisibility()
+      const active = lock.getActiveTarget()
+      if (active) {
+        // 指针在同元素内滑出文字(有效框)时解除锁定
+        if (!isPointInFrame(active, event.clientX, event.clientY)) {
+          lock.unlock()
+        }
+        return
+      }
+      const target = findLockTarget(event.target, event.clientX, event.clientY)
+      if (target) {
+        lock.lock(target)
+      }
     }
     window.addEventListener('mousemove', moveHandler)
 
@@ -131,13 +156,9 @@ export function TargetCursor({
       if (!inBounds(event.target)) {
         return
       }
-      let current = event.target instanceof Element ? event.target : null
-      while (current && current !== document.body) {
-        if (current.matches(targetSelector)) {
-          lock.lock(current)
-          return
-        }
-        current = current.parentElement
+      const target = findLockTarget(event.target, event.clientX, event.clientY)
+      if (target) {
+        lock.lock(target)
       }
     }
     window.addEventListener('mouseover', enterHandler, { passive: true })
@@ -150,10 +171,7 @@ export function TargetCursor({
       const { x: offsetX, y: offsetY } = getOffset()
       const mouseX = Number(gsap.getProperty(cursorRef.current, 'x')) + offsetX
       const mouseY = Number(gsap.getProperty(cursorRef.current, 'y')) + offsetY
-      const elementUnderMouse = document.elementFromPoint(mouseX, mouseY)
-      const isStillOverTarget =
-        elementUnderMouse && (elementUnderMouse === target || elementUnderMouse.closest(targetSelector) === target)
-      if (!isStillOverTarget) {
+      if (findLockTarget(document.elementFromPoint(mouseX, mouseY), mouseX, mouseY) !== target) {
         lock.unlock()
       }
     }

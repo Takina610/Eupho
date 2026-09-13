@@ -16,16 +16,25 @@ export function paintsOwnFrame(style: CSSStyleDeclaration): boolean {
 }
 
 function unionContentRect(el: Element): DOMRect | null {
-  if (!el.firstChild) {
-    return null
-  }
+  const rects: DOMRect[] = []
+  // 文本与行内内容
   const range = document.createRange()
   range.selectNodeContents(el)
+  rects.push(...Array.from(range.getClientRects()))
+  // 绝对定位等元素子盒(如缩略图的相纸卡面、名字条);隐藏的子盒
+  // (如未激活缩略图 opacity:0 的折角标签)不计入,避免框大于可见内容
+  for (const child of el.children) {
+    const style = getComputedStyle(child)
+    if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) {
+      continue
+    }
+    rects.push(child.getBoundingClientRect())
+  }
   let left = Infinity
   let top = Infinity
   let right = -Infinity
   let bottom = -Infinity
-  for (const rect of range.getClientRects()) {
+  for (const rect of rects) {
     if (rect.width === 0 && rect.height === 0) {
       continue
     }
@@ -45,6 +54,18 @@ export function getEffectiveFrameRect(el: Element): DOMRect {
     return el.getBoundingClientRect()
   }
   return unionContentRect(el) ?? el.getBoundingClientRect()
+}
+
+// 命中判定用有效框而不是元素盒:纯文本块被布局拉伸到整列宽,
+// 指针落在文字以外的空白区不应触发锁定。tolerance 给小号文字留出容差。
+export function isPointInFrame(el: Element, x: number, y: number, tolerance = 4): boolean {
+  const rect = getEffectiveFrameRect(el)
+  return (
+    x >= rect.left - tolerance &&
+    x <= rect.right + tolerance &&
+    y >= rect.top - tolerance &&
+    y <= rect.bottom + tolerance
+  )
 }
 
 // position: fixed 相对视口定位,除非某个祖先(transform / perspective / filter /

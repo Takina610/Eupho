@@ -4,7 +4,8 @@ import { IndexBackground } from '@/components/fullpage/IndexBackground'
 import { Section } from '@/components/fullpage/Section'
 import { TargetCursor } from '@/components/target-cursor/TargetCursor'
 
-// 部员页文案区的有效框:徽章带边框整体包裹,纯文本块贴文字内容
+// 部员页文案区的有效框:徽章/缩略图卡这类带边框或完整子盒的按整体包裹,
+// 纯文本块贴文字内容,且命中判定以有效框为准(指针必须在可视范围内)
 const MEMBER_TARGET_SELECTOR = [
   '.cp__kicker-path',
   '.cp__kicker-title',
@@ -14,6 +15,7 @@ const MEMBER_TARGET_SELECTOR = [
   '.cp__cv-label',
   '.cp__cv',
   '.cp__synopsis',
+  '.cp__thumb',
 ].join(', ')
 
 export const MembersSection = memo(function MembersSection() {
