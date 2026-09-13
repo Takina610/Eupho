@@ -1,7 +1,7 @@
 /*
  * 居合斩揭幕层。由 BootGate 在加载层进入淡出阶段时挂载，
- * 盖在 .boot-overlay（z-index 9999）之上。遮罩与加载层同色 #01acc6，
- * 视觉上等价于「加载页被武士刀一刀切开」。
+ * 盖在 .boot-overlay（z-index 9999）之上。两块遮罩各渲染一份加载页内容
+ * （BootScreen），合起来与当前加载页逐像素一致——刀切下去时是页面本体裂开。
  * 初始 clip-path 为上下两块互补三角形，静场期间盖满全屏，
  * 动画开始后由 KatanaReveal 的 onUpdate 按刀刃位置实时改写。
  */
@@ -18,15 +18,13 @@
   position: absolute;
   inset: 0;
   background: #01acc6;
-  clip-path: polygon(0% 0%, 100% 0%, 0% 100%, 0% 100%);
+  /* 静止态：上块斜边外扩 2% 压住下块，拼缝处两份相同内容互相重叠，无缝可见 */
+  clip-path: polygon(0% 0%, 102% 0%, 0% 102%, 0% 102%);
 }
 
-/* 上块放大 1% 防止缩放/取整留下发丝缝 */
-.katana-reveal__mask--up {
-  transform-origin: left top;
-  transform: scale(1.01);
-}
+/* 遮罩内容（BootScreen）以遮罩为定位上下文，与真实加载层同位 */
 
+/* 下块：与上块互补的三角形 */
 .katana-reveal__mask--down {
   clip-path: polygon(100% 100%, 100% 0%, 0% 100%, 0% 100%);
 }
