@@ -19,6 +19,8 @@
   inset: 0;
   /* 高于 body 级业务浮层（系列详情等 z-50），低于开屏加载层（9998/9999） */
   z-index: 55;
+  /* 背景大字贴边出血，条目从屏外滑入：整层裁到视口即可，不产生滚动 */
+  overflow: clip;
   visibility: hidden;
   pointer-events: none;
   /* 收起动画（条目反序 210ms + 450ms 过渡）播完后再整体隐藏 */
@@ -43,6 +45,24 @@
 .menu-overlay[data-open='true'] .menu-scrim {
   opacity: 1;
   transition: opacity 0.3s ease-out;
+}
+
+/* 官网同款的斜置背景大字，随遮罩一起淡入，压在条目下方 */
+.menu-bg-word {
+  position: absolute;
+  left: -0.05em;
+  top: 50%;
+  translate: 0 -50%;
+  rotate: -12deg;
+  font-size: clamp(5rem, 17vw, 14rem);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  color: rgba(244, 251, 252, 0.07);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
 }
 
 .menu-panel {

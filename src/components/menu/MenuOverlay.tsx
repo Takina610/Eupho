@@ -17,7 +17,13 @@ type MenuOverlayProps = {
 export function MenuOverlay({ open, items, activeIndex, onSelect, onClose }: MenuOverlayProps) {
   return (
     <div className="menu-overlay" data-open={open}>
-      <div className="menu-scrim" aria-hidden="true" onClick={onClose} />
+      <button type="button" className="menu-scrim" aria-hidden="true" onClick={onClose}>
+        <span className="menu-bg-word" aria-hidden="true">
+          Sound!
+          <br />
+          Euphonium
+        </span>
+      </button>
       <nav
         id="global-menu-panel"
         className="menu-panel"
