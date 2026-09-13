@@ -24,5 +24,5 @@ export const HOME_SECTIONS: HomeSectionConfig[] = [
   { id: 'index', Component: IndexSection },
   { id: 'members', Component: MembersSection },
   { id: 'instruments', Component: InstrumentsSection, usesActive: true },
-  { id: 'cta', Component: CtaSection },
+  { id: 'cta', Component: CtaSection, usesActive: true },
 ]

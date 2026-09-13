@@ -1,4 +1,6 @@
 import castStaffBg from '@/assets/backgrounds/cast-staff.webp'
+import introArt from '@/assets/introduction/intro-img.webp'
+import introArtSp from '@/assets/introduction/intro-img-sp.webp'
 import { CHARACTERS } from './characters'
 import { INSTRUMENTS } from './instruments'
 import { SERIES_BANNERS } from './seriesBanners'
@@ -15,5 +17,7 @@ export const PRELOAD_IMAGES: readonly string[] = Array.from(
     ...SERIES_BANNERS.map((banner) => banner.src),
     ...INSTRUMENTS.map((instrument) => instrument.image),
     castStaffBg,
+    introArt,
+    introArtSp,
   ]),
 )
