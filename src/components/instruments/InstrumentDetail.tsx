@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { MorphIcon } from 'morphicons/react'
+import { Music, Music4 } from 'lucide'
 
 import { useInstrumentSound } from '@/hooks/useInstrumentSound'
 import { INSTRUMENTS, type Instrument } from '@/constants/instruments'
@@ -27,6 +29,22 @@ type CopyStage = 'reveal' | 'exit' | 'enter'
 // The outgoing copy must be gone before the swapped-in copy mounts.
 // Keep in sync with .inst-swap-out's delays + duration in instruments.css.
 const EXIT_TOTAL_MS = 530
+
+function InstrumentName({ name, playing }: { name: string; playing: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+      <span className="inline-flex h-[1em] w-[1em] shrink-0 [&_svg]:block [&_svg]:h-full [&_svg]:w-full" aria-hidden>
+        <MorphIcon
+          icon={playing ? Music4 : Music}
+          strokeWidth={2}
+          spring="snappy"
+          reducedMotion="user"
+        />
+      </span>
+      {name}
+    </span>
+  )
+}
 
 function Chevron({
   direction,
@@ -64,8 +82,8 @@ function RevealCopy({
   return (
     <>
       <div className="inst-reveal-mask">
-        <span className="inst-reveal-item text-4xl font-bold tracking-tight text-white sm:text-5xl">
-          {instrument.name}
+        <span className="inst-reveal-item">
+          <InstrumentName name={instrument.name} playing={soundPlaying} />
         </span>
       </div>
       <div className="inst-reveal-mask mt-2">
@@ -105,11 +123,8 @@ function SwapCopy({
   const item = exiting ? 'inst-swap-item inst-swap-out' : 'inst-swap-item inst-swap-in'
   return (
     <>
-      <div
-        className={`${item} text-4xl font-bold tracking-tight text-white sm:text-5xl`}
-        style={{ animationDelay: delays[0] }}
-      >
-        {instrument.name}
+      <div className={item} style={{ animationDelay: delays[0] }}>
+        <InstrumentName name={instrument.name} playing={soundPlaying} />
       </div>
       <div
         className={`${item} mt-2 text-base font-semibold uppercase tracking-[0.22em] text-brand sm:text-lg`}
@@ -237,7 +252,7 @@ export function InstrumentDetail({
       {/* AK 风格进度条：灰色轨道 + 青色位置块，横向平铺的透明按钮保留跳转 */}
       <nav
         aria-label="乐器快速切换"
-        className="absolute inset-x-0 bottom-0 z-10 flex h-10 max-sm:inset-x-5"
+        className="absolute inset-x-0 bottom-10 z-10 flex h-10 max-sm:inset-x-5 max-sm:bottom-[max(2.5rem,env(safe-area-inset-bottom))]"
       >
         <div aria-hidden className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-white/25" />
         <div
@@ -260,7 +275,7 @@ export function InstrumentDetail({
       <button
         type="button"
         onClick={onClose}
-        className="inst-back absolute bottom-0 right-0 z-20 hidden h-10 items-center gap-3 bg-deep pl-6 pr-8 text-left text-white sm:flex"
+        className="inst-back absolute bottom-10 right-0 z-20 hidden h-10 items-center gap-3 bg-deep pl-6 pr-8 text-left text-white sm:flex"
       >
         <Chevron direction="left" className="h-3.5 w-4" />
         <span className="text-sm font-bold leading-tight">
@@ -274,7 +289,7 @@ export function InstrumentDetail({
       <button
         type="button"
         onClick={onOpenList}
-        className="absolute bottom-[9vh] right-5 z-10 min-h-11 border border-white/40 bg-ink/35 px-4 text-xs font-semibold tracking-widest text-white backdrop-blur-md sm:hidden"
+        className="absolute bottom-[max(5.75rem,12vh)] right-5 z-10 min-h-11 border border-white/40 bg-ink/35 px-4 text-xs font-semibold tracking-widest text-white backdrop-blur-md sm:hidden"
       >
         查看列表
       </button>

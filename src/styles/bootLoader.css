@@ -31,6 +31,7 @@ body:has(#root:empty) {
 
 /* 揭幕遮罩是不透明纯色，盖上时内容若不先退场会被硬切；
    让加载内容抢在遮罩静场期内快速淡出，衔接更顺 */
+.boot-overlay[data-leaving] .boot-wordmark,
 .boot-overlay[data-leaving] .boot-brand,
 .boot-overlay[data-leaving] .boot-hud,
 .boot-overlay[data-leaving] .boot-corner {
@@ -46,10 +47,33 @@ body:has(#root:empty) {
   background: #01acc6;
 }
 
+/* 左上斜向大字:从左下到右上,内收一截不贴死角落 */
+.boot-wordmark {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: Poppins, sans-serif;
+  font-weight: 700;
+  font-size: clamp(11.2rem, 8vw, 7.25rem);
+  line-height: 0.86;
+  letter-spacing: -0.05em;
+  color: rgba(255, 255, 255, 0.16);
+  transform: rotate(-24deg);
+  transform-origin: left center;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
 .boot-brand {
   position: absolute;
   left: 50%;
-  top: 32%;
+  top: 38%;
+  z-index: 1;
   width: clamp(200px, 24vw, 320px);
   transform: translate(-50%, -50%);
 }
@@ -65,7 +89,8 @@ body:has(#root:empty) {
   position: absolute;
   left: 32vw;
   right: 8vw;
-  bottom: 10vh;
+  bottom: 18vh;
+  z-index: 1;
 }
 
 .boot-bar {
@@ -181,6 +206,7 @@ body:has(#root:empty) {
   position: absolute;
   left: 8vw;
   bottom: 10vh;
+  z-index: 1;
   margin: 0;
   font-size: clamp(18px, 1.6vw, 22px);
   font-weight: 700;
@@ -215,30 +241,38 @@ body:has(#root:empty) {
 }
 
 @media (max-width: 640px) {
+  .boot-wordmark {
+    top: 20%;
+    left: 5%;
+    font-size: clamp(4.2rem, 12vw, 3.6rem);
+    transform: rotate(-20deg);
+  }
+
   .boot-brand {
-    top: 30%;
+    top: 40%;
     width: min(64vw, 240px);
   }
 
   .boot-hud {
     left: 8vw;
     right: 8vw;
-    bottom: max(10vh, calc(env(safe-area-inset-bottom, 0px) + 20px));
+    bottom: max(26vh, calc(env(safe-area-inset-bottom, 0px) + 20px));
   }
 
   .boot-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
     margin-top: 12px;
   }
 
   .boot-loading {
     font-size: 11px;
-    white-space: nowrap;
   }
 
   .boot-site {
     font-size: 10px;
     letter-spacing: 0.08em;
-    white-space: nowrap;
   }
 
   .boot-corner {

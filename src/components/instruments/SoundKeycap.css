@@ -1,6 +1,6 @@
 /* 键帽试听按钮:视觉移植自官网 keycap 按钮(styled-components → 原生 CSS),
    配色由纯黑灰改为站点 ink/deep/panel 调出的青灰系,融入乐器屏底色;
-   中央与左上图标用 morphicons 弹簧变形;播放态描环转品牌青,
+   中央播放/暂停用 morphicons 弹簧变形;按下有键帽行程,
    右侧均衡条、音符特效随播放跳动。 */
 
 .sound-keycap-wrap {
@@ -28,6 +28,8 @@
   display: inline-block;
   width: var(--cap-size);
   height: var(--cap-size);
+  border: 0;
+  padding: 0;
   border-radius: var(--cap-radius);
   background: linear-gradient(180deg, var(--cap-face-top), var(--cap-face-bottom));
   box-shadow:
@@ -44,20 +46,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.sound-keycap-letter {
-  position: absolute;
-  left: 12px;
-  top: 12px;
-  z-index: 1;
-  color: var(--cap-glyph);
-  transition: transform 0.1s ease-in-out;
-}
-
-.sound-keycap-letter svg {
-  display: block;
-}
-
-/* 顶面高光板 */
+/* 顶面高光板:右下留出立体厚度,图标要对准这块面而不是整颗键 */
 .sound-keycap::before {
   content: '';
   position: absolute;
@@ -76,29 +65,34 @@
   transition: all 0.1s ease-in-out;
 }
 
-/* 中央播放/暂停图标 */
+/* 落在高光板内居中;Play 三角在 lucide viewBox 里偏左,idle 时略右移 */
 .sound-keycap-icon {
   position: absolute;
-  inset: 0;
   z-index: 1;
+  top: 3px;
+  right: 12px;
+  bottom: 14px;
+  left: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--cap-glyph);
-  transition:
-    transform 0.1s ease-in-out,
-    color 0.15s ease;
+  transition: transform 0.1s ease-in-out;
 }
 
 .sound-keycap-icon svg {
-  width: 32%;
-  height: 32%;
+  width: 48%;
+  height: 48%;
   display: block;
+  flex-shrink: 0;
 }
 
-/* 按下(点击或播放中):键帽下压 */
-.sound-keycap:active,
-.sound-keycap[data-playing='true'] {
+.sound-keycap-wrap:not([data-playing='true']) .sound-keycap-icon svg {
+  transform: translateX(9%);
+}
+
+/* 按下:键帽下压、阴影收短、顶面内缩,行程对齐参考 keycap */
+.sound-keycap:active {
   transform: translateY(2px);
   box-shadow:
     inset -4px 0 4px rgba(0, 0, 0, 0.08),
@@ -107,8 +101,7 @@
     4px 8px 14px rgba(0, 0, 0, 0.25);
 }
 
-.sound-keycap:active::before,
-.sound-keycap[data-playing='true']::before {
+.sound-keycap:active::before {
   top: 5px;
   left: 5px;
   bottom: 11px;
@@ -118,25 +111,8 @@
     5px 3px 5px rgba(0, 0, 0, 0.12);
 }
 
-.sound-keycap:active .sound-keycap-letter,
-.sound-keycap[data-playing='true'] .sound-keycap-letter,
-.sound-keycap:active .sound-keycap-icon,
-.sound-keycap[data-playing='true'] .sound-keycap-icon {
+.sound-keycap:active .sound-keycap-icon {
   transform: translateY(1px);
-}
-
-/* 播放中:描环与图标点亮品牌色(柔化的青,避免压过底色) */
-.sound-keycap[data-playing='true'] {
-  box-shadow:
-    inset -4px 0 4px rgba(0, 0, 0, 0.08),
-    inset 0 -4px 4px rgba(0, 0, 0, 0.12),
-    0 0 0 2px rgba(1, 172, 198, 0.55),
-    0 0 18px rgba(1, 172, 198, 0.25),
-    4px 8px 14px rgba(0, 0, 0, 0.25);
-}
-
-.sound-keycap[data-playing='true'] .sound-keycap-icon {
-  color: #fff830;
 }
 
 .sound-keycap:focus-visible {

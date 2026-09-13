@@ -40,6 +40,10 @@ export function BootGate({ children }: { children: ReactNode }) {
     <>
       {phase !== 'gone' && (
         <div className="boot-overlay" data-leaving={phase === 'leaving' ? '' : undefined}>
+          <p className="boot-wordmark" aria-hidden="true">
+            <span>Sound!</span>
+            <span>Euphonium</span>
+          </p>
           <div className="boot-brand">
             <img className="boot-logo" src={logoUrl} alt="吹响吧！上低音号" draggable={false} />
           </div>
