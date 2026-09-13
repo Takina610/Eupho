@@ -142,7 +142,7 @@
   line-height: 2.2;
 }
 
-/* ---------- 段落双语：日文为底，悬浮/切换显示中文 ---------- */
+/* ---------- 段落双语：辉线扫入——日文失焦退场，中文随左侧羽化辉线逐段揭开 ---------- */
 
 .intro-i18n {
   display: grid;
@@ -151,12 +151,46 @@
 .intro-i18n-ja,
 .intro-i18n-zh {
   grid-area: 1 / 1;
-  transition: opacity 0.3s ease-out;
 }
 
+/* 日文退场：轻微失焦溶解，让位给中文 */
+.intro-i18n-ja {
+  transition:
+    opacity 0.35s ease-out,
+    filter 0.35s ease-out;
+}
+
+/* 中文待命：整段藏在左侧羽化遮罩后（mask 宽 300%，position 100% 时羽化区正盖满段落） */
 .intro-i18n-zh {
-  opacity: 0;
+  position: relative;
   font-family: 'Noto Sans SC', 'Noto Sans JP', sans-serif;
+  opacity: 0;
+  filter: blur(6px);
+  -webkit-mask-image: linear-gradient(90deg, #000 60%, transparent 68%);
+  mask-image: linear-gradient(90deg, #000 60%, transparent 68%);
+  -webkit-mask-size: 300% 100%;
+  mask-size: 300% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+  transition:
+    opacity 0.5s ease-out,
+    filter 0.6s ease-out,
+    -webkit-mask-position 0.85s cubic-bezier(0.65, 0, 0.35, 1),
+    mask-position 0.85s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* 段落底部的辉线随扫过一起浮现，呼应站点缝线（桌面黄、移动端青） */
+.intro-i18n-zh::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: -5px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #fff830 25%, #fff830 75%, transparent);
+  opacity: 0.9;
 }
 
 .intro-lead .intro-i18n-zh {
@@ -166,20 +200,35 @@
 @media (min-width: 835px) {
   .intro-i18n:hover .intro-i18n-ja {
     opacity: 0;
+    filter: blur(5px);
   }
 
   .intro-i18n:hover .intro-i18n-zh {
     opacity: 1;
+    filter: blur(0);
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
   }
 }
 
 @media not (min-width: 835px) {
+  /* 整屏切换：各段按 --zh-i 错峰，像被指挥棒逐段点醒 */
   .intro-stage.zh .intro-i18n-ja {
     opacity: 0;
+    filter: blur(5px);
+    transition-delay: calc(var(--zh-i, 0) * 60ms);
   }
 
   .intro-stage.zh .intro-i18n-zh {
     opacity: 1;
+    filter: blur(0);
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+    transition-delay: calc(var(--zh-i, 0) * 90ms);
+  }
+
+  .intro-i18n-zh::after {
+    background: linear-gradient(90deg, transparent, #01acc6 25%, #01acc6 75%, transparent);
   }
 }
 
@@ -335,5 +384,15 @@
   .intro-i18n-ja,
   .intro-i18n-zh {
     transition: none;
+    filter: none;
+  }
+
+  .intro-i18n-zh {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .intro-i18n-zh::after {
+    display: none;
   }
 }

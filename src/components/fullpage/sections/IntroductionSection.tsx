@@ -39,21 +39,23 @@ function IntroTitle({ sp = false }: { sp?: boolean }) {
 
 /**
  * 段落双语：日文原文铺底，中文对照叠在同一格子里（容器取两版较高的高度，切换不跳动）。
- * 桌面悬浮整段淡入中文；移动端由右上角按钮统一切换。读屏只读当前生效的一版。
+ * 桌面悬浮、移动端按钮统一切换时按「辉线扫入」编排显示；--zh-i 供整屏切换时逐段错峰。
  */
 function I18nText({
   className,
   zhOn,
+  index,
   ja,
   zh,
 }: {
   className?: string
   zhOn: boolean
+  index: number
   ja: ReactNode
   zh: ReactNode
 }) {
   return (
-    <p className={className}>
+    <p className={className} style={{ '--zh-i': index } as CSSProperties}>
       <span className="intro-i18n">
         <span className="intro-i18n-ja" lang="ja" aria-hidden={zhOn || undefined}>
           {ja}
@@ -162,6 +164,7 @@ export const IntroductionSection = memo(function IntroductionSection({
               <I18nText
                 className="intro-lead"
                 zhOn={showZh}
+                index={0}
                 ja={
                   <>
                     ついにシリーズ完結<span className="ls">！！！</span>
@@ -182,6 +185,7 @@ export const IntroductionSection = memo(function IntroductionSection({
               <I18nText
                 className="intro-body"
                 zhOn={showZh}
+                index={1}
                 ja={
                   <>
                     高校生たちの吹奏楽に懸ける青春を、10年の歩みで描いてきた『響け！ユーフォニアム』シリーズ。2024年に放送された第3期で物語は感動の最終回を迎え、その完結作となる“最終楽章”が、2026年、ついに劇場の幕を上げる。
@@ -198,6 +202,7 @@ export const IntroductionSection = memo(function IntroductionSection({
               <I18nText
                 className="intro-body"
                 zhOn={showZh}
+                index={2}
                 ja={
                   <>
                     総監督に名を連ねるのは、10年ものあいだ京都アニメーションの制作チームを牽引してきた石原立也。監督は、シリーズの中心をともに担ってきた小川太一が務める。
@@ -212,6 +217,7 @@ export const IntroductionSection = memo(function IntroductionSection({
               <I18nText
                 className="intro-body"
                 zhOn={showZh}
+                index={3}
                 ja={
                   <>
                     京都アニメーションによって本編カットは新たに磨き直され、シナリオは花田十輝の手による書き下ろし。新作シーンが多数加わり、TVシリーズでは描かれなかった演奏シーンまで収めた、『最終楽章』の名にふさわしい一作として届けられる。
@@ -237,6 +243,7 @@ export const IntroductionSection = memo(function IntroductionSection({
               <I18nText
                 className="intro-release"
                 zhOn={showZh}
+                index={4}
                 ja={
                   <>
                     『最終楽章 響け！ユーフォニアム』後編は
