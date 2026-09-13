@@ -9,11 +9,11 @@ import { prefersReducedMotion, subscribePrefersReducedMotion } from '@/lib/motio
 export function useFullpagePager({
   pageCount,
   targetRef,
-  surfaceRef,
+  layerRefs,
 }: {
   pageCount: number
   targetRef: RefObject<HTMLElement | null>
-  surfaceRef: RefObject<HTMLDivElement | null>
+  layerRefs: RefObject<Map<number, HTMLDivElement | null>>
 }) {
   const [reducedMotion, setReducedMotion] = useState(false)
   const [activeIndex, setActiveIndex] = useState(getIndexFromHash)
@@ -73,7 +73,7 @@ export function useFullpagePager({
     to,
     durationMs: WIPE_MS,
     reducedMotion,
-    surfaceRef,
+    layerRefs,
     onComplete: () => setFrom(toRef.current),
   })
 

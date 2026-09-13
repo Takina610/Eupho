@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties, ReactNode, Ref } from 'react'
 
 type SceneLayerProps = {
   children: ReactNode
@@ -9,6 +9,7 @@ type SceneLayerProps = {
   isAriaCurrent: boolean
   wipeForward: boolean
   clipPath?: string
+  layerRef?: Ref<HTMLDivElement>
   zIndex: number
 }
 
@@ -21,6 +22,7 @@ export function SceneLayer({
   isAriaCurrent,
   wipeForward,
   clipPath,
+  layerRef,
   zIndex,
 }: SceneLayerProps) {
   const visible = isIdleActive || isLower || isUpper
@@ -34,6 +36,7 @@ export function SceneLayer({
 
   return (
     <div
+      ref={layerRef}
       aria-hidden={!isAriaCurrent}
       className={`absolute inset-0 ${isIdleActive ? '' : 'pointer-events-none'}`.trim()}
       data-active={visible ? 'true' : 'false'}

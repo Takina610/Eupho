@@ -6,11 +6,12 @@ import { Section } from '@/components/fullpage/Section'
 import { SeriesDetailStage } from '@/components/series-detail/SeriesDetailStage'
 import { SeriesStaff } from '@/components/series-staff/SeriesStaff'
 import { SERIES_WORKS } from '@/constants/seriesCovers'
-import type { SectionActiveProps } from '@/constants/homeSections'
 
 const DEFAULT_SERIES_INDEX = 2
+// 本区块在谱线切页里的序号：详情开着时翻页离开，详情据此自动收起。
+const SECTION_INDEX = 0
 
-export const IndexSection = memo(function IndexSection({ active }: SectionActiveProps) {
+export const IndexSection = memo(function IndexSection() {
   const setOverlayLock = useFullpageOverlayLock()
   const [activeIndex, setActiveIndex] = useState(DEFAULT_SERIES_INDEX)
   const [detailIndex, setDetailIndex] = useState<number | null>(null)
@@ -73,7 +74,7 @@ export const IndexSection = memo(function IndexSection({ active }: SectionActive
       {work ? (
         <SeriesDetailStage
           work={work}
-          active={active}
+          sectionIndex={SECTION_INDEX}
           onClosing={closeDetail}
           onExited={() => {
             setDetailIndex(null)

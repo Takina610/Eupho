@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ComponentType, RefObject } from 'react'
 import { SceneLayer } from '@/components/fullpage/SceneLayer'
 import type { SectionActiveProps } from '@/constants/homeSections'
 import { getSeamLayerRole, getSeamLayerStyle } from '@/lib/seamWipe'
@@ -13,9 +13,11 @@ type FullpageScenesProps = {
   sections: readonly SceneConfig[]
   from: number
   to: number
+  /** Registered so the wipe loop can drive layer clip-paths outside React. */
+  layerRefs: RefObject<Map<number, HTMLDivElement | null>>
 }
 
-export function FullpageScenes({ sections, from, to }: FullpageScenesProps) {
+export function FullpageScenes({ sections, from, to, layerRefs }: FullpageScenesProps) {
   // Forward wipes sweep the seam right-to-left, backward wipes the other way.
   // Layers expose the direction as a CSS variable so section CSS can sync its
   // reveal delays and leaving-motion with the seam (see app.css).
@@ -34,6 +36,13 @@ export function FullpageScenes({ sections, from, to }: FullpageScenesProps) {
             isLeaving={role.isLeaving}
             isLower={role.isLower}
             isUpper={role.isUpper}
+            layerRef={(el) => {
+              if (el) {
+                layerRefs.current?.set(index, el)
+              } else {
+                layerRefs.current?.delete(index)
+              }
+            }}
             wipeForward={wipeForward}
             zIndex={role.isUpper ? 1 : 0}
           >

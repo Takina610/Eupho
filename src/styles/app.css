@@ -73,31 +73,19 @@ body {
 /* Leaving layers get shoved by the seam like a wall: an element sits still
    until the seam line reaches its edge, then rides the line exactly. Each
    .wipe-push publishes its edges in vw via useWallPushOffsets (`--push-at`
-   right edge for forward wipes, `--push-from` left edge for backward ones),
-   and the clamp makes contact start exactly at the element's edge.
-   `translate` composes with existing transforms; !important is required
-   because GSAP leaves inline `translate: none` on layers it tweens.
-   will-change keeps the per-frame translate on the compositor so the shove
-   never repaints the (large) pushed blocks. */
-[data-leaving='forward'] .wipe-push {
-  translate: min(0vw, var(--seam-p, 1) * 100vw - var(--push-at, 100) * 1vw) 0 !important;
-  will-change: translate;
-}
-
-[data-leaving='backward'] .wipe-push {
-  translate: max(0vw, var(--seam-p, 0) * 100vw - var(--push-from, 0) * 1vw) 0 !important;
-  will-change: translate;
-}
+   right edge for forward wipes, `--push-from` left edge for backward ones);
+   the wipe loop (useSeamTransition) turns those into a per-frame inline
+   `translate` — kept out of CSS because an inherited per-frame custom
+   property would invalidate the whole scenes subtree every frame.
+   `translate` composes with existing transforms; writing inline also
+   overrides the `translate: none` GSAP leaves on layers it tweens, and the
+   loop clears it afterwards so those values resurface unchanged. */
 
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     transform: none;
     opacity: 1;
     transition: none;
-  }
-
-  [data-leaving] .wipe-push {
-    translate: none;
   }
 
   .fullpage-shell {

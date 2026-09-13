@@ -45,6 +45,15 @@ export function getSeamLayerStyle(index: number, input: SeamWipeInput): SeamLaye
   return null
 }
 
+/** Concrete clip-paths the wipe loop writes per frame; `p` = seamProgressAt value. */
+export function lowerClipPathAt(p: number) {
+  return `inset(0 calc((1 - ${p}) * 100%) 0 0)`
+}
+
+export function upperClipPathAt(p: number) {
+  return `inset(0 0 0 calc(${p} * 100%))`
+}
+
 export function getSeamLayerRole(index: number, from: number, to: number) {
   const animating = from !== to
   const { lower, upper } = getSeamBounds(from, to)

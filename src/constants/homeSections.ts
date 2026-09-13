@@ -21,8 +21,9 @@ export type HomeSectionConfig = {
 }
 
 export const HOME_SECTIONS: HomeSectionConfig[] = [
-  // index 需要感知离页：系列详情开着时从全局菜单跳走，要顺手收起详情。
-  { id: 'index', Component: IndexSection, usesActive: true },
+  // index 不接收 active：详情的离页自收由 SeriesDetailStage 订阅 activeIndex 完成，
+  // 这样最重的首页（手风琴 + 谱面）在切页状态翻转时完全不重渲染。
+  { id: 'index', Component: IndexSection },
   { id: 'members', Component: MembersSection },
   { id: 'instruments', Component: InstrumentsSection, usesActive: true },
   { id: 'introduction', Component: IntroductionSection, usesActive: true },

@@ -1,22 +1,24 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import type { SeriesWork } from '@/constants/seriesCovers'
+import { useFullpageActiveIndex } from '@/components/fullpage/FullpagePagerContext'
 import { useSeriesDetailTimeline } from '@/components/series-detail/useSeriesDetailTimeline'
 import '@/components/series-detail/SeriesDetailStage.css'
 
 type SeriesDetailStageProps = {
   work: SeriesWork
-  /** 所在区块是否处于前台；翻页离开时自动播放退场，避免 portal 残留在新页面上。 */
-  active?: boolean
+  /** 所在区块在谱线切页中的序号；翻页离开该区块时自动播放退场，避免 portal 残留在新页面上。 */
+  sectionIndex: number
   /** Fired once when closing starts, before the exit animation plays out. */
   onClosing?: () => void
   onExited: () => void
 }
 
-export function SeriesDetailStage({ work, active, onClosing, onExited }: SeriesDetailStageProps) {
+export function SeriesDetailStage({ work, sectionIndex, onClosing, onExited }: SeriesDetailStageProps) {
   const stageRef = useRef<HTMLDivElement>(null)
   const scrimRef = useRef<HTMLButtonElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
+  const activeIndex = useFullpageActiveIndex()
 
   const { close } = useSeriesDetailTimeline({
     stageRef,
@@ -43,10 +45,10 @@ export function SeriesDetailStage({ work, active, onClosing, onExited }: SeriesD
   }, [onKeyClose])
 
   useEffect(() => {
-    if (active === false) {
+    if (activeIndex !== sectionIndex) {
       close()
     }
-  }, [active, close])
+  }, [activeIndex, sectionIndex, close])
 
   return createPortal(
     <div className="series-detail" role="presentation">
