@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import {
   useFullpageActiveIndex,
   useFullpageGoTo,
+  useFullpageOverlayLockKeys,
   useFullpageOverlayLock,
 } from '@/components/fullpage/FullpagePagerContext'
 import { MENU_ITEMS } from '@/constants/homeSections'
@@ -13,12 +14,16 @@ import './menu.css'
  * 全局菜单：右上角圆形按钮 + 全屏菜单浮层的组合。
  * 打开时通过 setOverlayLock 冻结全屏翻页（键盘被锁、指针事件被浮层挡住）；
  * 点条目则先收菜单再 interrupt 跳转，让收起动画与谱线切页并行。
+ * 系列详情等浮层开着时按钮隐藏，避免压住浮层自己的关闭按钮。
  */
 export function GlobalMenu() {
   const [open, setOpen] = useState(false)
   const activeIndex = useFullpageActiveIndex()
   const goTo = useFullpageGoTo()
   const setOverlayLock = useFullpageOverlayLock()
+  const overlayLockKeys = useFullpageOverlayLockKeys()
+  // 菜单自己的锁不算数，只看「别的浮层」是否开着
+  const otherOverlayOpen = [...overlayLockKeys].some((key) => key !== 'global-menu')
 
   useEffect(() => {
     setOverlayLock('global-menu', open)
@@ -60,7 +65,7 @@ export function GlobalMenu() {
         onSelect={select}
         onClose={toggle}
       />
-      <MenuButton open={open} onToggle={toggle} />
+      {!otherOverlayOpen && <MenuButton open={open} onToggle={toggle} />}
     </>
   )
 }

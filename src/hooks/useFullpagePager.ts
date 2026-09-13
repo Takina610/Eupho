@@ -22,6 +22,8 @@ export function useFullpagePager({
   const [direction, setDirection] = useState<1 | -1>(1)
   const [footerRevealed, setFooterRevealed] = useState(false)
   const [footerLock, setFooterLock] = useState(false)
+  // 锁占用者的响应式镜像：全局菜单等需要按「是否有别的浮层开着」显隐自身。
+  const [overlayLockKeys, setOverlayLockKeys] = useState<ReadonlySet<string>>(() => new Set())
 
   const activeIndexRef = useRef(activeIndex)
   const footerRevealedRef = useRef(footerRevealed)
@@ -47,6 +49,15 @@ export function useFullpagePager({
   useEffect(() => subscribePrefersReducedMotion(setReducedMotion), [])
 
   const setOverlayLock = useCallback((key: string, locked: boolean) => {
+    setOverlayLockKeys((prev) => {
+      const next = new Set(prev)
+      if (locked) {
+        next.add(key)
+      } else {
+        next.delete(key)
+      }
+      return next
+    })
     if (locked) {
       overlayLockKeysRef.current.add(key)
     } else {
@@ -157,6 +168,7 @@ export function useFullpagePager({
     footerLock,
     reducedMotion,
     to,
+    overlayLockKeys,
     setOverlayLock,
   }
 }

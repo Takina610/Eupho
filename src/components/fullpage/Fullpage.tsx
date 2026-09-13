@@ -21,7 +21,12 @@ export function Fullpage() {
   })
 
   return (
-    <FullpagePagerProvider goTo={pager.goTo} setOverlayLock={pager.setOverlayLock} activeIndex={pager.activeIndex}>
+    <FullpagePagerProvider
+      goTo={pager.goTo}
+      setOverlayLock={pager.setOverlayLock}
+      activeIndex={pager.activeIndex}
+      overlayLockKeys={pager.overlayLockKeys}
+    >
       <div ref={rootRef} className="h-dvh overflow-clip">
         <div
           className="fullpage-shell"
