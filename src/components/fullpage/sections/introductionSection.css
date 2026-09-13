@@ -100,6 +100,8 @@
   max-width: 1600px;
   height: 100%;
   margin: auto;
+  /* 给底部场景长卷让位 */
+  padding-bottom: 110px;
 }
 
 .intro-txt {
@@ -344,6 +346,30 @@
   display: none;
 }
 
+/* ---------- 场景长卷：官网同款 repeat-x 无缝跑马灯（原图 3204×200，70s 匀速左移） ---------- */
+
+.intro-scene-strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 110px;
+  background-repeat: repeat-x;
+  background-position: left center;
+  background-size: auto 110px;
+  animation: intro-scene-scroll 70s linear infinite;
+}
+
+@keyframes intro-scene-scroll {
+  from {
+    background-position-x: 1762.2px;
+  }
+
+  to {
+    background-position-x: 0;
+  }
+}
+
 @media (min-width: 835px) {
   .intro-title-in {
     display: flex;
@@ -444,6 +470,24 @@
     font-size: clamp(0.938rem, 0.051rem + 1.7vw, 1.75rem);
     line-height: 1.8;
   }
+
+  /* 官网移动端规格：长图缩到 1500px 宽、高 93px，跟在面板后入流 */
+  .intro-scene-strip {
+    position: static;
+    height: 93px;
+    background-size: 1500px auto;
+    animation-name: intro-scene-scroll-sp;
+  }
+}
+
+@keyframes intro-scene-scroll-sp {
+  from {
+    background-position-x: 1500px;
+  }
+
+  to {
+    background-position-x: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -470,5 +514,9 @@
 
   .intro-note {
     display: none;
+  }
+
+  .intro-scene-strip {
+    animation: none;
   }
 }
