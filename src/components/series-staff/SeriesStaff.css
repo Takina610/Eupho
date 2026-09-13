@@ -34,21 +34,24 @@
   overflow: hidden;
   color: #f2fafa;
   font-size: clamp(0.68rem, 1.35vw, 0.82rem);
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
 }
 
 .series-staff__cue-meta {
   color: #fff830;
   font-weight: 600;
   letter-spacing: 0.14em;
+  flex: 0 0 auto;
 }
 
 .series-staff__cue-label {
   min-width: 0;
+  flex: 1 1 12rem;
   overflow: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .series-staff__board {
@@ -80,9 +83,10 @@
 
 .series-staff__cue-in {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: baseline;
-  gap: 0.65rem;
+  gap: 0.35rem 0.65rem;
   min-width: 0;
 }
 

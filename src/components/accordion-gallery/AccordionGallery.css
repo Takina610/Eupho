@@ -122,11 +122,13 @@
   color: var(--ag-text);
   font-family: inherit;
   font-weight: 600;
-  font-size: clamp(0.95rem, 1.4vw, 1.35rem);
+  font-size: clamp(0.85rem, 1.25vw, 1.2rem);
   letter-spacing: 0.01em;
-  white-space: nowrap;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   overflow: hidden;
-  text-overflow: ellipsis;
   opacity: 0;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
 }

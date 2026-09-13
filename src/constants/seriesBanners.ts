@@ -23,7 +23,7 @@ export const SERIES_BANNERS: SeriesBanner[] = [
   { src: banner3rd, href: 'https://tv3rd.anime-eupho.com/', alt: 'TV动画《吹响吧！上低音号》第三季官方网站' },
   { src: bannerEnsemble, href: 'https://ensemble.anime-eupho.com/', alt: '特别篇《合奏比赛》官方网站' },
   { src: bannerMovie3rd, href: 'https://movie3.anime-eupho.com/', alt: '剧场版《誓言的终章》官方网站' },
-  { src: bannerLiz, href: 'https://liz-bluebird.com/', alt: '剧场版《利兹与青鸟》官方网站' },
+  { src: bannerLiz, href: 'https://liz-bluebird.com/', alt: '剧场版《莉兹与青鸟》官方网站' },
   { src: bannerMovie2nd, href: 'https://movie2.anime-eupho.com/', alt: '剧场版《想要传达的旋律》官方网站' },
   { src: banner2nd, href: 'https://tv2nd.anime-eupho.com/', alt: 'TV动画《吹响吧！上低音号》第二季官方网站' },
   { src: bannerMovie, href: 'https://movie.anime-eupho.com/', alt: '剧场版《欢迎来到北宇治高中吹奏乐部》官方网站' },

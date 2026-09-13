@@ -57,13 +57,15 @@ export type Instrument = {
   sound: string
 }
 
+/** 以官网乐器说明为底，略带吹奏乐部语境，不点名角色。 */
 export const INSTRUMENTS: Instrument[] = [
   {
     id: 'flute',
     group: 'woodwind',
     name: '长笛',
     nameEn: 'Flute',
-    intro: '木管的高音担当。金属管身却归入木管，音色清亮，合奏里常把旋律举到最高处。',
+    intro:
+      '高音木管，无簧，音色清楚可人。自由曲里常与双簧管对唱——两支管并排时，旋律会显得特别近。',
     image: imageFlute,
     sound: soundFlute,
   },
@@ -72,7 +74,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'woodwind',
     name: '单簧管',
     nameEn: 'Clarinet',
-    intro: '音域近四个八度的木管，柔音与跳跃皆可，人数众多的它常是中声部的地基。',
+    intro:
+      '吹奏乐部里的大家族，种类繁多；B♭ 单簧管常托住中声部旋律。人一多，合奏的骨架就稳了。',
     image: imageClarinet,
     sound: soundClarinet,
   },
@@ -81,7 +84,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'woodwind',
     name: '双簧管',
     nameEn: 'Oboe',
-    intro: '靠双簧哨片吹出带鼻音的音色。乐队调音前，标准音 A 由它给出。',
+    intro:
+      '双簧高音木管，独奏机会多，也常在调音前给出标准音 A。哨片一响，整支乐队才真正对齐。',
     image: imageOboe,
     sound: soundOboe,
   },
@@ -90,7 +94,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'woodwind',
     name: '巴松',
     nameEn: 'Bassoon',
-    intro: '木管的低音，管身折成两段。低鸣时垫住和声，跳弓时又能滑稽地蹦起来。',
+    intro:
+      '木管低音，与双簧管同属双簧，音色偏温。低鸣时垫住和声，偶尔蹦几下，合奏里会多一点活气。',
     image: imageBassoon,
     sound: soundBassoon,
   },
@@ -99,7 +104,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'woodwind',
     name: '中音萨克斯',
     nameEn: 'Alto Sax',
-    intro: '铜制管身却属木管，靠哨片发声。音色介于圆润与沙哑之间，独奏很出彩。',
+    intro:
+      '铜制管身却归木管，音色华丽，是萨克斯里最常见的一种。部活里独奏一出，往往最先被听见。',
     image: imageAltoSax,
     sound: soundAltoSax,
   },
@@ -108,7 +114,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'woodwind',
     name: '次中音萨克斯',
     nameEn: 'Tenor Sax',
-    intro: '比中音萨克斯低纯五度，音色更暖更沉，在萨克斯声部里托住中低音。',
+    intro:
+      '比中音萨克斯低纯五度，音色更暖。萨克斯声部里负责托住中低音，把华丽的高音接回合奏。',
     image: imageTenorSax,
     sound: soundTenorSax,
   },
@@ -117,7 +124,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'woodwind',
     name: '上低音萨克斯',
     nameEn: 'Baritone Sax',
-    intro: '萨克斯家族的低音，管身绕了一整圈。声音厚重，负责低声部的律动。',
+    intro:
+      '萨克斯家族的低音，声音厚重。部长席上若看见这支绕圈的管子，多半是在撑着整个声部的底。',
     image: imageBariSax,
     sound: soundBariSax,
   },
@@ -126,7 +134,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'brass',
     name: '小号',
     nameEn: 'Trumpet',
-    intro: '金管的最高音，号口朝前，声音能穿透整个乐队。号角与独奏都交给它。',
+    intro:
+      '金管最高音，音色华丽，是花形的乐器。竞赛曲里的独奏常常交给它——想「特别」的人，也常从这里开始。',
     image: imageTrumpet,
     sound: soundTrumpet,
   },
@@ -135,7 +144,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'brass',
     name: '圆号',
     nameEn: 'Horn',
-    intro: '号口朝后的金管，把音色柔化后投向乐队，是铜管与木管之间的桥。',
+    intro:
+      '音域很广，号口朝后，右手伸进喇叭口演奏。铜管与木管之间的桥，音色一柔，合奏就连上了。',
     image: imageHorn,
     sound: soundHorn,
   },
@@ -144,7 +154,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'brass',
     name: '长号',
     nameEn: 'Trombone',
-    intro: '靠滑管改变音高的金管，滑音独一无二，庄严与俏皮只差一格把位。',
+    intro:
+      '靠滑管改音高的中低音金管，滑音独一无二。放学后还在练的人里，总有几支把在来回走。',
     image: imageTrombone,
     sound: soundTrombone,
   },
@@ -153,7 +164,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'brass',
     name: '上低音号',
     nameEn: 'Euphonium',
-    intro: '本作的主角乐器。音色温润厚实，在低音与小号之间唱出最柔软的中音。',
+    intro:
+      '中低音金管，音色柔和舒适。很少抢最亮的光，却把旋律垫在低音与小号之间——许多故事，正是从这支号开始写的。',
     image: imageEuphonium,
     sound: soundEuphonium,
   },
@@ -162,7 +174,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'brass',
     name: '大号',
     nameEn: 'Tuba',
-    intro: '铜管家族里最大的低音，整个乐队的地基。抱住它的人，负责最沉的音。',
+    intro:
+      '铜管最低音，体积大而且重，是低音席的支柱。想吹花形乐器的新人，有时也会在这里重新学会合奏。',
     image: imageTuba,
     sound: soundTuba,
   },
@@ -171,7 +184,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'strings',
     name: '低音提琴',
     nameEn: 'Contrabass',
-    intro: '弦乐家族的低音，弓弦与拨奏皆可，坐在低音声部最后撑住乐队的底部。',
+    intro:
+      '吹奏乐部里唯一的弦乐器，低沉沉稳，总之就是很大。弓一拉，整支乐队的底部才真正落稳。',
     image: imageContrabass,
     sound: soundContrabass,
   },
@@ -180,7 +194,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'percussion',
     name: '定音鼓',
     nameEn: 'Timpani',
-    intro: '可以调音高的鼓，踏板踩出音高，一段滚奏就能推起全乐队的浪。',
+    intro:
+      '可调音高的鼓。一段滚奏推起来，竞赛场上的浪往往从这里开始。',
     image: imageTimpani,
     sound: soundTimpani,
   },
@@ -189,7 +204,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'percussion',
     name: '小军鼓',
     nameEn: 'Snare Drum',
-    intro: '鼓皮下绷着响线，敲击时沙沙作响，是节奏型与行进感的好手。',
+    intro:
+      '鼓下绷着响弦，敲击时沙沙作响。行进感与节奏型的好手，合奏一紧，它往往最先咬住拍点。',
     image: imageSnare,
     sound: soundSnare,
   },
@@ -198,7 +214,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'percussion',
     name: '大军鼓',
     nameEn: 'Bass Drum',
-    intro: '立在支架上敲的大鼓，每一击都给乐队的重拍落下一记锚点。',
+    intro:
+      '低沉有力的大鼓。每一击给重拍落下锚点——谱面上的「强」，常常先从这里听见。',
     image: imageBassDrum,
     sound: soundBassDrum,
   },
@@ -207,7 +224,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'percussion',
     name: '钟琴',
     nameEn: 'Glockenspiel',
-    intro: '金属音条按琴键排列，敲出清脆明亮的高音，像星光落在旋律上。',
+    intro:
+      '金属音板按音高排列，音色清脆。自由曲的高音里若闪过一点星光，多半是它在敲。',
     image: imageGlockenspiel,
     sound: soundGlockenspiel,
   },
@@ -216,7 +234,8 @@ export const INSTRUMENTS: Instrument[] = [
     group: 'percussion',
     name: '对镲',
     nameEn: 'Cymbals',
-    intro: '两片黄铜相击，从轻擦到炸裂，控制着整个乐队的呼吸与高潮。',
+    intro:
+      '一对铜钹，从轻擦到炸裂。高潮到来时，整支乐队的呼吸往往就卡在这一击上。',
     image: imageCymbals,
     sound: soundCymbals,
   },

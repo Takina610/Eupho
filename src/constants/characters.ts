@@ -87,7 +87,8 @@ export const CHARACTERS: Character[] = [
     part: '上低音号',
     grade: '三年生',
     cv: '黑泽朋世',
-    synopsis: '把「这次要认真」说出口的人。从一年生走到部长席，金管的光最后还是对准她手里的上低音号。',
+    synopsis:
+      '把「这次要认真」说出口的人。小学起吹上低音号，从一年生走到部长席，率领九十多人迎战最后一次竞赛——金管的光仍对准她手里的那支号。',
   }),
   member({
     id: 'hazuki',
@@ -101,7 +102,8 @@ export const CHARACTERS: Character[] = [
     part: '大号',
     grade: '三年生',
     cv: '朝井彩加',
-    synopsis: '网球部出身的气氛制造者。低音号从零开始，笑意却一直给北宇治垫底。',
+    synopsis:
+      '网球部出身的气氛制造者。想吹小号却被分到大号，从零练起；如今任新生指导，笑意仍给低音席垫着底。',
   }),
   member({
     id: 'sapphire',
@@ -115,7 +117,8 @@ export const CHARACTERS: Character[] = [
     part: '低音提琴',
     grade: '三年生',
     cv: '丰田萌绘',
-    synopsis: '请叫她 Sapphire。圣女出身的低音提琴，练习可以练到指尖见红，把低音当作自己的位置。',
+    synopsis:
+      '请叫她 Sapphire。名门出身、技术顶尖的低音提琴，现任低音声部领队——练习可以练到指尖见红，却更在意大家能不能快乐地吹。',
   }),
   member({
     id: 'reina',
@@ -129,7 +132,8 @@ export const CHARACTERS: Character[] = [
     part: '小号',
     grade: '三年生',
     cv: '安济知佳',
-    synopsis: '为了成为与众不同的人而吹小号。要求严格，人际疏离，独奏的光总是先落在她身上。',
+    synopsis:
+      '为了成为与众不同的人而吹小号。父亲是职业演奏者，她严于律己；如今作为鼓号长支撑部长，独奏的光仍常常先落在她身上。',
   }),
   member({
     id: 'mayu',
@@ -142,7 +146,8 @@ export const CHARACTERS: Character[] = [
     part: '上低音号',
     grade: '三年生',
     cv: '户松遥',
-    synopsis: '从清良转来的三年生。同声部的另一支上低音号，把独奏权重新放到选拔台上。',
+    synopsis:
+      '从清良转来的三年生。傍晚用银色上低音号练琴的少女，同声部的另一支号——把独奏权重新放到选拔台上。',
   }),
   member({
     id: 'syuichi',
@@ -156,7 +161,8 @@ export const CHARACTERS: Character[] = [
     part: '长号',
     grade: '三年生',
     cv: '石谷春贵',
-    synopsis: '久美子的青梅竹马，长号声部的同级。告白、暂停、再开口，曲子比关系更容易对齐。',
+    synopsis:
+      '久美子的青梅竹马，现任副部长。初中吹圆号、高中改长号；告白、暂停、再开口——曲子比关系更容易对齐。',
   }),
   member({
     id: 'tsubame',
@@ -169,7 +175,8 @@ export const CHARACTERS: Character[] = [
     part: '打击乐',
     grade: '二年生',
     cv: '大桥彩香',
-    synopsis: '马林巴那边的二年生。合奏比赛那年走进久美子的小组，把节奏垫进低音的缝里。',
+    synopsis:
+      '马林巴那边的二年生。合奏比赛那年走进久美子的小组；一边把节奏垫进低音的缝里，一边操心妹妹雀别惹事。',
   }),
   member({
     id: 'kanade',
@@ -183,7 +190,8 @@ export const CHARACTERS: Character[] = [
     part: '上低音号',
     grade: '二年生',
     cv: '雨宫天',
-    synopsis: '彬彬有礼，笑意后面有一点小恶魔。上低音号的后辈，把「认真」问得更尖。',
+    synopsis:
+      '彬彬有礼，笑意后面有一点小恶魔。乐器经验者，自称「可爱的后辈」——亲近久美子，却对真由抱着戒心，把「认真」问得更尖。',
   }),
   member({
     id: 'mirei',
@@ -197,7 +205,8 @@ export const CHARACTERS: Character[] = [
     part: '大号',
     grade: '二年生',
     cv: '七濑彩夏',
-    synopsis: '部里最高的那一个。南宇治出身，吹得很好，却不容易走进大家的气氛。',
+    synopsis:
+      '部里最高的那一个，大号声部的王牌。与五月小学同窗、高中重逢；吹得很好，却不容易走进大家的气氛。',
   }),
   member({
     id: 'satsuki',
@@ -211,7 +220,8 @@ export const CHARACTERS: Character[] = [
     part: '大号',
     grade: '二年生',
     cv: '久野美咲',
-    synopsis: '和美玲同姓、同小学，没有亲戚关系。性格软，大号还在追谱，却愿意一直吹。',
+    synopsis:
+      '和美玲同姓、同小学，没有亲戚关系。性格软，是低音席的气氛制造者——大号还在追谱，却愿意一直吹，要把去年的不甘翻过来。',
   }),
   member({
     id: 'motomu',
@@ -225,7 +235,8 @@ export const CHARACTERS: Character[] = [
     part: '低音提琴',
     grade: '二年生',
     cv: '土屋神叶',
-    synopsis: '不喜欢被叫姓。祖父是吹奏乐指导者，他偏要来北宇治，和绿辉把低音提琴并成一对。',
+    synopsis:
+      '不喜欢被叫姓。出身龙圣学园，尊绿辉为师，和她把低音提琴并成一对——对周围筑着墙，却偏要来北宇治。',
   }),
   member({
     id: 'ririka',
@@ -238,7 +249,8 @@ export const CHARACTERS: Character[] = [
     part: '双簧管',
     grade: '二年生',
     cv: '杉浦栞',
-    synopsis: '看起来像辣妹，语气却软。作为霙的后辈，把双簧管的位置重新接上。',
+    synopsis:
+      '看起来像辣妹，语气却软。与奏交好，谁都能聊；作为霙的后辈接上双簧管，也和叶月一起当新生指导。',
   }),
   member({
     id: 'suzume',
@@ -251,7 +263,7 @@ export const CHARACTERS: Character[] = [
     part: '大号',
     grade: '一年生',
     cv: '夏川椎菜',
-    synopsis: '燕的妹妹。一年生的大号，跟着姐姐走进北宇治的低音席。',
+    synopsis: '燕的妹妹，吹奏乐初学者。跟着姐姐走进北宇治的低音席，最喜欢的还是姐姐。',
   }),
   member({
     id: 'yayoi',
@@ -264,7 +276,8 @@ export const CHARACTERS: Character[] = [
     part: '大号',
     grade: '一年生',
     cv: '松田彩音',
-    synopsis: '一年生低音声部。大号还新，位置已经排进最终乐章的谱面。',
+    synopsis:
+      '一年生低音声部，吹奏乐初学者。头巾是标志，冷笑话随口就来——大号还新，位置却已排进最后一年的谱面。',
   }),
   member({
     id: 'kaho',
@@ -277,7 +290,8 @@ export const CHARACTERS: Character[] = [
     part: '上低音号',
     grade: '一年生',
     cv: '寺泽百花',
-    synopsis: '上低音号的一年生。前辈们把「认真」说过一轮，她从另一头再吹一次。',
+    synopsis:
+      '上低音号的一年生，吹奏乐初学者。与弥生、雀、沙里一起入部；前辈们把「认真」说过一轮，她从另一头再吹一次，笑点偏低。',
   }),
   member({
     id: 'sari',
@@ -290,7 +304,8 @@ export const CHARACTERS: Character[] = [
     part: '单簧管',
     grade: '一年生',
     cv: '陶山惠实里',
-    synopsis: '木管席上的一年生。单簧管把新一年的声音接进合奏。',
+    synopsis:
+      '木管席上的一年生，却是吹奏乐经验者。与美玲同初中出身，技术不弱——单簧管把新一年的声音接进合奏。',
   }),
   member({
     id: 'asuka',
@@ -303,7 +318,8 @@ export const CHARACTERS: Character[] = [
     part: '上低音号',
     grade: '毕业生',
     cv: '寿美菜子',
-    synopsis: '红框眼镜的前副部长。低音声部的轴，中立得像不说话，其实一直在把乐团托住。',
+    synopsis:
+      '红框眼镜的前副部长、低音声部的轴。中立得像不说话，其实一直在把乐团托住——对久美子影响最大的前辈之一。',
   }),
   member({
     id: 'haruka',
@@ -313,10 +329,11 @@ export const CHARACTERS: Character[] = [
     image: imageHaruka,
     name: '小笠原晴香',
     nameEn: 'Ogasawara Haruka',
-    part: '圆号',
+    part: '上低音萨克斯',
     grade: '毕业生',
     cv: '早见沙织',
-    synopsis: '那一年的部长。圆号温，性格也软，把北宇治从「差不多就好」往全国那边推了一把。',
+    synopsis:
+      '那一年的部长，萨克斯声部领队，担当上低音萨克斯。性格软，却把北宇治从「差不多就好」往全国那边推了一把。',
   }),
   member({
     id: 'kaori',
@@ -329,7 +346,8 @@ export const CHARACTERS: Character[] = [
     part: '小号',
     grade: '毕业生',
     cv: '茅原实里',
-    synopsis: '小号声部的领队，被称作部里的玛丹娜。独奏的位置她让过一次，光仍留在她身上。',
+    synopsis:
+      '小号声部的领队，部里的玛丹娜。独奏的位置她让过一次，光仍留在她身上——尤其被优子深深仰慕。',
   }),
   member({
     id: 'natsuki',
@@ -343,7 +361,8 @@ export const CHARACTERS: Character[] = [
     part: '上低音号',
     grade: '毕业生',
     cv: '藤村鼓乃美',
-    synopsis: '高中才摸上低音号。为了把希美请回来，认真是后来才学会的那一门。',
+    synopsis:
+      '高中才摸上低音号。与部长优子是犬猿之仲，却当副部长撑着她——为了把希美请回来，认真是后来才学会的那一门。',
   }),
   member({
     id: 'yuko',
@@ -357,7 +376,8 @@ export const CHARACTERS: Character[] = [
     part: '小号',
     grade: '毕业生',
     cv: '山冈百合',
-    synopsis: '仰慕香织的小号。嫉妒、施压、再学会站到部长席，性子比号嘴硬。',
+    synopsis:
+      '仰慕香织的小号，后来站上部长席。因两年前的经验尽量避开部员冲突，有些过于努力——性子比号嘴硬。',
   }),
   member({
     id: 'mizore',
@@ -370,7 +390,8 @@ export const CHARACTERS: Character[] = [
     part: '双簧管',
     grade: '毕业生',
     cv: '种崎敦美',
-    synopsis: '把双簧管当作和希美唯一的联系。利兹与青鸟从她这边望出去，依赖和毕业叠在同一根簧片上。',
+    synopsis:
+      '把双簧管当作和希美唯一的联系。演奏极好，毕业后志望音大——依赖与离别，都叠在同一根簧片上。',
   }),
   member({
     id: 'nozomi',
@@ -383,6 +404,7 @@ export const CHARACTERS: Character[] = [
     part: '长笛',
     grade: '毕业生',
     cv: '东山奈央',
-    synopsis: '退部过一次的长笛。想改革北宇治，也想回到明日香身边，和霙的距离比音程难调。',
+    synopsis:
+      '退部过一次的长笛。想推动北宇治，也想回到明日香身边；与霙的距离比音程难调，毕业后则走向本地大学。',
   }),
 ]
