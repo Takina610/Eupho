@@ -3,6 +3,8 @@ import euphoIcon from '@/assets/eupho.webp'
 type MenuButtonProps = {
   open: boolean
   onToggle: () => void
+  /** false 时缩小淡出（其他浮层开着），true 时放大淡入；卸载时机由 GlobalMenu 控制。 */
+  show: boolean
 }
 
 /**
@@ -10,7 +12,7 @@ type MenuButtonProps = {
  * 青色圆底 + 内嵌 4px 白色 outline 细环，居中上低音号图标 + Menu/Close 字样。
  * 打开时图标用非线性缓动转一圈（menu.css 的 rotate 过渡），文字切换为 Close。
  */
-export function MenuButton({ open, onToggle }: MenuButtonProps) {
+export function MenuButton({ open, onToggle, show }: MenuButtonProps) {
   return (
     <button
       type="button"
@@ -18,7 +20,8 @@ export function MenuButton({ open, onToggle }: MenuButtonProps) {
       aria-expanded={open}
       aria-controls="global-menu-panel"
       onClick={onToggle}
-      className="fixed top-[max(3vw,env(safe-area-inset-top))] right-[max(3vw,env(safe-area-inset-right))] z-[60] h-[clamp(4.375rem,0.857rem+6.74vw,6.25rem)] w-[clamp(4.375rem,0.857rem+6.74vw,6.25rem)] cursor-pointer touch-manipulation rounded-full bg-brand text-accent outline-4 outline-solid outline-white outline-offset-[-6px] select-none focus-visible:brightness-110 sm:top-[30px] sm:right-[30px] sm:outline-offset-[-7px]"
+      data-show={show}
+      className="menu-btn fixed top-[max(3vw,env(safe-area-inset-top))] right-[max(3vw,env(safe-area-inset-right))] z-[60] h-[clamp(4.375rem,0.857rem+6.74vw,6.25rem)] w-[clamp(4.375rem,0.857rem+6.74vw,6.25rem)] cursor-pointer touch-manipulation rounded-full bg-brand text-accent outline-4 outline-solid outline-white outline-offset-[-6px] select-none focus-visible:brightness-110 sm:top-[30px] sm:right-[30px] sm:outline-offset-[-7px]"
     >
       <span aria-hidden="true" className="absolute inset-[7%] rounded-full border-2 border-white/95" />
       {/* 图标与文字都相对整个按钮定位（官网 .nav-btn 的结构）：图标居中上提 5px，文字贴底 */}

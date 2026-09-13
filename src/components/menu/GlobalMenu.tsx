@@ -24,6 +24,29 @@ export function GlobalMenu() {
   const overlayLockKeys = useFullpageOverlayLockKeys()
   // 菜单自己的锁不算数，只看「别的浮层」是否开着
   const otherOverlayOpen = [...overlayLockKeys].some((key) => key !== 'global-menu')
+  // 按钮随其他浮层的开合缩放出入场：退出动画播完才卸载；
+  // 重挂载时先以缩小态入画，下一帧再翻到放大态，保证生长动画真正播放。
+  const [btnMounted, setBtnMounted] = useState(!otherOverlayOpen)
+  const [btnReady, setBtnReady] = useState(false)
+
+  useEffect(() => {
+    if (!otherOverlayOpen) {
+      setBtnMounted(true)
+      return
+    }
+    const timer = window.setTimeout(() => setBtnMounted(false), 400)
+    return () => window.clearTimeout(timer)
+  }, [otherOverlayOpen])
+
+  useEffect(() => {
+    if (!btnMounted) {
+      setBtnReady(false)
+      return
+    }
+    // 不能用 rAF：标签页被遮挡时 rAF 停摆会导致永远停在缩小态
+    const timer = window.setTimeout(() => setBtnReady(true), 60)
+    return () => window.clearTimeout(timer)
+  }, [btnMounted])
 
   useEffect(() => {
     setOverlayLock('global-menu', open)
@@ -65,7 +88,7 @@ export function GlobalMenu() {
         onSelect={select}
         onClose={toggle}
       />
-      {!otherOverlayOpen && <MenuButton open={open} onToggle={toggle} />}
+      {btnMounted && <MenuButton open={open} onToggle={toggle} show={!otherOverlayOpen && btnReady} />}
     </>
   )
 }
