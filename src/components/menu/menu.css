@@ -50,15 +50,14 @@
   top: var(--menu-top);
   right: var(--menu-panel-right);
   width: min(24rem, calc(100vw - var(--menu-inset) * 2));
-  max-height: calc(100dvh - var(--menu-top) - 1rem);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-  scrollbar-width: none;
+  /* 不裁剪：条目要从屏幕最右缘完整滑入，面板内不应出现 overflow 切割线。
+     菜单只有 4 条，矮屏靠下面的媒体查询压缩行高保证放得下。 */
 }
 
-.menu-panel::-webkit-scrollbar {
-  display: none;
+@media (max-height: 520px) {
+  .menu-item {
+    padding-block: 0.625rem;
+  }
 }
 
 .menu-item {
@@ -158,7 +157,7 @@ button[aria-expanded='true'] .menu-btn-icon {
 @media (min-width: 640px) {
   .menu-overlay {
     --menu-inset: max(30px, env(safe-area-inset-right, 0px));
-    --menu-panel-right: max(3rem, env(safe-area-inset-right, 0px));
+    --menu-panel-right: max(4.5rem, env(safe-area-inset-right, 0px));
     --menu-top: calc(
       max(30px, env(safe-area-inset-top, 0px)) +
       clamp(4.375rem, 0.857rem + 6.74vw, 6.25rem) +
