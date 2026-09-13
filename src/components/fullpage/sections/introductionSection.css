@@ -42,6 +42,10 @@
   height: 100%;
 }
 
+.intro-scroll-content {
+  width: 100%;
+}
+
 /* ---------- 标题：Poppins 大字 + 逐字上浮入场 ---------- */
 
 .intro-title {
@@ -244,6 +248,10 @@
 
   .intro-scroll::-webkit-scrollbar {
     display: none;
+  }
+
+  .intro-scroll-content {
+    display: block;
   }
 
   /* 官网移动端：立绘按原比例全幅铺开，面板以 -65% 叠上来 */

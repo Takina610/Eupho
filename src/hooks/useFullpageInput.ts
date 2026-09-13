@@ -1,5 +1,7 @@
 import { useEffect, useRef, type RefObject } from 'react'
 
+import { getScrollRegionLenis } from '@/lib/scrollRegion'
+
 const WHEEL_THRESHOLD = 24
 const SWIPE_THRESHOLD = 48
 
@@ -60,12 +62,21 @@ export function useFullpageInput({
         return
       }
 
-      // 激活屏内有长内容区时先滚内容，滚到边缘才继续翻页
+      // 激活屏内有长内容区时先滚内容，滚到边缘才继续翻页。
+      // Lenis 托管的区域滚动由它自己平滑驱动，这里只负责边缘判定。
       const region = findActiveScrollRegion()
       if (region) {
         const goingDown = delta > 0
-        if (!isAtScrollEdge(region, goingDown)) {
-          region.scrollTop += delta * (event.deltaMode === 1 ? 16 : 1)
+        const lenis = getScrollRegionLenis(region)
+        const atEdge = lenis
+          ? goingDown
+            ? lenis.targetScroll >= lenis.limit - 1
+            : lenis.targetScroll <= 1
+          : isAtScrollEdge(region, goingDown)
+        if (!atEdge) {
+          if (!lenis) {
+            region.scrollTop += delta * (event.deltaMode === 1 ? 16 : 1)
+          }
           return
         }
       }
@@ -146,11 +157,14 @@ export function useFullpageInput({
         return
       }
 
-      // 滚动区手势：手动滚动内容（场景壳是 touch-action: none，原生滚动不可用），
-      // 全程不触发翻页，翻页统一留给 touchend 的边缘判定
+      // 滚动区手势：滚动交给 Lenis（未托管时手动 scrollTop 兜底），全程不触发翻页，
+      // 翻页统一留给 touchend 的边缘判定
       if (start.scrollRegion) {
-        start.scrollRegion.scrollTop += start.lastY - touch.clientY
-        start.lastY = touch.clientY
+        const lenis = getScrollRegionLenis(start.scrollRegion)
+        if (!lenis) {
+          start.scrollRegion.scrollTop += start.lastY - touch.clientY
+          start.lastY = touch.clientY
+        }
         event.preventDefault()
         return
       }

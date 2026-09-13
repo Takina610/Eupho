@@ -1,11 +1,15 @@
-import { memo, useState, type CSSProperties, type ReactNode } from 'react'
+import { memo, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import Lenis from 'lenis'
 
 import { Section } from '@/components/fullpage/Section'
 import type { SectionActiveProps } from '@/constants/homeSections'
+import { prefersReducedMotion } from '@/lib/motion'
+import { setScrollRegionLenis } from '@/lib/scrollRegion'
 import introArt from '@/assets/introduction/intro-img.webp'
 import introArtSp from '@/assets/introduction/intro-img-sp.webp'
 
 import './introductionSection.css'
+import 'lenis/dist/lenis.css'
 
 /** 官网把标题逐字母拆进 span 做级联上浮，这里按同样的分组渲染（Intro / duction）。 */
 const TITLE_PARTS = [
@@ -67,14 +71,91 @@ export const IntroductionSection = memo(function IntroductionSection({
   active = false,
 }: SectionActiveProps) {
   const [showZh, setShowZh] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const lenisRef = useRef<Lenis | null>(null)
+  const lenisTeardownRef = useRef<(() => void) | null>(null)
+  const activeRef = useRef(active)
+  activeRef.current = active
+
+  // 移动端内容约 1.3 倍视口高：溢出时用 Lenis 接管屏内滚动（丝滑 + 惯性），
+  // 尊重 prefers-reduced-motion（此时走输入层的 scrollTop 兜底）。
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) {
+      return
+    }
+
+    const start = () => {
+      if (lenisRef.current || prefersReducedMotion()) {
+        return
+      }
+      const lenis = new Lenis({
+        wrapper: el,
+        content: el.firstElementChild as HTMLElement,
+        syncTouch: true,
+        autoRaf: false,
+      })
+      lenisRef.current = lenis
+      setScrollRegionLenis(el, lenis)
+      if (!activeRef.current) {
+        lenis.stop()
+      }
+      let rafId = requestAnimationFrame(function raf(time: number) {
+        lenis.raf(time)
+        rafId = requestAnimationFrame(raf)
+      })
+      lenisTeardownRef.current = () => {
+        cancelAnimationFrame(rafId)
+        setScrollRegionLenis(el, null)
+        lenis.destroy()
+        lenisRef.current = null
+      }
+    }
+    const stop = () => {
+      lenisTeardownRef.current?.()
+      lenisTeardownRef.current = null
+    }
+    // 溢出与否则随视口/内容（语言切换）变化，用 ResizeObserver 跟踪；
+    // observe 本身会先触发一次回调完成初次判定
+    const ro = new ResizeObserver(() => {
+      if (el.scrollHeight > el.clientHeight + 1) {
+        start()
+      } else {
+        stop()
+      }
+    })
+    ro.observe(el)
+    if (el.firstElementChild) {
+      ro.observe(el.firstElementChild)
+    }
+    return () => {
+      ro.disconnect()
+      stop()
+    }
+    // 挂载一次即可：启停由 ResizeObserver 与下方 active effect 驱动
+  }, [])
+
+  // 非激活屏时暂停 Lenis，避免切页动画期间背景仍在滚动
+  useEffect(() => {
+    const lenis = lenisRef.current
+    if (!lenis) {
+      return
+    }
+    if (active) {
+      lenis.start()
+    } else {
+      lenis.stop()
+    }
+  }, [active])
 
   return (
     <Section id="introduction" className={`intro-stage${active ? ' on' : ''}${showZh ? ' zh' : ''}`}>
       {/* 移动端内容比一屏长（官网同款立绘高度 + 面板），这个容器负责屏内滚动 */}
-      <div className="intro-scroll" data-fullpage-scroll>
-        <img src={introArt} alt="" className="intro-art" aria-hidden />
-        <img src={introArtSp} alt="" className="intro-art-sp" aria-hidden />
-        <div className="intro-panel">
+      <div className="intro-scroll" data-fullpage-scroll ref={scrollRef}>
+        <div className="intro-scroll-content">
+          <img src={introArt} alt="" className="intro-art" aria-hidden />
+          <img src={introArtSp} alt="" className="intro-art-sp" aria-hidden />
+          <div className="intro-panel">
           <IntroTitle sp />
           <div className="intro-inner">
             <div className="intro-txt">
@@ -173,6 +254,7 @@ export const IntroductionSection = memo(function IntroductionSection({
               />
             </div>
           </div>
+        </div>
         </div>
       </div>
       <IntroTitle />
