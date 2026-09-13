@@ -36,7 +36,10 @@
 .menu-scrim {
   position: absolute;
   inset: 0;
-  background: rgba(2, 28, 33, 0.92);
+  /* 官网 keyvisual 打底，压深色罩保证条目可读 */
+  background:
+    linear-gradient(rgba(2, 28, 33, 0.82), rgba(2, 28, 33, 0.9)),
+    url('../../assets/keyvisual.jpg') center / cover no-repeat;
   opacity: 0;
   /* 收起时让条目先退场，遮罩随后跟进 */
   transition: opacity 0.3s ease-out calc(var(--menu-step) * 3.4);
@@ -116,10 +119,9 @@
   padding: clamp(1rem, 0.875rem + 0.5vw, 1.25rem) 0.25rem;
   text-align: left;
   cursor: pointer;
-  border-bottom: 1px solid rgba(244, 251, 252, 0.22);
   opacity: 0;
   translate: min(15vw, 56px) 0;
-  /* 高亮色：默认隐形，悬浮用主题青，选中用黄（谱线、备样字符、短块共用） */
+  /* 高亮色：默认隐形，悬浮用主题青，选中用黄（谱线与热字符共用） */
   --staff: transparent;
   transition:
     opacity 0.45s var(--menu-ease) calc((var(--menu-n) - 1 - var(--i)) * var(--menu-step)),
@@ -135,12 +137,13 @@
   min-width: 0;
 }
 
-/* 双层逐字标签：data-on 时底层白色字符从左往右逐字向下掉，
-   上层高亮样式（--staff 色，EN 斜体）自上方逐字落下补位。节奏刻意放缓。 */
+/* 双层逐字标签（官网 navTxt 同款机制）：cell 是 overflow 裁剪窗口，
+   堆叠静止在 top:-100% 露出白色拷贝；data-on 时滑到 0——
+   高亮拷贝（--staff 色，EN 斜体）自上方滑入、白色拷贝向下滑出，
+   每字延迟 li*35ms 从左到右次第播放。 */
 .menu-label {
   position: relative;
   display: inline-block;
-  white-space: pre;
   font-size: clamp(1.25rem, 1rem + 1.8vw, 1.75rem);
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -158,57 +161,52 @@
 .menu-label-cell {
   position: relative;
   display: inline-block;
+  overflow: hidden;
 }
 
-.menu-label-base,
-.menu-label-alt {
-  display: inline-block;
-  transition:
-    transform 0.5s var(--menu-ease) calc(var(--li) * 45ms),
-    opacity 0.4s ease-out calc(var(--li) * 45ms);
+.menu-label-size {
+  visibility: hidden;
 }
 
-.menu-label-base {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-.menu-label-alt {
+.menu-label-stack {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: -100%;
+  display: flex;
+  flex-direction: column;
+  transition: top 0.26s ease-out calc(var(--li) * 35ms);
+}
+
+.menu-label-stack[data-on='true'] {
+  top: 0;
+}
+
+.menu-label-copy {
+  display: block;
+}
+
+.menu-label-copy--hot {
   color: var(--staff);
   font-style: italic;
-  transform: translateY(-0.85em);
-  opacity: 0;
 }
 
-.menu-label--zh .menu-label-alt {
+.menu-label--zh .menu-label-copy--hot {
   font-style: normal;
 }
 
-.menu-label[data-on='true'] .menu-label-base {
-  transform: translateY(0.6em);
-  opacity: 0;
-}
-
-.menu-label[data-on='true'] .menu-label-alt {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-/* 悬浮/选中时浮现五线谱：上谱自上方滑入、下谱自下方滑入，
-   下谱的最低一道线更厚（谱线压着音符的感觉）。 */
+/* 悬浮/选中时浮现谱线：上方单道细线自上滑入；下方谱段自下滑入、
+   最低一道线更厚（谱线压着音符的感觉）。 */
 .menu-item::before {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
-  top: 4px;
-  height: 12px;
+  top: 6px;
+  height: 2px;
   pointer-events: none;
   opacity: 0;
   transform: translateY(-9px);
-  background: repeating-linear-gradient(to bottom, var(--staff) 0 1.5px, transparent 1.5px 7px);
+  background: var(--staff);
   transition:
     transform 0.32s var(--menu-ease),
     opacity 0.3s ease-out;
@@ -236,17 +234,6 @@
     opacity 0.3s ease-out;
 }
 
-/* 分隔线右端的粗短条（官网菜单的装饰记号），悬停/选中随 --staff 变色 */
-.menu-item-tab {
-  position: absolute;
-  right: 0;
-  bottom: -2px;
-  width: 2.25rem;
-  height: 3px;
-  background: #f4fbfc;
-  transition: background 0.25s;
-}
-
 .menu-overlay[data-open='true'] .menu-item {
   opacity: 1;
   translate: 0 0;
@@ -269,9 +256,6 @@
     transform: translateY(0);
   }
 
-  .menu-item:hover .menu-item-tab {
-    background: var(--color-brand);
-  }
 }
 
 /* data-hot 与 :hover 等价：触屏/程序化触发没有真实指针悬停，靠属性兜底。
@@ -293,10 +277,6 @@
   transform: translateY(0);
 }
 
-.menu-item[data-hot='true'] .menu-item-tab,
-.menu-item:focus-visible .menu-item-tab {
-  background: var(--color-brand);
-}
 
 .menu-item:focus-visible {
   --staff: var(--color-brand);
@@ -315,10 +295,6 @@
 .menu-item[data-current='true']::after {
   opacity: 1;
   transform: translateY(0);
-}
-
-.menu-item[data-current='true'] .menu-item-tab {
-  background: var(--color-accent);
 }
 
 /* 按钮出入场：其他浮层（如系列详情）开着时缩小淡出，关闭时放大淡入。

@@ -14,18 +14,24 @@ type MenuOverlayProps = {
 }
 
 /**
- * 双层逐字标签：data-on 翻转时，底层原样式字符从左往右逐字向下掉，
- * 上层高亮样式（青/黄斜体，见 menu.css 的 --staff）自上方逐字落下补位。
- * 拆成单字 span 仅供动画，可读性由按钮的 aria-label 保证。
+ * 双层逐字标签（官网 navTxt 同款机制）：每个字符是一个 overflow 裁剪窗口，
+ * 窗口内的堆叠放着高亮拷贝（上）与白色拷贝（下），静止时堆叠停在 -100%
+ * 露出白色；data-on 时堆叠滑到 0——高亮字符自上方滑入、白色字符向下滑出，
+ * 每字延迟 li*35ms 从左到右次第播放。
  */
 function MenuLabel({ text, on, zh = false }: { text: string; on: boolean; zh?: boolean }) {
   return (
-    <span className={zh ? 'menu-label menu-label--zh' : 'menu-label'} data-on={on}>
+    <span className={zh ? 'menu-label menu-label--zh' : 'menu-label'}>
       {text.split('').map((ch, i) => (
         <span key={i} className="menu-label-cell" style={{ '--li': i } as CSSProperties}>
-          <span className="menu-label-base">{ch}</span>
-          <span className="menu-label-alt" aria-hidden="true">
+          <span className="menu-label-size" aria-hidden="true">
             {ch}
+          </span>
+          <span className="menu-label-stack" data-on={on}>
+            <span className="menu-label-copy menu-label-copy--hot" aria-hidden="true">
+              {ch}
+            </span>
+            <span className="menu-label-copy">{ch}</span>
           </span>
         </span>
       ))}
@@ -34,8 +40,8 @@ function MenuLabel({ text, on, zh = false }: { text: string; on: boolean; zh?: b
 }
 
 /**
- * 单条菜单栏：悬停/选中时英文与中文标签都播放逐字下落切换，
- * 行上下浮现五线谱（上谱自上方滑出、下谱自下方滑出，底谱线更厚）。
+ * 单条菜单栏：悬停/选中时英文与中文标签都播放逐字切换，
+ * 行上方浮现单道谱线、下方浮现带加厚底线的谱段。
  */
 function MenuItem({
   item,
@@ -68,7 +74,6 @@ function MenuItem({
         <MenuLabel text={item.en} on={on} />
         <MenuLabel text={item.zh} on={on} zh />
       </span>
-      <span className="menu-item-tab" aria-hidden="true" />
     </button>
   )
 }
