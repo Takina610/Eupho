@@ -21,12 +21,15 @@ import imageNatsuki from '@/assets/characters/20-natsuki.webp'
 import imageYuko from '@/assets/characters/21-yuko.webp'
 import imageMizore from '@/assets/characters/22-mizore.webp'
 import imageNozomi from '@/assets/characters/23-nozomi.webp'
+import backdropAsuka from '@/assets/characters/backend/asuka.png'
 import backdropHazuki from '@/assets/characters/backend/hazuki.png'
 import backdropKanade from '@/assets/characters/backend/kanade.png'
 import backdropKumiko from '@/assets/characters/backend/kumiko.png'
 import backdropMirei from '@/assets/characters/backend/mirei.png'
+import backdropMizore from '@/assets/characters/backend/mizore.png'
 import backdropMotomu from '@/assets/characters/backend/motomu.png'
 import backdropNatsuki from '@/assets/characters/backend/natsuki.png'
+import backdropNozomi from '@/assets/characters/backend/nozomi.png'
 import backdropReina from '@/assets/characters/backend/reina.png'
 import backdropSapphire from '@/assets/characters/backend/sapphire.png'
 import backdropSatsuki from '@/assets/characters/backend/satsuki.png'
@@ -293,8 +296,8 @@ export const CHARACTERS: Character[] = [
     id: 'asuka',
     pushEdge: [0, 1],
     focus: [68, 12, 2.38],
-    back: [42, 8, 1],
     image: imageAsuka,
+    backdrop: backdropAsuka,
     name: '田中明日香',
     nameEn: 'Tanaka Asuka',
     part: '上低音号',
@@ -360,8 +363,8 @@ export const CHARACTERS: Character[] = [
     id: 'mizore',
     pushEdge: [0, 1],
     focus: [57, 11, 2.40],
-    back: [42, 8, 1],
     image: imageMizore,
+    backdrop: backdropMizore,
     name: '铠冢霙',
     nameEn: 'Yoroizuka Mizore',
     part: '双簧管',
@@ -373,8 +376,8 @@ export const CHARACTERS: Character[] = [
     id: 'nozomi',
     pushEdge: [0, 1],
     focus: [50, 11, 2.18],
-    back: [42, 8, 1],
     image: imageNozomi,
+    backdrop: backdropNozomi,
     name: '伞木希美',
     nameEn: 'Kasaki Nozomi',
     part: '长笛',
