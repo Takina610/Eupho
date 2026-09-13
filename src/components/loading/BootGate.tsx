@@ -1,6 +1,7 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import logoUrl from '@/assets/re_logo.png'
 import { useBootPreloader } from '@/hooks/useBootPreloader'
+import { KatanaReveal } from '@/components/loading/KatanaReveal'
 
 /**
  * 路由懒加载分块未就绪时的兜底画面：与加载层同色。
@@ -13,13 +14,21 @@ export function BootHold() {
 
 /**
  * 开屏加载闸：预载期间盖住页面，完成后先挂载内容再淡出加载层，
+ * 并叠一段居合斩揭幕（KatanaReveal）切开加载层露出首屏，
  * 让首屏入场动画正好在揭开时播放。静态壳在 index.html 里，
  * 两者共用 src/styles/bootLoader.css（由 index.html 的 link 引入）。
  * 构图参考 ak.hypergryph.com：居中站标 + 底部细进度条（方形端点）与状态行。
  */
 export function BootGate({ children }: { children: ReactNode }) {
   const { progress, phase } = useBootPreloader()
+  const [slash, setSlash] = useState(false)
   const percent = Math.round(progress * 100)
+
+  // 加载层开始淡出时叠上居合斩揭幕：遮罩与加载层同色，淡出被完全盖住，
+  // 揭幕自己播完即卸载，不随 phase 提前消失
+  useEffect(() => {
+    if (phase === 'leaving') setSlash(true)
+  }, [phase])
 
   // React 首次提交后静态壳（index.html 的 #boot-shell）就已完成使命：
   // 加载层已同帧铺上，此时移除，避免它留在 #root 之外挡住页面。
@@ -66,6 +75,7 @@ export function BootGate({ children }: { children: ReactNode }) {
           <p className="boot-corner">© SOUND! EUPHONIUM</p>
         </div>
       )}
+      {slash && <KatanaReveal />}
       {phase !== 'loading' && children}
     </>
   )

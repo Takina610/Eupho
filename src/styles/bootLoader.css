@@ -29,6 +29,15 @@ body:has(#root:empty) {
   pointer-events: none;
 }
 
+/* 揭幕遮罩是不透明纯色，盖上时内容若不先退场会被硬切；
+   让加载内容抢在遮罩静场期内快速淡出，衔接更顺 */
+.boot-overlay[data-leaving] .boot-brand,
+.boot-overlay[data-leaving] .boot-hud,
+.boot-overlay[data-leaving] .boot-corner {
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+
 /* 路由分块未就绪时的兜底层：与加载层同色，内容一到即被同帧替换 */
 .boot-hold {
   position: fixed;

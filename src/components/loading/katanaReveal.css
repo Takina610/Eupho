@@ -1,0 +1,41 @@
+/*
+ * 居合斩揭幕层。由 BootGate 在加载层进入淡出阶段时挂载，
+ * 盖在 .boot-overlay（z-index 9999）之上。遮罩与加载层同色 #01acc6，
+ * 视觉上等价于「加载页被武士刀一刀切开」。
+ * 初始 clip-path 为上下两块互补三角形，静场期间盖满全屏，
+ * 动画开始后由 KatanaReveal 的 onUpdate 按刀刃位置实时改写。
+ */
+
+.katana-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.katana-reveal__mask {
+  position: absolute;
+  inset: 0;
+  background: #01acc6;
+  clip-path: polygon(0% 0%, 100% 0%, 0% 100%, 0% 100%);
+}
+
+/* 上块放大 1% 防止缩放/取整留下发丝缝 */
+.katana-reveal__mask--up {
+  transform-origin: left top;
+  transform: scale(1.01);
+}
+
+.katana-reveal__mask--down {
+  clip-path: polygon(100% 100%, 100% 0%, 0% 100%, 0% 100%);
+}
+
+/* 刀身竖长（viewBox 68.49x760），30vmin 宽对应原版 30rem（根字号 1vmin） */
+.katana-reveal__katana {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 30vmin;
+  height: auto;
+}
