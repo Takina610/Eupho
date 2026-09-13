@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { PRELOAD_IMAGES } from '@/constants/preloadManifest'
+import { PRELOAD_RESOURCES } from '@/constants/preloadManifest'
 import { BOOT_FADE_MS, BOOT_MAX_WAIT_MS, BOOT_MIN_SHOW_MS } from '@/constants/bootLoader'
-import { getBootPreloadTask } from '@/lib/preloadImages'
+import { getBootPreloadTask } from '@/lib/preloadResources'
 
 export type BootPhase =
   | 'loading' // 预载进行中，盖住页面
@@ -14,7 +14,7 @@ export type BootPhase =
  * - 最长等待 BOOT_MAX_WAIT_MS，个别图片挂起时兜底放行。
  */
 export function useBootPreloader() {
-  const task = getBootPreloadTask(PRELOAD_IMAGES)
+  const task = getBootPreloadTask(PRELOAD_RESOURCES)
   const snapshot = useSyncExternalStore(task.subscribe, task.getSnapshot)
   const [phase, setPhase] = useState<BootPhase>('loading')
   const shownAtRef = useRef(Number.POSITIVE_INFINITY)

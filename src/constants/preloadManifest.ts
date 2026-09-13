@@ -10,16 +10,16 @@ import { SERIES_BANNERS } from './seriesBanners'
 import { SERIES_WORKS } from './seriesCovers'
 
 /**
- * 全站开屏预载清单：各页面会展示到的图片都在这里汇合。
- * 数据驱动的图（封面/立绘/乐器/横幅）随对应 constants 自动汇入；
+ * 全站开屏预载清单：各页面会展示/播到的资源都在这里汇合。
+ * 数据驱动的资源（封面/立绘/乐器图与音效/横幅）随对应 constants 自动汇入；
  * CSS url() 或散落的图（keyvisual、footer 宣传语、菜单图标）在这里单独列出。
  */
-export const PRELOAD_IMAGES: readonly string[] = Array.from(
+export const PRELOAD_RESOURCES: readonly string[] = Array.from(
   new Set([
     ...SERIES_WORKS.flatMap((work) => [work.image, work.portrait]),
     ...CHARACTERS.flatMap((character) => [character.image, character.backdrop]),
     ...SERIES_BANNERS.map((banner) => banner.src),
-    ...INSTRUMENTS.map((instrument) => instrument.image),
+    ...INSTRUMENTS.flatMap((instrument) => [instrument.image, instrument.sound]),
     castStaffBg,
     introArt,
     introArtSp,
