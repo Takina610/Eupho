@@ -11,10 +11,15 @@ const SCATTER_JITTER = 100
 /** AK "SPREAD" mode: particles flee the pointer, then ease back into the shape. */
 const REPEL_STRENGTH = -100
 /** Frames a particle waits before its alpha starts easing in — the shape refines in waves. */
-const REVEAL_SPREAD = 200
+const REVEAL_SPREAD = 130
 /** Within this distance of the target the approach eases into a slow final settle. */
 const SETTLE_DISTANCE = 90
-const SETTLE_FACTOR = 0.22
+/**
+ * The settle is the graceful ending: this factor pins the final crawl to the
+ * original pace even though the approach flies 2.25× faster (speeds 18-36 vs
+ * the old 40-80 — per-frame factors are 1/speed, so smaller = faster).
+ */
+const SETTLE_FACTOR = 0.1
 /** Curved approach: perpendicular sinusoid while a particle is still far from its target. */
 const WOBBLE_AMPLITUDE = 16
 const WOBBLE_RANGE = 320
@@ -59,7 +64,7 @@ export class ParticleField {
   private flySpeeds: Float32Array
   private flyLives: Float32Array
 
-  constructor({ count, flyCount = 0, view, sizeRange = [1.5, 2.8], speedRange = [40, 80] }: FieldOptions) {
+  constructor({ count, flyCount = 0, view, sizeRange = [1.5, 2.8], speedRange = [18, 36] }: FieldOptions) {
     this.count = count
     this.total = count + flyCount
     this.flyCount = flyCount

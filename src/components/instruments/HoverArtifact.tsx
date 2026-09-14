@@ -4,8 +4,8 @@ import { createQuadRenderer, type QuadRenderer } from '@/lib/webglQuad'
 
 const CSS_WIDTH = 420
 const CSS_HEIGHT = 315
-/** Reference-site follow curve, slowed to a lazy chase; snaps inside 0.72px. */
-const FOLLOW_DIVISOR = 44
+/** Reference-site follow curve, brisk enough to keep up with row hops; snaps inside 0.72px. */
+const FOLLOW_DIVISOR = 22
 const MAX_STEP = 100
 const DEADZONE = 0.72
 const SPEED_FACTOR = 0.041666666666666664
@@ -79,13 +79,17 @@ export function HoverArtifact({ active, image }: HoverArtifactProps) {
     }
 
     const canvas = canvasRef.current
-    const loop = () => {
+    let last = performance.now()
+    const loop = (now: number) => {
       const pos = posRef.current
       const target = targetRef.current
       const dx = target.x - pos.x
       const dy = target.y - pos.y
       const len = Math.hypot(dx, dy)
-      const step = Math.min(Math.max(len / FOLLOW_DIVISOR, 0.03), MAX_STEP)
+      // Per-frame step, compounded by the frame ratio so throttled tabs keep pace.
+      const frame = Math.min(Math.max(now - last, 1), 50) / 16.667
+      last = now
+      const step = Math.min(Math.max((len / FOLLOW_DIVISOR) * frame, 0.03), MAX_STEP)
       const sx = len > DEADZONE ? (dx / len) * step : 0
       const sy = len > DEADZONE ? (dy / len) * step : 0
       pos.x += sx
