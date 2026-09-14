@@ -86,17 +86,71 @@
   touch-action: manipulation;
 }
 
-/* 击音涟漪：垫在音符下面的一圈共鸣光晕，key 换曲重挂载时重播 */
+/* 击音涟漪：span 只作击点锚（零尺寸），光晕、声波环与双跳音都是它的
+   伪元素/子节点，换曲 key 重挂载时整套重播 */
 .series-staff__ripple {
   position: absolute;
   z-index: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.series-staff__ripple::before,
+.series-staff__ripple::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  translate: -50% -50%;
+  opacity: 0;
+}
+
+.series-staff__ripple::before {
   width: 8.5rem;
   height: 8.5rem;
-  border-radius: 50%;
   background: radial-gradient(closest-side, rgb(255 248 48 / 0.32), rgb(1 172 198 / 0.2) 55%, transparent);
+}
+
+.series-staff__ripple::after {
+  width: 4.2rem;
+  height: 4.2rem;
+  border: 2px solid rgb(255 248 48 / 0.55);
+}
+
+.series-staff__ripple i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-style: normal;
+  font-size: 1rem;
+  line-height: 1;
+  color: #fff830;
   opacity: 0;
   translate: -50% -50%;
+}
+
+.series-staff__ripple i:nth-child(2) {
+  font-size: 0.8rem;
+  color: rgb(1 172 198 / 0.95);
+}
+
+/* 进场飘音：谱上冒出的两枚跳音符号，只在屏层激活时播一次 */
+.series-staff__spark {
+  position: absolute;
+  z-index: 2;
+  opacity: 0;
+  color: #fff830;
+  font-size: 1.15rem;
+  font-style: normal;
+  line-height: 1;
   pointer-events: none;
+}
+
+.series-staff__spark--b {
+  color: rgb(1 172 198 / 0.95);
+  font-size: 0.95rem;
 }
 
 .series-staff__cue-in {
@@ -145,6 +199,22 @@
   outline: 2px solid #fff830;
   outline-offset: 3px;
   border-radius: 999px;
+}
+
+/* 落点微光本体:进场落键瞬间由 staff-note-spark 点亮,平时保持透明 */
+.series-staff__note::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 248 48 / 0.42), rgb(1 172 198 / 0.22) 55%, transparent);
+  opacity: 0;
+  translate: -50% -50%;
+  pointer-events: none;
 }
 
 .series-staff__glyph {
@@ -271,8 +341,38 @@
     animation: staff-cue-in 0.38s cubic-bezier(0.33, 1, 0.68, 1) 0.9s both;
   }
 
-  .series-staff__ripple {
-    animation: staff-ripple 0.7s cubic-bezier(0.33, 1, 0.68, 1) both;
+  /* 每个音符落键瞬间，在原地炸开一圈微光（光点延迟对齐各自的落点时刻） */
+  [data-active='true'] .series-staff__note::after {
+    animation: staff-note-spark 0.5s ease-out both;
+    animation-delay: calc(0.7s + var(--note-i, 0) * 45ms);
+  }
+
+  /* 进场收尾：两枚跳音符号先后从谱上飘起 */
+  [data-active='true'] .series-staff__spark {
+    animation: staff-spark-rise 1.1s cubic-bezier(0.33, 1, 0.68, 1) 1.05s both;
+  }
+
+  [data-active='true'] .series-staff__spark--b {
+    animation-duration: 1.25s;
+    animation-delay: 1.32s;
+  }
+
+  /* 换曲击音：光晕荡开 + 声波环扩散 + 一对跳音先后弹出 */
+  .series-staff__ripple::before {
+    animation: staff-ripple-bloom 0.7s cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  .series-staff__ripple::after {
+    animation: staff-ripple-ring 0.85s cubic-bezier(0.33, 1, 0.68, 1) 0.08s both;
+  }
+
+  .series-staff__ripple i {
+    animation: staff-ripple-note 0.95s cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  .series-staff__ripple i:nth-child(2) {
+    animation-name: staff-ripple-note-b;
+    animation-delay: 0.12s;
   }
 
   /* 离场与进场同特异性，靠后声明覆盖：编队按 seam 扫向撤退 */
@@ -313,11 +413,11 @@
 @keyframes staff-cue-in {
   from {
     opacity: 0;
-    transform: translateY(0.35em);
+    transform: translateY(0.35em) scale(0.97);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -343,10 +443,14 @@
   from {
     opacity: 0;
     translate: -0.7rem 0;
+    scale: 0.75;
+    rotate: -6deg;
   }
   to {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
+    rotate: 0deg;
   }
 }
 
@@ -361,23 +465,65 @@
   }
 }
 
-/* 落键：从上方落到谱线音高上，落点由过冲缓动带回弹 */
+/* 落键：缩小并带着倾角从上方砸到谱线音高上，过冲缓动带回弹 */
 @keyframes staff-note-land {
   from {
     opacity: 0;
     translate: 0 -1.05rem;
+    scale: 0.3;
+    rotate: -16deg;
   }
   to {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
+    rotate: 0deg;
   }
 }
 
-/* 松键：向左上方放开飘起，随 seam 扫向撤退 */
+/* 落点微光：与落键同刻在原地炸开的小光晕 */
+@keyframes staff-note-spark {
+  0% {
+    opacity: 0;
+    scale: 0.3;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.5;
+  }
+}
+
+/* 飘音：跳音符号从谱上摇曳升起 */
+@keyframes staff-spark-rise {
+  0% {
+    opacity: 0;
+    translate: 0 0.4rem;
+    rotate: -10deg;
+  }
+  25% {
+    opacity: 0.95;
+  }
+  60% {
+    translate: 0.45rem -1.5rem;
+    rotate: 8deg;
+  }
+  100% {
+    opacity: 0;
+    translate: 0.7rem -2.7rem;
+    rotate: 4deg;
+  }
+}
+
+/* 松键：缩小着向左上方放开飘起，随 seam 扫向撤退 */
 @keyframes staff-note-release {
   0% {
     opacity: 1;
     translate: 0 0;
+    scale: 1;
+    rotate: 0deg;
   }
   55% {
     opacity: 1;
@@ -385,6 +531,8 @@
   100% {
     opacity: 0;
     translate: -0.55rem -1rem;
+    scale: 0.55;
+    rotate: -14deg;
   }
 }
 
@@ -397,18 +545,68 @@
   }
 }
 
-/* 击音共鸣：以被击音符为圆心荡开一圈光晕 */
-@keyframes staff-ripple {
+/* 击音共鸣：光晕荡开 + 声波环扩散 + 一对跳音向两侧弹出 */
+@keyframes staff-ripple-bloom {
   0% {
     opacity: 0;
-    transform: scale(0.2, 0.45);
+    scale: 0.2;
   }
   30% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: scale(1.06, 1.06);
+    scale: 1.06;
+  }
+}
+
+@keyframes staff-ripple-ring {
+  0% {
+    opacity: 0;
+    scale: 0.5;
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.9;
+  }
+}
+
+@keyframes staff-ripple-note {
+  0% {
+    opacity: 0;
+    translate: -50% -20%;
+    rotate: -12deg;
+    scale: 0.7;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: calc(-50% + 0.55rem) calc(-50% - 2.1rem);
+    rotate: 10deg;
+    scale: 1;
+  }
+}
+
+@keyframes staff-ripple-note-b {
+  0% {
+    opacity: 0;
+    translate: -50% -20%;
+    rotate: 12deg;
+    scale: 0.7;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: calc(-50% - 0.6rem) calc(-50% - 1.7rem);
+    rotate: -10deg;
+    scale: 1;
   }
 }
 
@@ -431,9 +629,14 @@
     --head-nudge: 0.26rem;
   }
 
-  .series-staff__ripple {
+  .series-staff__ripple::before {
     width: 5.5rem;
     height: 5.5rem;
+  }
+
+  .series-staff__note::after {
+    width: 1.4rem;
+    height: 1.4rem;
   }
 
   .series-staff__glyph {

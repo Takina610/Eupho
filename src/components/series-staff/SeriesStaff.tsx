@@ -111,7 +111,7 @@ export function SeriesStaff({
           }}
           onClick={handleClick}
         >
-          {/* 共鸣涟漪：key 取当前作品，悬浮切换/点选换曲时重挂载即重播一圈光晕 */}
+          {/* 击音涟漪：光晕+声波环+双跳音，key 取当前作品，换曲重挂载即重播 */}
           {work ? (
             <span
               key={work.id}
@@ -121,8 +121,26 @@ export function SeriesStaff({
                 left: `${noteLeftPercent(activeIndex, count)}%`,
                 top: `${pitchTopPercent(seriesStaffNote(activeIndex).pitch)}%`,
               }}
-            />
+            >
+              <i>♪</i>
+              <i>♫</i>
+            </span>
           ) : null}
+          {/* 进场收尾：两枚跳音符号从谱上飘起，只在屏层激活时播一次 */}
+          <span
+            className="series-staff__spark"
+            aria-hidden
+            style={{ left: `${noteLeftPercent(1, count)}%`, top: `${pitchTopPercent(8)}%` }}
+          >
+            ♪
+          </span>
+          <span
+            className="series-staff__spark series-staff__spark--b"
+            aria-hidden
+            style={{ left: `${noteLeftPercent(7, count)}%`, top: `${pitchTopPercent(3)}%` }}
+          >
+            ♫
+          </span>
           <div
             className="series-staff__lines"
             style={{ top: `${STAFF_LINE_TOP}%`, bottom: `${100 - STAFF_LINE_BOTTOM}%` }}
