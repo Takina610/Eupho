@@ -46,26 +46,31 @@ function InstrumentName({ name, playing }: { name: string; playing: boolean }) {
   )
 }
 
-function Chevron({
+/**
+ * AK-world broken chevron: a tall thick arrow whose upper arm is slice-cut
+ * into a detached parallel piece (path lifted from the reference site's
+ * icon sprite, viewBox 0 0 7 15, pointing right). `left` reuses the
+ * reference site's own 180deg flip, so the slice lands on the bottom arm.
+ */
+function AkArrow({
   direction,
-  className = 'h-9 w-10 sm:h-10 sm:w-11',
+  className,
 }: {
   direction: 'left' | 'right'
   className?: string
 }) {
   return (
-    <svg viewBox="0 0 15 14" className={className} fill="none" aria-hidden>
-      {direction === 'left' ? (
-        <>
-          <path d="M7 1 2 7l5 6" stroke="currentColor" strokeWidth="1.2" />
-          <path d="M13 1 8 7l5 6" stroke="currentColor" strokeWidth="1.2" />
-        </>
-      ) : (
-        <>
-          <path d="M8 1l5 6-5 6" stroke="currentColor" strokeWidth="1.2" />
-          <path d="M2 1l5 6-5 6" stroke="currentColor" strokeWidth="1.2" />
-        </>
-      )}
+    <svg
+      viewBox="0 0 7 15"
+      className={className}
+      fill="currentColor"
+      aria-hidden
+      style={direction === 'left' ? { transform: 'rotate(180deg)' } : undefined}
+    >
+      <path
+        fillRule="evenodd"
+        d="M-.005 14.988v-2.856l4.327-4.635 1.335-1.429L6.99 7.497l-6.995 7.491zm0-12.127V.005L4.322 4.64 2.989 6.068-.005 2.861z"
+      />
     </svg>
   )
 }
@@ -236,17 +241,17 @@ export function InstrumentDetail({
         type="button"
         onClick={() => onStep(-1)}
         aria-label="上一件乐器"
-        className="absolute left-5 top-1/2 z-10 flex min-h-14 min-w-14 -translate-y-1/2 items-center justify-center text-white/80 transition hover:text-white max-sm:top-[40%] sm:left-20"
+        className="absolute left-5 top-1/2 z-10 flex min-h-14 min-w-14 -translate-y-1/2 items-center justify-center text-white/70 transition hover:text-white max-sm:top-[40%] sm:left-20"
       >
-        <Chevron direction="left" />
+        <AkArrow direction="left" className="w-6 sm:w-7" />
       </button>
       <button
         type="button"
         onClick={() => onStep(1)}
         aria-label="下一件乐器"
-        className="absolute right-5 top-1/2 z-10 flex min-h-14 min-w-14 -translate-y-1/2 items-center justify-center text-white/80 transition hover:text-white max-sm:top-[40%] sm:right-20"
+        className="absolute right-5 top-1/2 z-10 flex min-h-14 min-w-14 -translate-y-1/2 items-center justify-center text-white/70 transition hover:text-white max-sm:top-[40%] sm:right-20"
       >
-        <Chevron direction="right" />
+        <AkArrow direction="right" className="w-6 sm:w-7" />
       </button>
 
       {/* 底栏：进度条吃掉按钮左侧的剩余宽度，桌面端右侧留给返回，互不重叠。 */}
@@ -270,9 +275,14 @@ export function InstrumentDetail({
           ))}
         </nav>
 
-        <div className="inst-back hidden shrink-0 sm:block">
+        {/* AK-world 返回条：贴右缘,左箭头 + 中英双行;配色走本站主题(instruments.css)。 */}
+        <div className="inst-back -mr-6 hidden shrink-0 sm:block">
           <button type="button" className="inst-back-btn" onClick={onClose}>
-            <span>返回</span>
+            <AkArrow direction="left" className="inst-back-arrow" />
+            <span className="inst-back-label">
+              <span className="inst-back-zh">返回</span>
+              <span className="inst-back-en">GO BACK</span>
+            </span>
           </button>
         </div>
       </div>
