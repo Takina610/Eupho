@@ -134,9 +134,9 @@
 }
 
 /*
- * 返回按钮：AK-world 式返回条(贴右缘、左箭头、中英双行),进详情时自右滑入。
- * 配色换成本站主题:半透明深青条、北宇治青箭头、黄字 GO BACK;
- * 悬停整条反色为北宇治青(对应参考站的白底黑字反色)。
+ * 返回按钮：AK-world 式返回条(贴右缘、左箭头、中英双行)。
+ * 与进度条同场编排:进详情时返回条自右滑入、进度条自左向右展开;
+ * 退场各自原路返回(返回条滑回右缘、进度条从右向左收回)。
  */
 .inst-back {
   transform: translateX(110%);
@@ -146,6 +146,17 @@
 .inst-detail[data-open='true'] .inst-back {
   transform: translateX(0);
   transition: transform 0.45s cubic-bezier(0.33, 1, 0.68, 1) 0.25s;
+}
+
+/* clip-path 只裁不变形:黄色指针随裁切线从左缘逐段露出,收起时退回左缘。 */
+.inst-progress-clip {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.4s cubic-bezier(0.6, 0.04, 0.98, 0.34);
+}
+
+.inst-detail[data-open='true'] .inst-progress-clip {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.55s cubic-bezier(0.33, 1, 0.68, 1) 0.2s;
 }
 
 .inst-back-btn {
@@ -334,6 +345,11 @@
   .inst-back {
     transition: none;
     transform: none;
+  }
+
+  .inst-progress-clip {
+    transition: none;
+    clip-path: none;
   }
 
   .inst-reveal-item,

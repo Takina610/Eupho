@@ -257,12 +257,14 @@ export function InstrumentDetail({
       {/* 底栏：进度条吃掉按钮左侧的剩余宽度，桌面端右侧留给返回，互不重叠。 */}
       <div className="absolute inset-x-0 bottom-10 z-10 flex items-center max-sm:inset-x-5 max-sm:bottom-[max(2.5rem,env(safe-area-inset-bottom))] sm:right-6">
         <nav aria-label="乐器快速切换" className="relative flex h-10 min-w-0 flex-1">
-          <div aria-hidden className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-white/25" />
-          <div
-            aria-hidden
-            className="absolute top-1/2 h-[10px] -translate-y-1/2 bg-accent transition-[left] duration-300"
-            style={{ width: `${100 / total}%`, left: `${(index * 100) / total}%` }}
-          />
+          {/* 进度条与返回条同场编排:开详情时进度条自左向右展开(instruments.css),收起时原路收回。 */}
+          <div aria-hidden className="inst-progress-clip absolute inset-0">
+            <div className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-white/25" />
+            <div
+              className="absolute top-1/2 h-[10px] -translate-y-1/2 bg-accent transition-[left] duration-300"
+              style={{ width: `${100 / total}%`, left: `${(index * 100) / total}%` }}
+            />
+          </div>
           {INSTRUMENTS.map((item, i) => (
             <button
               key={item.id}
