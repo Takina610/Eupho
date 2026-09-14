@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="380" viewBox="0 0 1200 380" role="img" aria-labelledby="title desc">
+  <title id="title">Eupho - Sound! Euphonium intro site</title>
+  <desc id="desc">Kitauji teal-and-gold personal intro site with full-page sections for works, members, and instruments.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#021c21"/>
+      <stop offset="55%" stop-color="#03343c"/>
+      <stop offset="100%" stop-color="#021c21"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0.2" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#01acc6" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#01acc6" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="staff" width="1200" height="28" patternUnits="userSpaceOnUse">
+      <path d="M0 14 H1200" stroke="#01acc6" stroke-opacity="0.12" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="380" rx="28" fill="url(#bg)"/>
+  <rect width="1200" height="380" rx="28" fill="url(#glow)"/>
+  <rect x="0" y="48" width="1200" height="140" fill="url(#staff)"/>
+
+  <rect x="0" y="0" width="10" height="380" rx="28" fill="#01acc6"/>
+  <rect x="0" y="0" width="10" height="96" fill="#fff830"/>
+
+  <text x="64" y="78" fill="#01acc6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18" font-weight="600" letter-spacing="3">PERSONAL INTRO SITE</text>
+
+  <text x="64" y="148" fill="#f4fbfc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="64" font-weight="800" letter-spacing="1">Eupho</text>
+  <text x="64" y="198" fill="#fff830" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="28" font-weight="700">吹响吧！上低音号 · 介绍站</text>
+
+  <text x="64" y="248" fill="#c8e8ee" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="20">全屏 seam wipe 切页：作品 · 部员 · 乐器 · 作品介绍</text>
+  <text x="64" y="278" fill="#7eb8c4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="18">北宇治青金视觉 · 个人向介绍页 · 非官方站</text>
+
+  <g transform="translate(760 72)">
+    <rect width="380" height="236" rx="20" fill="#044a56" fill-opacity="0.55" stroke="#01acc6" stroke-opacity="0.45" stroke-width="1.5"/>
+
+    <g transform="translate(28 36)" stroke="#01acc6" stroke-opacity="0.55" stroke-width="1.5">
+      <path d="M0 0 H324"/>
+      <path d="M0 18 H324"/>
+      <path d="M0 36 H324"/>
+      <path d="M0 54 H324"/>
+      <path d="M0 72 H324"/>
+    </g>
+    <g fill="#fff830">
+      <ellipse cx="78" cy="88" rx="9" ry="7"/>
+      <rect x="85" y="48" width="2.5" height="40"/>
+      <ellipse cx="148" cy="106" rx="9" ry="7"/>
+      <rect x="155" y="66" width="2.5" height="40"/>
+      <ellipse cx="218" cy="78" rx="9" ry="7"/>
+      <rect x="225" y="38" width="2.5" height="40"/>
+      <ellipse cx="288" cy="96" rx="9" ry="7"/>
+      <rect x="295" y="56" width="2.5" height="40"/>
+    </g>
+    <g fill="#01acc6">
+      <ellipse cx="112" cy="114" rx="7" ry="5.5"/>
+      <rect x="117" y="82" width="2" height="32"/>
+      <ellipse cx="252" cy="68" rx="7" ry="5.5"/>
+      <rect x="257" y="36" width="2" height="32"/>
+    </g>
+
+    <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="16" font-weight="600">
+      <rect x="28" y="148" width="72" height="32" rx="8" fill="#01acc6"/>
+      <text x="64" y="169" text-anchor="middle" fill="#021c21">INDEX</text>
+      <rect x="110" y="148" width="92" height="32" rx="8" fill="#03343c" stroke="#fff830" stroke-width="1.5"/>
+      <text x="156" y="169" text-anchor="middle" fill="#fff830">MEMBERS</text>
+      <rect x="212" y="148" width="118" height="32" rx="8" fill="#03343c" stroke="#01acc6" stroke-width="1.5"/>
+      <text x="271" y="169" text-anchor="middle" fill="#f4fbfc">INSTRUMENTS</text>
+    </g>
+    <text x="28" y="210" fill="#7eb8c4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif" font-size="15">滚轮 / 键盘 / 触控滑动切页</text>
+  </g>
+</svg>
