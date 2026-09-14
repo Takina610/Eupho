@@ -101,12 +101,14 @@ export function ParticleStage({
     if (!active) {
       field.scatter()
       field.setAmbient(false)
-      const startedAt = performance.now()
-      const fade = () => {
-        field.update({ ...pointer.current, active: false })
+      let fadeLast = performance.now()
+      const startedAt = fadeLast
+      const fade = (now: number) => {
+        field.update({ ...pointer.current, active: false }, now - fadeLast)
+        fadeLast = now
         renderer.upload(field.positions, field.alphas, field.sizes)
         renderer.draw()
-        if (performance.now() - startedAt < 700) {
+        if (now - startedAt < 700) {
           frameRef.current = requestAnimationFrame(fade)
         }
       }
@@ -115,8 +117,10 @@ export function ParticleStage({
     }
 
     field.setAmbient(true)
-    const loop = () => {
-      field.update(pointer.current)
+    let loopLast = performance.now()
+    const loop = (now: number) => {
+      field.update(pointer.current, now - loopLast)
+      loopLast = now
       renderer.upload(field.positions, field.alphas, field.sizes)
       renderer.draw()
       frameRef.current = requestAnimationFrame(loop)

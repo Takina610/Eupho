@@ -163,11 +163,16 @@ export class ParticleField {
     }
   }
 
-  /** Advance one frame; positions/alphas are the buffers to upload. */
-  update(pointer: PointerState) {
+  /** Advance by `dt` milliseconds; positions/alphas are the buffers to upload.
+   *  Every per-frame factor compounds by dt/16.67 (1-(1-f)^n), so the motion
+   *  keeps its original real-time speed when the tab throttles rAF or the
+   *  device drops frames — at 60fps the factor is 1 and nothing changes. */
+  update(pointer: PointerState, dt = 16.667) {
+    const frame = Math.min(Math.max(dt, 1), 50) / 16.667
     this.tick += 1
-    this.ambient += (this.ambientTarget - this.ambient) * 0.05
+    this.ambient += (this.ambientTarget - this.ambient) * (1 - (1 - 0.05) ** frame)
     const { positions, alphas, targets, targetCount, transform } = this
+    const flyEase = 1 - (1 - 0.08) ** frame
 
     for (let i = 0; i < this.count; i += 1) {
       const s = 1 / this.speeds[i]
@@ -196,19 +201,20 @@ export class ParticleField {
 
       // Staggered reveal: alpha only starts easing in once this particle's turn arrives.
       if (this.reveals[i] > 0) {
-        this.reveals[i] -= 1
+        this.reveals[i] -= frame
         ta = 0
       }
 
-      const se = this.sEffCache[i]
+      const seRaw = this.sEffCache[i]
+      const se = 1 - (1 - seRaw) ** frame
       positions[px] += (tx - positions[px]) * se
       positions[px + 1] += (ty - positions[px + 1]) * se
-      alphas[i] += (ta - alphas[i]) * s
+      alphas[i] += (ta - alphas[i]) * (1 - (1 - Math.min(s, 1)) ** frame)
 
       if (pointer.active) {
         const gx = pointer.x - positions[px]
         const gy = pointer.y - positions[px + 1]
-        const falloff = 1 / (1 + gx * gx + gy * gy)
+        const falloff = (1 / (1 + gx * gx + gy * gy)) * frame
         positions[px] += REPEL_STRENGTH * gx * falloff
         positions[px + 1] += REPEL_STRENGTH * gy * falloff
       }
@@ -217,8 +223,8 @@ export class ParticleField {
     for (let j = 0; j < this.flyCount; j += 1) {
       const i = this.count + j
       const px = i * 2
-      this.flyLives[j] -= 1
-      positions[px + 1] += this.flySpeeds[j]
+      this.flyLives[j] -= frame
+      positions[px + 1] += this.flySpeeds[j] * frame
       const gone =
         this.flyLives[j] <= 0 || positions[px + 1] > this.view.height * 0.6
       if (gone) {
@@ -227,7 +233,7 @@ export class ParticleField {
         continue
       }
       const ta = this.ambient * (this.flyLives[j] < 30 ? 0 : 1) * 0.6
-      alphas[i] += (ta - alphas[i]) * 0.08
+      alphas[i] += (ta - alphas[i]) * flyEase
     }
   }
 
