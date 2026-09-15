@@ -268,9 +268,10 @@ export const IntroductionSection = memo(function IntroductionSection({
                 }
               />
             </div>
+            <IntroDecoBadge className="intro-deco--panel" />
           </div>
         </div>
-        <IntroDecoBadge />
+        <IntroDecoBadge className="intro-deco--corner" />
         </div>
       </div>
       <IntroTitle />

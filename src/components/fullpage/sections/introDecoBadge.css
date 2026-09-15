@@ -1,0 +1,90 @@
+/* 「Sound! Euphonium」环形旋转徽章。尺寸对照官网 ensemble 站
+   /img/top/deco-rotate-txt.png（155px 环、44–51px 图标、20s 旋转、Zen Kaku Gothic New）。 */
+
+.intro-deco {
+  position: absolute;
+  color: #276e79;
+  pointer-events: none;
+}
+
+.intro-deco-ring {
+  display: block;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  animation: intro-deco-spin 20s linear infinite;
+}
+
+.intro-deco-ring text {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  fill: currentColor;
+}
+
+.intro-deco-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: auto;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes intro-deco-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* ---------- 桌面角落变体：钉在 Introduction 舞台右下角 ---------- */
+
+.intro-deco--corner {
+  right: max(1.25rem, env(safe-area-inset-right));
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  z-index: 1;
+  /* 官网同款：文字环 100–155px */
+  width: clamp(6.25rem, 5.405rem + 3.61vw, 9.688rem);
+  aspect-ratio: 1;
+}
+
+.intro-deco--corner .intro-deco-icon {
+  /* 官网同款：图标 44–51px，不随环等比放大 */
+  width: clamp(2.75rem, 2.642rem + 0.46vw, 3.188rem);
+}
+
+/* 移动端由面板变体接手 */
+@media not (min-width: 835px) {
+  .intro-deco--corner {
+    display: none;
+  }
+}
+
+/* ---------- 移动端面板变体：随内容排在 intro-inner 文字下方居中 ----------
+   relative 让中央图标有定位锚点，同时保持文档流位置；与上方文字留一段间距。 */
+
+.intro-deco--panel {
+  display: none;
+}
+
+@media not (min-width: 835px) {
+  .intro-deco--panel {
+    display: block;
+    position: relative;
+    right: auto;
+    bottom: auto;
+    align-self: center;
+    width: min(20vw, 120px);
+    aspect-ratio: 1;
+    margin-top: 1.75rem;
+  }
+
+  .intro-deco--panel .intro-deco-icon {
+    width: min(8vw, 40px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-deco-ring {
+    animation: none;
+  }
+}
