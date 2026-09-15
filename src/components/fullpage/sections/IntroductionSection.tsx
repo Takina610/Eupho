@@ -7,6 +7,7 @@ import { prefersReducedMotion } from '@/lib/motion'
 import { setScrollRegionLenis } from '@/lib/scrollRegion'
 import introArt from '@/assets/introduction/intro-img.webp'
 import introArtSp from '@/assets/introduction/intro-img-sp.webp'
+import { IntroDecoBadge } from './IntroDecoBadge'
 
 import './introductionSection.css'
 import 'lenis/dist/lenis.css'
@@ -269,6 +270,7 @@ export const IntroductionSection = memo(function IntroductionSection({
             </div>
           </div>
         </div>
+        <IntroDecoBadge />
         </div>
       </div>
       <IntroTitle />
