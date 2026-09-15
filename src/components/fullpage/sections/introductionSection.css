@@ -394,7 +394,7 @@
   .intro-title-sp {
     display: block;
     position: absolute;
-    top: 0;
+    top: -40px;
     left: 0;
     transform: translateY(-58%);
   }
@@ -409,7 +409,7 @@
   .intro-inner {
     height: auto;
     /* 官网 .introduction-box 移动端 padding：50px 0 */
-    padding: 50px 0;
+    padding: 10px 0;
   }
 
   .intro-txt {
