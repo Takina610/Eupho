@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, type CSSProperties, type KeyboardEvent } from 'react'
 import { CHARACTERS } from '@/constants/characters'
+import { AkArrow } from '@/components/icons/AkArrow'
 import { CharacterThumb } from '@/components/character-profile/CharacterThumb'
 import { fitWatermark } from '@/components/character-profile/characterSwitch'
 import { useCharacterSelect } from '@/components/character-profile/useCharacterSelect'
@@ -17,14 +18,6 @@ function pad2(value: number) {
 // nameEn is family-name-first (Oumae Kumiko); the watermark keeps showing the given name.
 function watermarkOf(nameEn: string) {
   return (nameEn.split(' ').pop() ?? nameEn).toUpperCase()
-}
-
-function Chevron() {
-  return (
-    <svg className="cp__chevron" viewBox="0 0 24 24" aria-hidden>
-      <path d="M6 14.5 12 8.5 18 14.5" fill="none" stroke="currentColor" strokeWidth="1.75" />
-    </svg>
-  )
 }
 
 export function CharacterProfile() {
@@ -156,10 +149,10 @@ export function CharacterProfile() {
         <span className="cp__index-rest">/ {pad2(count)}</span>
         <span className="cp__index-label">MEMBER</span>
         <button type="button" className="cp__nav cp__nav--prev" aria-label="上一位部员" onClick={() => revealStep(-1)}>
-          <Chevron />
+          <AkArrow direction="up" className="cp__nav-arrow" />
         </button>
         <button type="button" className="cp__nav cp__nav--next" aria-label="下一位部员" onClick={() => revealStep(1)}>
-          <Chevron />
+          <AkArrow direction="down" className="cp__nav-arrow" />
         </button>
       </div>
     </div>

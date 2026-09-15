@@ -161,13 +161,10 @@
   outline-offset: 2px;
 }
 
-.cp__chevron {
-  width: 18px;
-  height: 18px;
-}
-
-.cp__nav--next .cp__chevron {
-  transform: rotate(180deg);
+/* AK 断口箭头:元素框保持 7:15(viewBox 比例),上下指向旋转后视觉约 28×13,留在圆框内。 */
+.cp__nav-arrow {
+  width: 13px;
+  height: 28px;
 }
 
 @media (max-width: 640px) {
@@ -221,11 +218,11 @@
     line-height: 1.65;
   }
 
-  .cp__nav--prev .cp__chevron {
-    transform: rotate(-90deg);
+  .cp__nav--prev .cp__nav-arrow {
+    transform: rotate(180deg);
   }
 
-  .cp__nav--next .cp__chevron {
-    transform: rotate(90deg);
+  .cp__nav--next .cp__nav-arrow {
+    transform: rotate(0deg);
   }
 }

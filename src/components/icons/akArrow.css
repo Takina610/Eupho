@@ -1,0 +1,15 @@
+.ak-arrow {
+  display: block;
+}
+
+.ak-arrow--left {
+  transform: rotate(180deg);
+}
+
+.ak-arrow--up {
+  transform: rotate(-90deg);
+}
+
+.ak-arrow--down {
+  transform: rotate(90deg);
+}

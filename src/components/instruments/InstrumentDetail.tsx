@@ -4,6 +4,7 @@ import { Music, Music4 } from 'lucide'
 
 import { useInstrumentSound } from '@/hooks/useInstrumentSound'
 import { INSTRUMENTS, type Instrument } from '@/constants/instruments'
+import { AkArrow } from '@/components/icons/AkArrow'
 
 import { SoundKeycap } from './SoundKeycap'
 
@@ -43,35 +44,6 @@ function InstrumentName({ name, playing }: { name: string; playing: boolean }) {
       </span>
       {name}
     </span>
-  )
-}
-
-/**
- * AK-world broken chevron: a tall thick arrow whose upper arm is slice-cut
- * into a detached parallel piece (path lifted from the reference site's
- * icon sprite, viewBox 0 0 7 15, pointing right). `left` reuses the
- * reference site's own 180deg flip, so the slice lands on the bottom arm.
- */
-function AkArrow({
-  direction,
-  className,
-}: {
-  direction: 'left' | 'right'
-  className?: string
-}) {
-  return (
-    <svg
-      viewBox="0 0 7 15"
-      className={className}
-      fill="currentColor"
-      aria-hidden
-      style={direction === 'left' ? { transform: 'rotate(180deg)' } : undefined}
-    >
-      <path
-        fillRule="evenodd"
-        d="M-.005 14.988v-2.856l4.327-4.635 1.335-1.429L6.99 7.497l-6.995 7.491zm0-12.127V.005L4.322 4.64 2.989 6.068-.005 2.861z"
-      />
-    </svg>
   )
 }
 
