@@ -204,21 +204,7 @@ body:has(#root:empty) {
   color: #fff;
 }
 
-/* ---- 静态壳不知道真实进度，用一段扫过的黄色光带示意「加载中」 ---- */
-
-.boot-bar-fill--sweep {
-  width: 30%;
-  animation: boot-sweep 1.6s ease-in-out infinite;
-}
-
-@keyframes boot-sweep {
-  from {
-    transform: translateX(-110%);
-  }
-  to {
-    transform: translateX(430%);
-  }
-}
+/* ---- 静态壳不知道真实进度：进度条保持 0%，交给 React 后随真实进度从左填充 ---- */
 
 @keyframes boot-dot {
   0%,
@@ -271,17 +257,8 @@ body:has(#root:empty) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .boot-bar-fill--sweep,
   .boot-dots i {
     animation: none;
-  }
-
-  .boot-bar-fill--sweep {
-    width: 100%;
-    opacity: 0.4;
-  }
-
-  .boot-dots i {
     opacity: 0.7;
   }
 }
