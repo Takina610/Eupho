@@ -8,7 +8,6 @@ import { CHARACTERS } from './characters'
 import { INSTRUMENTS } from './instruments'
 import { SERIES_BANNERS } from './seriesBanners'
 import { SERIES_WORKS } from './seriesCovers'
-import { STAFF_NOTE_ASSETS } from './seriesStaff'
 
 /**
  * 全站开屏预载清单：各页面会展示/播到的资源都在这里汇合。
@@ -27,6 +26,5 @@ export const PRELOAD_RESOURCES: readonly string[] = Array.from(
     menuKeyvisual,
     footerIntroCopy,
     menuIcon,
-    ...STAFF_NOTE_ASSETS,
   ]),
 )

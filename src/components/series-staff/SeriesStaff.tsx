@@ -1,6 +1,6 @@
 import { useEffect, useRef, type CSSProperties, type KeyboardEvent } from 'react'
 import { SERIES_WORKS } from '@/constants/seriesCovers'
-import { STAFF_BASS_CLEF_SRC, seriesStaffNote, staffNoteMark, staffNoteStemDown, staffNoteWide } from '@/constants/seriesStaff'
+import { STAFF_BASS_CLEF_SRC, seriesStaffNote, staffNoteStemDown, staffNoteWide } from '@/constants/seriesStaff'
 import { useMatchMedia } from '@/hooks/useMatchMedia'
 import {
   CLEF_HEIGHT,
@@ -122,8 +122,12 @@ export function SeriesStaff({
                 top: `${pitchTopPercent(seriesStaffNote(activeIndex).pitch)}%`,
               }}
             >
-              <i>♪</i>
-              <i>♫</i>
+              <i>
+                <StaffGlyph kind="eighth" />
+              </i>
+              <i>
+                <StaffGlyph kind="quarter" />
+              </i>
             </span>
           ) : null}
           {/* 进场收尾：两枚跳音符号从谱上飘起，只在屏层激活时播一次 */}
@@ -132,14 +136,14 @@ export function SeriesStaff({
             aria-hidden
             style={{ left: `${noteLeftPercent(1, count)}%`, top: `${pitchTopPercent(8)}%` }}
           >
-            ♪
+            <StaffGlyph kind="eighth" />
           </span>
           <span
             className="series-staff__spark series-staff__spark--b"
             aria-hidden
             style={{ left: `${noteLeftPercent(7, count)}%`, top: `${pitchTopPercent(3)}%` }}
           >
-            ♫
+            <StaffGlyph kind="quarter" />
           </span>
           <div
             className="series-staff__lines"
@@ -164,10 +168,6 @@ export function SeriesStaff({
             const classes = [
               'series-staff__note',
               staffNoteWide(note) ? 'is-wide' : '',
-              staffNoteMark(note) ? 'is-mark' : '',
-              note.kind === 'rest' ? 'is-rest' : '',
-              note.kind === 'flat' ? 'is-flat' : '',
-              note.kind === 'treble' ? 'is-treble' : '',
               staffNoteStemDown(note) ? 'is-stem-down' : '',
               isActive ? 'is-active' : '',
             ]
