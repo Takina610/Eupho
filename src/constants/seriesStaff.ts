@@ -7,14 +7,14 @@ import bassClefSrc from '@/assets/note/低音谱号.svg'
  * as an engraved melodic phrase, not scattered symbols.
  * Pitch 1 = bottom line, 9 = top line.
  */
-export type StaffGlyphKind = 'quarter' | 'half' | 'eighth'
+export type StaffGlyphKind = 'quarter' | 'eighth' | 'half'
 
 export const STAFF_BASS_CLEF_SRC = bassClefSrc
 
 export type StaffNote = {
   pitch: number
-  /** quarter = solid head, half = hollow head (a held note, phrase endings). */
-  rhythm: 'quarter' | 'half'
+  /** quarter = solid head, eighth = flagged, half = hollow head (held note). */
+  rhythm: 'quarter' | 'eighth' | 'half'
 }
 
 /** Ten works; pitches follow the opening melody's contour. */
@@ -22,11 +22,11 @@ export const SERIES_STAFF_NOTES: readonly StaffNote[] = [
   { pitch: 1, rhythm: 'quarter' },
   { pitch: 2, rhythm: 'quarter' },
   { pitch: 3, rhythm: 'quarter' },
-  { pitch: 4, rhythm: 'quarter' },
+  { pitch: 4, rhythm: 'eighth' },
   { pitch: 5, rhythm: 'quarter' },
   { pitch: 6, rhythm: 'quarter' },
   { pitch: 5, rhythm: 'half' },
-  { pitch: 7, rhythm: 'quarter' },
+  { pitch: 7, rhythm: 'eighth' },
   { pitch: 8, rhythm: 'quarter' },
   { pitch: 9, rhythm: 'half' },
 ]

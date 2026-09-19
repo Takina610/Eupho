@@ -69,7 +69,7 @@ export function StaffEngraving({
           }
         >
           <path d="M2 .6 V11.4" fill="none" stroke="currentColor" strokeWidth={1.3} />
-          <path d="M2 5 C 5.6 3.4, 7.8 5.4, 7.5 7.6 C 7.2 9.9, 4.2 10.7, 2 9.2 Z" />
+          <path d="M2 5 C 5.6 3.4, 7.8 5.4, 7.5 7.6 C 7.2 9.9, 4.2 10.7, 2 9.2 Z" fill="currentColor" />
         </svg>
       ))}
 

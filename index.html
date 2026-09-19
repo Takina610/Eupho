@@ -20,7 +20,9 @@
     />
     <link rel="stylesheet" href="/src/styles/bootLoader.css" />
   </head>
-  <body>
+  <!-- data-boot-hold：首页入场动画（谱条奏响等）挂起到挥刀瞬间，
+       由 lib/bootReveal 的 markBootRevealed 移除 -->
+  <body data-boot-hold>
     <div id="root"></div>
     <!-- 开屏静态加载壳：放在 #root 之外，React 接管/挂起清空 #root 时它不受影响，
          由 BootGate 首次提交后移除。样式见 src/styles/bootLoader.css。 -->

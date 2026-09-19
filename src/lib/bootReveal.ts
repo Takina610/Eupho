@@ -12,10 +12,11 @@ const revealed = new Promise<void>((resolve) => {
   resolveFn = resolve
 })
 
-/** 挥刀瞬间调用；重复调用无副作用。 */
+/** 挥刀瞬间调用；重复调用无副作用。同时解除首页入场动画的开屏挂起。 */
 export function markBootRevealed() {
   if (resolved) return
   resolved = true
+  document.body.removeAttribute('data-boot-hold')
   resolveFn?.()
 }
 

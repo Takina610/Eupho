@@ -685,6 +685,14 @@
     height: 2.25rem;
   }
 
+  /* 窄屏：rit. 右对齐收进条内，避免压到末尾音符与条缘 */
+  .series-staff__rit {
+    top: 0;
+    left: auto;
+    right: 3%;
+    font-size: 0.68rem;
+  }
+
   .series-staff__cue {
     font-size: 0.68rem;
   }
@@ -703,4 +711,19 @@
   .series-staff__note.is-active {
     transform: none;
   }
+}
+
+/* ── 开屏挂起：data-boot-hold 由 index.html 静态壳初始携带，挥刀瞬间
+   由 bootReveal 移除——「奏响谱面」编排从切割那一刻才开始播，
+   首页在裂开后持续组装，而不是在遮罩后面提前演完 ── */
+body[data-boot-hold] .series-staff__lines i,
+body[data-boot-hold] .series-staff__clef,
+body[data-boot-hold] .series-staff__note,
+body[data-boot-hold] .series-staff__note::after,
+body[data-boot-hold] .series-staff__cue,
+body[data-boot-hold] .series-staff__spark,
+body[data-boot-hold] .series-staff__beams,
+body[data-boot-hold] .series-staff__flat,
+body[data-boot-hold] .series-staff__rit {
+  animation: none !important;
 }

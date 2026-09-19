@@ -2,7 +2,6 @@ import { useEffect, useState, type ReactNode } from 'react'
 import logoUrl from '@/assets/re_logo.png'
 import { useBootPreloader } from '@/hooks/useBootPreloader'
 import { KatanaReveal } from '@/components/loading/KatanaReveal'
-import { BootImpactShards } from '@/components/loading/BootImpactShards'
 
 /**
  * 路由懒加载分块未就绪时的兜底画面：与加载层同色。
@@ -72,16 +71,15 @@ function BootScreen({ percent }: { percent: number }) {
 export function BootGate({ children }: { children: ReactNode }) {
   const { progress, phase } = useBootPreloader()
   const [slash, setSlash] = useState(false)
-  const [shards, setShards] = useState(false)
   const percent = Math.round(progress * 100)
 
   // 加载层开始淡出时叠上居合斩揭幕：两块遮罩带着加载页内容盖住全屏，
-  // 视觉上就是当前页被一刀切开；同时挂上冲击碎片层（它自己等挥刀起手帧再播）。
-  // 揭幕自己播完即卸载，不随 phase 提前消失
+  // 视觉上就是当前页被一刀切开；挥刀瞬间 bootReveal 信号同时解锁
+  // 首页的入场编排（手风琴斜切集结、谱条奏响）。揭幕自己播完即卸载，
+  // 不随 phase 提前消失
   useEffect(() => {
     if (phase === 'leaving') {
       setSlash(true)
-      setShards(true)
     }
   }, [phase])
 
@@ -103,7 +101,6 @@ export function BootGate({ children }: { children: ReactNode }) {
           <BootScreen percent={percent} />
         </KatanaReveal>
       )}
-      {shards && <BootImpactShards />}
       {phase !== 'loading' && children}
     </>
   )

@@ -7,11 +7,11 @@ const INTRO_DURATION = 0.62
 const INTRO_STAGGER = 0.055
 const INTRO_OFFSET = -110
 
-// 开屏冲击入场：面板内容从上方散布位（墨色 insert 底读作碎片）斜切集结归位，
-// 与居合斩切割重叠播放——对应参考站「挥刀瞬间首页元素开始集结」的编排。
-// 日常返回首页仍走上面的温和入场。
-const IMPACT_DURATION = 0.85
-const IMPACT_STAGGER = 0.05
+// 开屏冲击入场：面板从刀出的方向（右上切口）斜切集结归位，与居合斩
+// 切割重叠播放，遮罩裂开时正好看见集结过程——对应参考站「挥刀瞬间
+// 首页元素开始集结」的编排。日常返回首页仍走上面的温和入场。
+const IMPACT_DURATION = 1.05
+const IMPACT_STAGGER = 0.065
 // 揭幕信号万一没来（揭幕层异常），最多挂起这么久就放行入场，别卡死首页
 const REVEAL_FALLBACK_MS = 3500
 
@@ -120,9 +120,9 @@ export function useAccordionGalleryTransition({
       if (bootImpactRef.current) {
         bootImpactRef.current = false
         gsap.set(inserts, {
-          xPercent: () => (Math.random() - 0.5) * 80,
-          yPercent: () => -90 - Math.random() * 90,
-          rotation: () => (Math.random() - 0.5) * 5,
+          xPercent: () => 24 + Math.random() * 56,
+          yPercent: () => -(72 + Math.random() * 88),
+          rotation: () => (Math.random() - 0.5) * 6,
         })
         tlRef.current = gsap.timeline({
           onComplete: () => {
@@ -134,7 +134,7 @@ export function useAccordionGalleryTransition({
           yPercent: 0,
           rotation: 0,
           duration: IMPACT_DURATION,
-          ease: 'power3.inOut',
+          ease: 'power4.out',
           stagger: IMPACT_STAGGER,
         })
         return
