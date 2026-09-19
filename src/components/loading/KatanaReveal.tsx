@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { gsap } from 'gsap'
+import { markBootRevealed } from '@/lib/bootReveal'
 import './katanaReveal.css'
 
 /** 静场 / 拔刀 / 挥斩节奏（秒）。参考 slash loading 原版（JIEJOE），把开场 1s 静场压短 */
@@ -16,6 +17,8 @@ const slashEase = (t: number) => t + (0.6 * Math.sin(2 * Math.PI * t)) / (2 * Ma
  * 加载页——武士刀从底部拔出后斜劈到右上角，页面本体沿刀痕分成两半退开
  * 露出主站。遮罩初始是上下两块互补三角形（与 onUpdate 计算式同源），
  * 静场期间盖满全屏且与真实加载层画面一致，衔接无感。
+ * 挥刀起手的瞬间广播 bootReveal 信号，首页内容（手风琴集结、揭幕碎片）
+ * 从这一帧开始入场，与切割重叠成一套编排。
  */
 export function KatanaReveal({ children }: { children: ReactNode }) {
   const [done, setDone] = useState(
@@ -29,7 +32,12 @@ export function KatanaReveal({ children }: { children: ReactNode }) {
     const katana = katanaRef.current
     const up = upRef.current
     const down = downRef.current
-    if (!katana || !up || !down) return
+    if (!katana || !up || !down) {
+      // reduced-motion 时组件直接渲染 null，进不到这里也拿不到节点：
+      // 无论哪种缺件路径都直接放行揭幕信号，首页入场不该被卡住
+      markBootRevealed()
+      return
+    }
 
     // 刀刃中点即切口：两块遮罩沿切口分开，上块多让出 20% 高度形成错位缝隙；
     // 上块的公共边外扩少许压住下块，避免两块遮罩沿切口留下发丝缝
@@ -55,8 +63,10 @@ export function KatanaReveal({ children }: { children: ReactNode }) {
       {
         y: () => -katana.getBoundingClientRect().height / 2 - window.innerHeight,
         x: () => window.innerWidth,
-      duration: SLASH_S,
-      ease: slashEase,
+        duration: SLASH_S,
+        ease: slashEase,
+        // 刀起手即广播揭幕信号：首页内容从这一帧开始集结，与切割重叠
+        onStart: markBootRevealed,
       },
       `<${SLASH_OVERLAP_S}`,
     )
