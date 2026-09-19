@@ -2,36 +2,51 @@ import bassClefSrc from '@/assets/note/低音谱号.svg'
 
 /**
  * Bass-clef staff. The F-clef anchor still comes from `src/assets/note`;
- * timeline glyphs are inline-SVG notes drawn by StaffGlyph.
+ * timeline glyphs are inline-SVG notes drawn by StaffGlyph, and consecutive
+ * notes are connected into beamed groups by StaffBeams — the timeline reads
+ * as an engraved melodic phrase, not scattered symbols.
  * Pitch 1 = bottom line, 9 = top line.
  */
-export type StaffGlyphKind = 'quarter' | 'eighth' | 'beamed' | 'sixteenths'
+export type StaffGlyphKind = 'quarter' | 'half' | 'eighth'
 
 export const STAFF_BASS_CLEF_SRC = bassClefSrc
 
 export type StaffNote = {
   pitch: number
-  kind: StaffGlyphKind
+  /** quarter = solid head, half = hollow head (a held note, phrase endings). */
+  rhythm: 'quarter' | 'half'
 }
 
 /** Ten works; pitches follow the opening melody's contour. */
 export const SERIES_STAFF_NOTES: readonly StaffNote[] = [
-  { pitch: 1, kind: 'quarter' },
-  { pitch: 2, kind: 'eighth' },
-  { pitch: 3, kind: 'beamed' },
-  { pitch: 4, kind: 'sixteenths' },
-  { pitch: 5, kind: 'eighth' },
-  { pitch: 6, kind: 'quarter' },
-  { pitch: 5, kind: 'beamed' },
-  { pitch: 7, kind: 'eighth' },
-  { pitch: 8, kind: 'sixteenths' },
-  { pitch: 9, kind: 'quarter' },
+  { pitch: 1, rhythm: 'quarter' },
+  { pitch: 2, rhythm: 'quarter' },
+  { pitch: 3, rhythm: 'quarter' },
+  { pitch: 4, rhythm: 'quarter' },
+  { pitch: 5, rhythm: 'quarter' },
+  { pitch: 6, rhythm: 'quarter' },
+  { pitch: 5, rhythm: 'half' },
+  { pitch: 7, rhythm: 'quarter' },
+  { pitch: 8, rhythm: 'quarter' },
+  { pitch: 9, rhythm: 'half' },
 ]
 
-const WIDE_KINDS: ReadonlySet<StaffGlyphKind> = new Set(['beamed', 'sixteenths'])
+/**
+ * Beam groups: connects `start` with `start + 1` into one beamed pair
+ * (double beams read as sixteenths). Groups follow the engraved convention —
+ * stems up below the middle line, down above it.
+ */
+export const STAFF_BEAM_GROUPS: readonly { start: number; double?: boolean }[] = [
+  { start: 1 },
+  { start: 4, double: true },
+  { start: 7 },
+]
+
+/** Key signature of B♭ major written after the clef: flats on B (line 3) and E (space 6). */
+export const STAFF_KEY_FLAT_PITCHES: readonly number[] = [3, 6]
 
 export function seriesStaffNote(index: number): StaffNote {
-  return SERIES_STAFF_NOTES[index] ?? { pitch: 4, kind: 'quarter' }
+  return SERIES_STAFF_NOTES[index] ?? { pitch: 4, rhythm: 'quarter' }
 }
 
 export function seriesStaffPitch(index: number) {
@@ -39,9 +54,5 @@ export function seriesStaffPitch(index: number) {
 }
 
 export function staffNoteStemDown(note: StaffNote) {
-  return (note.kind === 'quarter' || note.kind === 'eighth') && note.pitch >= 5
-}
-
-export function staffNoteWide(note: StaffNote) {
-  return WIDE_KINDS.has(note.kind)
+  return note.pitch >= 5
 }

@@ -1,6 +1,6 @@
-import { useEffect, useRef, type CSSProperties, type KeyboardEvent } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { SERIES_WORKS } from '@/constants/seriesCovers'
-import { STAFF_BASS_CLEF_SRC, seriesStaffNote, staffNoteStemDown, staffNoteWide } from '@/constants/seriesStaff'
+import { STAFF_BASS_CLEF_SRC, seriesStaffNote, staffNoteStemDown } from '@/constants/seriesStaff'
 import { useMatchMedia } from '@/hooks/useMatchMedia'
 import {
   CLEF_HEIGHT,
@@ -11,6 +11,7 @@ import {
   pitchTopPercent,
 } from '@/lib/seriesStaffLayout'
 import { StaffGlyph } from '@/components/series-staff/StaffGlyph'
+import { StaffEngraving } from '@/components/series-staff/StaffEngraving'
 import { useSeriesStaffPointer } from '@/components/series-staff/useSeriesStaffPointer'
 import { useStaffPlayback } from '@/components/series-staff/useStaffPlayback'
 import { unlockStaffTone } from '@/lib/staffTone'
@@ -37,6 +38,8 @@ export function SeriesStaff({
   const rootRef = useRef<HTMLDivElement>(null)
   const keyRefs = useRef<(HTMLButtonElement | null)[]>([])
   const hoverSelect = useMatchMedia(FINE_HOVER_QUERY)
+  // 谱面盒尺寸（符杠按像素几何绘制，随窗口/字体变化重算）
+  const [box, setBox] = useState<{ w: number; h: number; rem: number } | null>(null)
   const count = SERIES_WORKS.length
   const work = SERIES_WORKS[activeIndex]
   const { handlePointerMove, handlePointerDown, handleClick } = useSeriesStaffPointer({
@@ -62,6 +65,24 @@ export function SeriesStaff({
     }
     key.focus()
   }, [activeIndex])
+
+  useEffect(() => {
+    const field = fieldRef.current
+    if (!field) {
+      return
+    }
+    const measure = () => {
+      setBox({
+        w: field.clientWidth,
+        h: field.clientHeight,
+        rem: Number.parseFloat(getComputedStyle(document.documentElement).fontSize),
+      })
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(field)
+    return () => observer.disconnect()
+  }, [])
 
   const onKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (recessed) {
@@ -162,12 +183,12 @@ export function SeriesStaff({
             aria-hidden
             style={{ top: `${CLEF_TOP}%`, height: `${CLEF_HEIGHT}%` }}
           />
+          {box ? <StaffEngraving box={box} count={count} activeIndex={activeIndex} /> : null}
           {SERIES_WORKS.map((item, index) => {
             const note = seriesStaffNote(index)
             const isActive = index === activeIndex
             const classes = [
               'series-staff__note',
-              staffNoteWide(note) ? 'is-wide' : '',
               staffNoteStemDown(note) ? 'is-stem-down' : '',
               isActive ? 'is-active' : '',
             ]
@@ -199,7 +220,7 @@ export function SeriesStaff({
                   onActiveChange(index)
                 }}
               >
-                <StaffGlyph kind={note.kind} />
+                <StaffGlyph kind={note.rhythm} />
               </button>
             )
           })}

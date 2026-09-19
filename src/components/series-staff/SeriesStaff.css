@@ -231,8 +231,8 @@
   position: absolute;
   left: 0;
   bottom: calc(-1 * var(--head-nudge));
-  width: 1.85rem;
-  height: 2.45rem;
+  width: 2.3rem;
+  height: 3rem;
   transform: translateX(-50%);
 }
 
@@ -243,8 +243,44 @@
   height: 100%;
 }
 
-.series-staff__note.is-wide .series-staff__glyph {
-  width: 2.65rem;
+/* ── 记谱层：符杠 / 调号 / rit. ── */
+
+.series-staff__beams {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.series-staff__beams path {
+  fill: rgb(255 255 255 / 0.62);
+}
+
+.series-staff__beams path.is-active {
+  fill: #fff830;
+}
+
+.series-staff__flat {
+  position: absolute;
+  z-index: 1;
+  width: 0.74rem;
+  height: 1.12rem;
+  transform: translate(-50%, -50%);
+  color: rgb(255 255 255 / 0.62);
+  pointer-events: none;
+}
+
+.series-staff__rit {
+  position: absolute;
+  top: 4%;
+  left: 87%;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: rgb(255 255 255 / 0.5);
+  pointer-events: none;
 }
 
 .series-staff__note.is-stem-down .series-staff__glyph {
@@ -271,13 +307,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .series-staff__note {
-    transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
-  }
-
-  .series-staff__note.is-active {
-    transform: translateY(-3px);
-  }
+  /* 激活态只做变色+辉光：位移会让符干脱离符杠 */
 
   .series-staff__note.is-striking .series-staff__motion {
     animation: staff-strike 0.42s cubic-bezier(0.22, 1.35, 0.36, 1);
@@ -315,6 +345,20 @@
 
   [data-active='true'] .series-staff__clef {
     animation: staff-clef-in 0.45s cubic-bezier(0.33, 1, 0.68, 1) 0.4s both;
+  }
+
+  /* 调号跟在谱号后落位，符杠等音符落定后浮现，rit. 压轴 */
+  [data-active='true'] .series-staff__flat {
+    animation: staff-clef-in 0.4s cubic-bezier(0.33, 1, 0.68, 1) both;
+    animation-delay: calc(0.55s + var(--flat-i, 0) * 90ms);
+  }
+
+  [data-active='true'] .series-staff__beams {
+    animation: staff-beams-in 0.45s cubic-bezier(0.33, 1, 0.68, 1) 0.8s both;
+  }
+
+  [data-active='true'] .series-staff__rit {
+    animation: staff-cue-in 0.45s cubic-bezier(0.33, 1, 0.68, 1) 1.45s both;
   }
 
   [data-active='true'] .series-staff__note {
@@ -447,6 +491,18 @@
   to {
     opacity: 0;
     translate: -0.5rem 0;
+  }
+}
+
+/* 符杠浮现：随音高差微微上挑着出现 */
+@keyframes staff-beams-in {
+  from {
+    opacity: 0;
+    translate: 0 0.35rem;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
   }
 }
 
@@ -625,12 +681,8 @@
   }
 
   .series-staff__glyph {
-    width: 1.35rem;
-    height: 1.85rem;
-  }
-
-  .series-staff__note.is-wide .series-staff__glyph {
-    width: 2rem;
+    width: 1.7rem;
+    height: 2.25rem;
   }
 
   .series-staff__cue {
