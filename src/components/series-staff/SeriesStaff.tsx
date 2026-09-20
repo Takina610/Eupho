@@ -72,9 +72,14 @@ export function SeriesStaff({
       return
     }
     const measure = () => {
-      // 字形盒实测高度参与符杠几何推导（桌面/移动两档字形尺寸共用一套算式）
-      const glyph = field.querySelector<HTMLElement>('.series-staff__glyph')
-      const glyphH = glyph ? glyph.clientHeight : 48
+      // 字形盒实测高度参与符杠几何推导——必须量「音符自己的字形」：
+      // 场里还挂着涟漪/跳音借用的零尺寸字形，选择器抓错会把符干长度算成 0
+      const glyph = field.querySelector<HTMLElement>('.series-staff__note .series-staff__glyph')
+      const glyphH = glyph?.clientHeight ?? 0
+      if (!glyphH) {
+        requestAnimationFrame(measure)
+        return
+      }
       setBox({
         w: field.clientWidth,
         h: field.clientHeight,
