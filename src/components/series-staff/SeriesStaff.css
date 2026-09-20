@@ -292,6 +292,26 @@
   transform: scaleY(-1);
 }
 
+/* 记号类（高音谱号 / 降记号）：无符干，居中坐在各自音高上 */
+.series-staff__note.is-mark .series-staff__glyph {
+  bottom: auto;
+  top: 0;
+  width: 1.35rem;
+  height: 1.85rem;
+  transform: translate(-50%, -50%);
+}
+
+.series-staff__shape--treble {
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.62;
+}
+
+.series-staff__note.is-active .series-staff__shape--treble {
+  filter: brightness(0) invert(1) sepia(1) saturate(18) hue-rotate(2deg);
+  opacity: 1;
+}
+
 .series-staff__shape {
   display: block;
   width: 100%;
@@ -681,8 +701,18 @@
   }
 
   .series-staff__glyph {
-    width: 1.7rem;
-    height: 2.25rem;
+    width: 1.5rem;
+    height: 2rem;
+  }
+
+  .series-staff__note.is-mark .series-staff__glyph {
+    width: 1.1rem;
+    height: 1.5rem;
+  }
+
+  .series-staff__flat {
+    width: 0.62rem;
+    height: 0.95rem;
   }
 
   /* 窄屏：rit. 右对齐收进条内，避免压到末尾音符与条缘 */

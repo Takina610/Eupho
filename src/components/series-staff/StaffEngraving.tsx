@@ -3,16 +3,13 @@ import { SERIES_WORKS } from '@/constants/seriesCovers'
 import { STAFF_BEAM_GROUPS, STAFF_KEY_FLAT_PITCHES, seriesStaffNote } from '@/constants/seriesStaff'
 import { noteLeftPercent, pitchTopPercent } from '@/lib/seriesStaffLayout'
 
-type FieldBox = { w: number; h: number; rem: number }
-
-const BEAM_TH = 0.3 // rem，单根符杠厚度
-const BEAM_GAP = 0.22 // rem，双杠间距
-const STEM_REACH = 2.19 // rem，符头锚点 → 符杠端符干长度（与字形盒 3rem 匹配）
+type FieldBox = { w: number; h: number; rem: number; glyphH: number }
 
 /**
  * 谱面记谱层：把相邻的作品音符连成符杠组（上行/下行随音高倾斜）、
  * 谱号后的 B♭ 大调调号（两个降记号）、乐句尾的 rit.——让时间轴读起来
- * 是一句正在演奏的旋律，而不是散落的符号。整体随屏层进出场淡入淡出。
+ * 是一句正在演奏的旋律。符干长度按实测字形盒高度推导（0.85×盒高 − 符头
+ * 下沉量），桌面/移动两档字形尺寸下符杠都恰好落在符干端点上。
  */
 export function StaffEngraving({
   box,
@@ -23,10 +20,12 @@ export function StaffEngraving({
   count: number
   activeIndex: number
 }) {
-  const { w, h, rem } = box
-  const th = BEAM_TH * rem
-  const gap = BEAM_GAP * rem
-  const reach = STEM_REACH * rem
+  const { w, h, rem, glyphH } = box
+  // 与 CSS --head-nudge（0.36rem / 窄屏 0.26rem）同步：窄屏按 640px 断点折算
+  const nudge = (w <= 640 ? 0.26 : 0.36) * rem
+  const th = Math.max(3, glyphH * 0.1) // 符杠厚度随字形盒缩放
+  const gap = th * 0.75 // 双杠间距
+  const reach = glyphH * 0.85 - nudge // 符头锚点 → 符杠端符干长度
 
   const stemEnd = (index: number) => {
     const x = (noteLeftPercent(index, count) / 100) * w

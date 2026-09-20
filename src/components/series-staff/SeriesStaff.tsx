@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { SERIES_WORKS } from '@/constants/seriesCovers'
-import { STAFF_BASS_CLEF_SRC, seriesStaffNote, staffNoteStemDown } from '@/constants/seriesStaff'
+import { STAFF_BASS_CLEF_SRC, seriesStaffNote, staffNoteMark, staffNoteStemDown } from '@/constants/seriesStaff'
 import { useMatchMedia } from '@/hooks/useMatchMedia'
 import {
   CLEF_HEIGHT,
@@ -39,7 +39,7 @@ export function SeriesStaff({
   const keyRefs = useRef<(HTMLButtonElement | null)[]>([])
   const hoverSelect = useMatchMedia(FINE_HOVER_QUERY)
   // 谱面盒尺寸（符杠按像素几何绘制，随窗口/字体变化重算）
-  const [box, setBox] = useState<{ w: number; h: number; rem: number } | null>(null)
+  const [box, setBox] = useState<{ w: number; h: number; rem: number; glyphH: number } | null>(null)
   const count = SERIES_WORKS.length
   const work = SERIES_WORKS[activeIndex]
   const { handlePointerMove, handlePointerDown, handleClick } = useSeriesStaffPointer({
@@ -72,10 +72,14 @@ export function SeriesStaff({
       return
     }
     const measure = () => {
+      // 字形盒实测高度参与符杠几何推导（桌面/移动两档字形尺寸共用一套算式）
+      const glyph = field.querySelector<HTMLElement>('.series-staff__glyph')
+      const glyphH = glyph ? glyph.clientHeight : 48
       setBox({
         w: field.clientWidth,
         h: field.clientHeight,
         rem: Number.parseFloat(getComputedStyle(document.documentElement).fontSize),
+        glyphH,
       })
     }
     measure()
@@ -189,6 +193,7 @@ export function SeriesStaff({
             const isActive = index === activeIndex
             const classes = [
               'series-staff__note',
+              staffNoteMark(note) ? 'is-mark' : '',
               staffNoteStemDown(note) ? 'is-stem-down' : '',
               isActive ? 'is-active' : '',
             ]
