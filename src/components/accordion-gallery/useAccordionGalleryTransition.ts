@@ -85,9 +85,9 @@ export function useAccordionGalleryTransition({
       if (!inserts.length || enteredRef.current) {
         return
       }
-      // 首次入场恰逢开屏：挂起到挥刀瞬间再播，让面板集结与切割重叠。
-      // 等待期间可能被切到别的场景，回来后由 resolve 回调重新确认。
-      // fallback 只放开自己的等待，不动全局信号（碎片层不该被迟到触发）。
+      // 首次入场恰逢开屏：挂起到揭幕信号（切口过半）再播，让面板集结
+      // 与切割后半段重叠。等待期间可能被切到别的场景，回来后由 resolve
+      // 回调重新确认。fallback 只放开自己的等待，不动全局信号。
       if (!isBootRevealed() && !prefersReducedMotion()) {
         if (waitedRef.current) {
           return

@@ -1,8 +1,7 @@
 /**
- * 居合斩揭幕信号。KatanaReveal 在刀起手的瞬间广播，首页内容入场
- * （手风琴集结、揭幕碎片）据此挂起等待，让「切割开场」与「内容集结」
- * 重叠成同一套编排——参考 danzan.jiejoe.com 在 slash tween 的 onStart
- * 里调用 show_home 的做法。
+ * 居合斩揭幕信号。KatanaReveal 在切口过半（挥刀起手后片刻）才广播，
+ * 首页内容入场（手风琴集结、谱条奏响）据此挂起等待——遮罩前半程基本
+ * 没让开，等页面真的看得见了再让内容入场，与切割后半段重叠成一套编排。
  * 一次性信号：开屏揭幕整场只发生一次，之后所有调用直接短路。
  */
 
@@ -12,7 +11,7 @@ const revealed = new Promise<void>((resolve) => {
   resolveFn = resolve
 })
 
-/** 挥刀瞬间调用；重复调用无副作用。同时解除首页入场动画的开屏挂起。 */
+/** 切口过半时调用；重复调用无副作用。同时解除首页入场动画的开屏挂起。 */
 export function markBootRevealed() {
   if (resolved) return
   resolved = true

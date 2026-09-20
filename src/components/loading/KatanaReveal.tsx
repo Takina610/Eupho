@@ -8,6 +8,9 @@ const DRAW_DELAY_S = 0.5
 const DRAW_S = 0.4
 const SLASH_S = 0.9
 const SLASH_OVERLAP_S = 0.3
+/** 揭幕信号比挥刀起手晚播的秒数：前半刀遮罩基本没让开，等切口过半、
+ * 页面真的看得见了再放首页内容入场，免得集结与奏响在遮罩后演掉大半 */
+const REVEAL_DELAY_S = 0.5
 
 /** 快速冲入、行至中央短暂变沉（不停不拖）、随即加速离场 */
 const slashEase = (t: number) => t + (0.6 * Math.sin(2 * Math.PI * t)) / (2 * Math.PI)
@@ -17,8 +20,9 @@ const slashEase = (t: number) => t + (0.6 * Math.sin(2 * Math.PI * t)) / (2 * Ma
  * 加载页——武士刀从底部拔出后斜劈到右上角，页面本体沿刀痕分成两半退开
  * 露出主站。遮罩初始是上下两块互补三角形（与 onUpdate 计算式同源），
  * 静场期间盖满全屏且与真实加载层画面一致，衔接无感。
- * 挥刀起手的瞬间广播 bootReveal 信号，首页内容（手风琴集结、揭幕碎片）
- * 从这一帧开始入场，与切割重叠成一套编排。
+ * 切口过半（挥刀起手后 REVEAL_DELAY_S）才广播 bootReveal 信号——前半刀
+ * 遮罩基本没让开，等页面真的看得见了首页内容（手风琴集结、谱条奏响）
+ * 才开始入场，与切割的后半段重叠成一套编排。
  */
 export function KatanaReveal({ children }: { children: ReactNode }) {
   const [done, setDone] = useState(
@@ -65,10 +69,16 @@ export function KatanaReveal({ children }: { children: ReactNode }) {
         x: () => window.innerWidth,
         duration: SLASH_S,
         ease: slashEase,
-        // 刀起手即广播揭幕信号：首页内容从这一帧开始集结，与切割重叠
-        onStart: markBootRevealed,
       },
       `<${SLASH_OVERLAP_S}`,
+    )
+    // 切口过半才广播揭幕信号：首页内容（手风琴集结、谱条奏响）从这一帧
+    // 开始入场，剩下一小段切割与集结重叠收尾。信号挂在时间线上，与切割
+    // 同一条节奏；StrictMode 丢弃的首条时间线会连同 call 一起被杀，无害
+    tl.call(
+      markBootRevealed,
+      undefined,
+      DRAW_DELAY_S + DRAW_S - SLASH_OVERLAP_S + REVEAL_DELAY_S,
     )
 
     const invalidate = () => tl.invalidate()
